@@ -95,6 +95,5 @@ You're now ready to:
 
 Now that you've set up your environment, you can:
 
-- Explore the [Module Reference](modules/cedra.md) for detailed API documentation
 - Check out our example implementations
 - Join our community for support 
