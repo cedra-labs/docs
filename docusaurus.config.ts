@@ -6,11 +6,28 @@ export default {
   projectName: 'docs',                    // Repository name
   deploymentBranch: 'gh-pages',           // Branch for GitHub Pages deployment
   trailingSlash: false,                   // avoids double-slash URLs on GH Pages
+  headTags: [
+    {
+      tagName: 'meta',
+      attributes: {
+        name: 'algolia-site-verification',
+        content: '91148BBB2BA8D18D'
+      }
+    }
+  ],
   themeConfig: {
     navbar: {
       items: [
         {label: 'Code ↗︎', href: 'https://github.com/cedra-labs/cedra'},
       ],
+    },
+    algolia: {
+      appId: process.env.ALGOLIA_APP_ID || 'PLACEHOLDER_APP_ID',
+      apiKey: process.env.ALGOLIA_API_KEY || 'PLACEHOLDER_API_KEY',
+      indexName: process.env.ALGOLIA_INDEX_NAME || 'cedra',
+      contextualSearch: true,
+      searchParameters: {},
+      searchPagePath: 'search',
     },
   },
   presets: [
