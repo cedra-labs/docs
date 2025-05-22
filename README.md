@@ -1,41 +1,53 @@
-# Website
+# Cedra Documentation
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+This website is built using [Docusaurus](https://docusaurus.io/) and is automatically deployed to GitHub Pages.
 
-### Installation
+## Local Development
 
-```
-$ yarn
-```
+```bash
+# Install dependencies
+npm install
 
-### Local Development
-
-```
-$ yarn start
+# Start local development server
+npm start
 ```
 
 This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
 
-### Build
+## Deployment
 
+### Automatic Deployment
+
+This repository is configured with GitHub Actions to automatically deploy to GitHub Pages whenever changes are pushed to the `main` branch.
+
+The deployment process:
+1. When you push to `main`, the GitHub Action workflow is triggered
+2. It builds the Docusaurus site
+3. Deploys the built site to the `gh-pages` branch
+4. GitHub Pages serves the content from the `gh-pages` branch
+
+### Manual Deployment
+
+If you need to deploy manually:
+
+```bash
+# Set your GitHub username
+export GIT_USER=<Your GitHub username>
+
+# Deploy to GitHub Pages
+npm run deploy:github
 ```
-$ yarn build
-```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+## Configuration
 
-### Deployment
+The site configuration is in `docusaurus.config.ts`. Key settings include:
 
-Using SSH:
+- `url`: The URL where the site is hosted (currently set to `https://cedra-labs.github.io`)
+- `baseUrl`: The base URL path (currently set to `/docs/`)
+- `organizationName` and `projectName`: Used for GitHub Pages deployment
 
-```
-$ USE_SSH=true yarn deploy
-```
+## Adding Content
 
-Not using SSH:
-
-```
-$ GIT_USER=<Your GitHub username> yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+- Documentation pages are in the `docs/` directory
+- Sidebar navigation is configured in `sidebars.ts`
+- Static assets go in the `static/` directory

@@ -1,16 +1,16 @@
 export default {
   title: 'Cedra Docs',
-  url: 'https://docs.cedra.xyz',   // root of the sub-domain
-  baseUrl: '/',                    // '/' because we're on a sub-domain
-  organizationName: 'cedra-labs',  // GitHub org/user
-  projectName: 'cedra-docs',       // this repo
-  deploymentBranch: 'gh-pages',    // only for GitHub Pages
-  trailingSlash: false,            // avoids double-slash URLs on GH Pages
+  url: 'https://cedra-labs.github.io',   // GitHub Pages URL
+  baseUrl: '/docs/',                      // Repository name with trailing slash
+  organizationName: 'cedra-labs',         // GitHub org/user
+  projectName: 'docs',                    // Repository name
+  deploymentBranch: 'gh-pages',           // Branch for GitHub Pages deployment
+  trailingSlash: false,                   // avoids double-slash URLs on GH Pages
   themeConfig: {
     navbar: {
       items: [
         {label: 'Code ↗︎', href: 'https://github.com/cedra-labs/cedra'},
-        {label: 'Move API', to: '/move/overview'},
+        {label: 'Move API', to: '/docs/move/overview'},
       ],
     },
   },
