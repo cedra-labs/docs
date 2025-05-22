@@ -5,19 +5,20 @@ sidebar_position: 1
 
 # Cedra Documentation
 
-Welcome to the official documentation for **Cedra**, a protocol built on the Aptos blockchain using Move.
+Welcome to the official documentation for **Cedra**
 
 ## About Cedra
 
-Cedra is [brief description of what Cedra is and what it does].
-
-Our protocol enables developers to [key benefits and capabilities].
+Cedra is a layer 1 blockchain built to support the widespread use of blockchain through better technology and user experience.
 
 ## Key Features
 
-- **Feature 1**: Description of feature 1
-- **Feature 2**: Description of feature 2
-- **Feature 3**: Description of feature 3
+- **Native sub‑chains**
+- **Built‑in Indexer**
+- **On-chain random generator machine**
+- **Easier module upgrades and management**
+- **Custom token and NFT standards**
+- **Native hooks for governance and modular extensions**
 
 ## Getting Started
 
@@ -26,20 +27,8 @@ Ready to start building with Cedra? The [Move API](move/overview.md) section pro
 ### Quick Links
 
 - [Move API Overview](move/overview.md)
-- [Getting Started with Cedra](move/getting-started.md)
-- [Module Reference](move/modules/cedra.md)
-
-## Example Use Case
-
-```move
-module example::cedra_integration {
-    use cedra::core;
-    
-    public entry fun example_function(user: &signer) {
-        // Your integration code
-    }
-}
-```
+- [Handbook for newcomers](move/handbook-for-newcomers.md)
+<!-- - [Module Reference](move/modules/cedra.md) -->
 
 ## Community and Support
 

@@ -31,27 +31,18 @@ const sidebars: SidebarsConfig = {
 
   docs: [
     {
-      type: 'doc',
-      id: 'intro',
-      label: 'Introduction',
-    },
-    {
       type: 'category',
-      label: 'Move API',
+      label: 'Introduction to Cedra',
+      collapsed: false,
       link: {
         type: 'doc',
-        id: 'move/overview',
+        id: 'intro',
       },
       items: [
-        'move/overview',
-        'move/getting-started',
         {
-          type: 'category',
-          label: 'Module Reference',
-          items: [
-            'move/modules/cedra',
-            'move/modules/accounts',
-          ],
+          type: 'doc',
+          id: 'handbook-for-newcomers',
+          label: 'Handbook for Newcomers'
         },
       ],
     },
