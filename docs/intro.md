@@ -27,7 +27,7 @@ Ready to start building with Cedra? The [Move API](move/overview.md) section pro
 ### Quick Links
 
 - [Move API Overview](move/overview.md)
-- [Handbook for newcomers](move/handbook-for-newcomers.md)
+- [Handbook for newcomers](/handbook-for-newcomers.md)
 <!-- - [Module Reference](move/modules/cedra.md) -->
 
 ## Community and Support
