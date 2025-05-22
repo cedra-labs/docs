@@ -1,3 +1,7 @@
+// Load environment variables from .env file
+import dotenv from 'dotenv';
+dotenv.config();
+
 export default {
   title: 'Cedra Docs',
   url: 'https://cedra-labs.github.io',   // GitHub Pages URL

@@ -46,6 +46,46 @@ The site configuration is in `docusaurus.config.ts`. Key settings include:
 - `baseUrl`: The base URL path (currently set to `/docs/`)
 - `organizationName` and `projectName`: Used for GitHub Pages deployment
 
+## Search Functionality
+
+This documentation site uses Algolia DocSearch for powerful search capabilities.
+
+### Local Development Setup
+
+1. Create a `.env` file in the project root with your Algolia API keys:
+
+```bash
+ALGOLIA_APP_ID=YOUR_ACTUAL_APP_ID
+ALGOLIA_API_KEY=YOUR_ACTUAL_API_KEY
+ALGOLIA_INDEX_NAME=cedra
+```
+
+2. The environment variables will be loaded automatically when you start the development server.
+
+### GitHub Actions Setup
+
+To use Algolia search in your deployed site, add these environment variables to your GitHub repository:
+
+1. Go to your GitHub repository
+2. Navigate to "Settings" > "Secrets and variables" > "Actions"
+3. Click "New repository secret" and add the following secrets:
+   - Name: `ALGOLIA_APP_ID`, Value: Your Algolia application ID
+   - Name: `ALGOLIA_API_KEY`, Value: Your Algolia API key
+   - Name: `ALGOLIA_INDEX_NAME`, Value: Your Algolia index name (usually "cedra")
+
+4. Update your GitHub Actions workflow file (`.github/workflows/deploy.yml`) to include these environment variables:
+
+```yaml
+jobs:
+  deploy:
+    # ... existing configuration ...
+    env:
+      ALGOLIA_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
+      ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
+      ALGOLIA_INDEX_NAME: ${{ secrets.ALGOLIA_INDEX_NAME }}
+    # ... rest of the configuration ...
+```
+
 ## Adding Content
 
 - Documentation pages are in the `docs/` directory
