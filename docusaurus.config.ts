@@ -10,7 +10,6 @@ export default {
     navbar: {
       items: [
         {label: 'Code ↗︎', href: 'https://github.com/cedra-labs/cedra'},
-        {label: 'Move API', to: '/docs/move/overview'},
       ],
     },
   },

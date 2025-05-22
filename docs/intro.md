@@ -22,11 +22,10 @@ Cedra is a layer 1 blockchain built to support the widespread use of blockchain 
 
 ## Getting Started
 
-Ready to start building with Cedra? The [Move API](move/overview.md) section provides comprehensive documentation on how to integrate with our protocol.
+Ready to start building with Cedra? The [Handbook for newcomers](/handbook-for-newcomers.md) section provides understanding Accounts, Move, and Beyond
 
 ### Quick Links
-
-- [Move API Overview](move/overview.md)
+<!-- - [Introduction](/intro.md) -->
 - [Handbook for newcomers](/handbook-for-newcomers.md)
 <!-- - [Module Reference](move/modules/cedra.md) -->
 
