@@ -26,5 +26,5 @@ Ready to start building with Cedra? The [Handbook for newcomers](/handbook-for-n
 
 ### Quick Links
 - [Handbook for newcomers](/handbook-for-newcomers.md)
-- [Guides](/real-world-guides.md)
+- [Guides](/real-world-guides.mdx)
 - [First Fungible Asset](/guides/first-fa.md)
