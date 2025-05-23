@@ -1,0 +1,51 @@
+.cardList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.card {
+  border-radius: 8px;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+  height: 100%;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: var(--ifm-color-primary);
+}
+
+.cardLink {
+  display: block;
+  color: inherit;
+  height: 100%;
+  text-decoration: none;
+}
+
+.cardLink:hover {
+  text-decoration: none;
+}
+
+.cardHeader {
+  padding: 16px 16px 0;
+}
+
+.cardTitle {
+  margin-bottom: 8px;
+  color: var(--ifm-color-primary);
+}
+
+.cardBody {
+  padding: 0 16px 16px;
+}
+
+.cardDescription {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ifm-color-emphasis-700);
+} 

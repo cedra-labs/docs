@@ -21,8 +21,17 @@ export default {
   ],
   themeConfig: {
     navbar: {
+      title: '',
+      logo: {
+        alt: 'CEDRA developers',
+        src: 'img/cedra-logo.svg',
+      },
       items: [
-        {label: 'Code ↗︎', href: 'https://github.com/cedra-labs/cedra'},
+        {
+          label: 'Code', 
+          href: 'https://github.com/cedra-labs/cedra',
+          position: 'right'
+        },
       ],
     },
     algolia: {

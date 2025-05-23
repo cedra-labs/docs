@@ -46,6 +46,27 @@ const sidebars: SidebarsConfig = {
         },
       ],
     },
+    {
+      type: 'category',
+      label: 'Real World Guides',
+      collapsed: false,
+      link: {
+        type: 'doc',
+        id: 'real-world-guides',
+      },
+      items: [
+        {
+          type: 'doc',
+          id: 'guides/first-fa',
+          label: 'Fungible Asset (FA) End-to-End Guide'
+        },
+        {
+          type: 'doc',
+          id: 'guides/escrow',
+          label: 'From Lockup to Payout: Building Secure FA Escrows WIP'
+        }
+      ],
+    },
   ],
 };
 

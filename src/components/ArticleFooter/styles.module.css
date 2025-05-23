@@ -1,0 +1,29 @@
+.articleFooter {
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+}
+
+.footerContent {
+  padding: 1rem 0;
+}
+
+.footerButtons {
+  display: flex;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.footerMeta {
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-700);
+  margin-top: 2rem;
+}
+
+.footerMeta a {
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+}
+
+.footerMeta a:hover {
+  text-decoration: underline;
+} 

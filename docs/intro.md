@@ -25,14 +25,6 @@ Cedra is a layer 1 blockchain built to support the widespread use of blockchain 
 Ready to start building with Cedra? The [Handbook for newcomers](/handbook-for-newcomers.md) section provides understanding Accounts, Move, and Beyond
 
 ### Quick Links
-<!-- - [Introduction](/intro.md) -->
 - [Handbook for newcomers](/handbook-for-newcomers.md)
-<!-- - [Module Reference](move/modules/cedra.md) -->
-
-## Community and Support
-
-Join our community channels for support and updates:
-
-- [GitHub](https://github.com/cedra-labs/cedra)
-- [Discord](#)
-- [Twitter](#)
+- [Guides](/real-world-guides.md)
+- [First Fungible Asset](/guides/first-fa.md)

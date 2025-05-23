@@ -28,3 +28,24 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* Custom logo styles */
+.navbar__logo {
+  height: 2.5rem;
+  margin-right: 1rem;
+}
+
+/* Make the logo adapt to light/dark mode */
+[data-theme='light'] .navbar__logo svg text {
+  fill: #000000;
+}
+
+[data-theme='dark'] .navbar__logo svg text {
+  fill: #ffffff;
+}
+
+/* Adjust spacing for the logo with two text elements */
+.navbar__logo svg {
+  width: auto;
+  max-width: 200px;
+}
