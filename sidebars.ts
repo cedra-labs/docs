@@ -32,14 +32,19 @@ const sidebars: SidebarsConfig = {
           label: 'Handbook for Newcomers'
         },
         {
-          type: 'doc',
-          id: 'architecture',
-          label: 'Architecture'
-        },
-        {
-          type: 'doc',
-          id: 'full-node',
-          label: 'Full Node'
+          type: 'category',
+          label: 'Architecture',
+          link: {
+            type: 'doc',
+            id: 'architecture',
+          },
+          items: [
+            {
+              type: 'doc',
+              id: 'full-node',
+              label: 'Full Node'
+            },
+          ],
         },
       ],
     },
