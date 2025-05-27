@@ -1,0 +1,17 @@
+# Cedra Architecture
+
+Cedra couples the linear‑type Move VM with Block‑STM parallel execution and a pipelined HotStuff variant (CedraBFT) to deliver 10 k+ TPS and  less than 1 s deterministic finality. State versions are hashed into a Sparse Merkle Tree, enabling light‑client proofs and fast sync. On‑chain governance hot‑swaps modules, VM configs, and consensus rules; hook APIs surface governance events. Native sub‑chains, a streaming indexer, and a VRF‑backed randomness oracle are built‑in. Resource‑safe token/NFT standards plus zero‑copy account storage give developers safe, upgrade‑friendly primitives atop a vertically integrated L1 stack.
+
+You could find details explanation of Cedra Architecture Layers below:
+
+import { CardList } from '@site/src/components/CardList';
+
+<CardList>
+  <CardList.Card
+    title="Full Node"
+    description="Explore the Full Node possibilities with detailed examples of API usage."
+    to="/docs/full-node"
+  />
+</CardList>
+
+
