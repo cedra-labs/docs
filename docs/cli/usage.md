@@ -22,7 +22,7 @@ These commands cover the typical development workflow:
 Want to dive deeper? Welcome to information below 👇
 
 
-**Initial Configuration (`cedra init`):**
+## 1. Initial Configuration:
 
 After installing, configure the CLI and create an initial account profile using `cedra init`. This command creates a configuration file and can generate a new account for you.
 
