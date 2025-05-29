@@ -69,15 +69,9 @@ const sidebars: SidebarsConfig = {
       ],
     },
     {
-      type: 'category',
-      label: 'CLI',
-      items: [
-        {
-          type: 'doc',
-          id: 'cli/usage',
-          label: 'Usage'
-        },
-      ],
+      type: 'doc',
+      label: 'CLI Usage',
+      id: 'cli/usage',
     },
     {
       type: 'category',
