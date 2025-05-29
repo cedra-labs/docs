@@ -46,7 +46,7 @@ After installing, configure the CLI and create an initial account profile using 
   }
   ```
 
-  This indicates a new account was created (with a unique address). The CLI saved your config in `.aptos/config.yaml`, which includes the active profile (named "default") and a reference to your new private key.
+  This indicates a new account was created (with a unique address). The CLI saved your config in `.cedra/config.yaml`, which includes the active profile (named "default") and a reference to your new private key.
 
 :::note Multiple Profiles
 **Profiles:** Cedra CLI supports multiple profiles, which are separate configurations (useful if you manage multiple accounts or networks). You can create additional profiles by running `cedra init --profile <name>` (e.g. `cedra init --profile testProfile`). This will prompt for endpoints and keys again and create a separate entry in your config file. Later, you can use `--profile <name>` flag with most commands to switch which account or network you are targeting. If no profile is specified, the CLI uses the `default` profile.
@@ -312,7 +312,7 @@ Finally, Cedra CLI offers some utility commands that can make development easier
 
 It's important to know which version of Cedra CLI you are running, especially as Cedra evolves. You can check this in a couple ways:
 
-* `cedra --version` – prints the version number of the CLI (for example, `aptos 2.1.0` if using an Aptos build). This is a quick way to verify if you have the latest release.
+* `cedra --version` – prints the version number of the CLI (for example, `cedra 2.1.0` if using an Cedra build). This is a quick way to verify if you have the latest release.
 * `cedra info` – shows detailed build information about the CLI tool. Running this outputs a JSON with fields like `build_commit_hash`, `build_time`, and `build_pkg_version`. This is mostly useful for debugging or when reporting issues (so developers know exactly what build you're using).
 
 For example:
