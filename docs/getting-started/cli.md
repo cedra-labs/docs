@@ -13,7 +13,10 @@ The Cedra Command Line Interface (CLI) is a powerful tool for interacting with t
 #### Option 1: Install from a Github
 ```bash
 # Clone the Cedra CLI repository
-git clone https://github.com/cedra-labs/cedra-cli.git
+git clone https://github.com/cedra-network/cedra-core.git
+cd cedra-core/cedra-cli
+cargo build --release
+
 ```
 
 Build package
