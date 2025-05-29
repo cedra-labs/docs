@@ -51,11 +51,31 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Getting Started',
+      link: {
+        type: 'doc',
+        id: 'getting-started/index',
+      },
       items: [
+        {
+          type: 'doc',
+          id: 'getting-started/cli',
+          label: 'CLI Installation'
+        },
         {
           type: 'doc',
           id: 'getting-started/faucet',
           label: 'Faucet'
+        },
+      ],
+    },
+    {
+      type: 'category',
+      label: 'CLI',
+      items: [
+        {
+          type: 'doc',
+          id: 'cli/usage',
+          label: 'Usage'
         },
       ],
     },
