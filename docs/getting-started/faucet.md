@@ -1,23 +1,31 @@
-# Get Cedra Test Tokens (CEDRA) - cURL & CLI
+# Get Cedra Test Tokens (CEDRA) - CLI & cURL
 
-This short guide explains how to request Cedra testnet tokens (CEDRA) **from the command line** using `curl`. These tokens are only for development and testing—**they have no real‑world value**, and it is **impossible to mint CedraCoin on the Cedra mainnet**.
+This short guide explains how to request Cedra testnet tokens (CEDRA) **from CLI** and **from the command line** using `curl`. These tokens are only for development and testing—**they have no real‑world value**, and it is **impossible to mint CedraCoin on the Cedra mainnet**.
 
 ## Prerequisites
 
-* **cURL installed**
-
-  * macOS / Linux: already present or `brew install curl`
-  * Windows: install via [official binaries](https://curl.se/download.html) or use WSL.
-* **Cedra testnet account** (address & authentication key).
+**Installed CEDRA CLI** you can use installation [guide](/getting-started/cli)
+**Cedra testnet account** (address & authentication key).
   Use your account or generate one with the Cedra CLI:
 
   ```bash
-  cedra init  # interactive; choose \"devnet\" when prompted
+  cedra init
   ```
 
-  Save the `account address` (0x…) and the `authentication key` (64‑char hex). If you need to look up the address later, run `cedra account lookup-address`. If you need an address with a balance, just run `cedra account show` 
+  Save the `account address` (0x…) and the `authentication key` (64‑char hex).
 
-## 1 · Mint test tokens
+## 1 · Fund via CLI faucet (1 CEDRA)
+
+If you have the Cedra CLI installed, you can trigger the Cedra faucet directly without constructing a cURL request:
+
+```bash
+cedra account fund-with-faucet
+```
+
+* Funds **1 CEDRA** to the specified account.
+* Helpful when scripting alongside other Cedra CLI commands.
+
+## 2 · Mint test tokens
 
 ```bash
 curl --location --request POST \
@@ -40,7 +48,7 @@ curl --location --request POST \
 
 The faucet responds with a JSON payload containing the transaction hash.
 
-## 2 · Verify your balance
+## 3 · Verify your balance
 
 After the transaction is finalized (normally within seconds), query the Cedra REST API:
 
@@ -52,28 +60,5 @@ Replace `<ACCOUNT_ADDRESS>` with your account address (0x…).
 
 Expected response is your balance in octas
 
-## Alternative · Fund via CLI faucet (1 CEDRA)
 
-If you have the Cedra CLI installed, you can trigger the Cedra faucet directly without constructing a cURL request:
-
-```bash
-cedra account fund-with-faucet
-```
-
-* Funds **1 CEDRA** to the specified account.
-* Uses the same faucet service behind the scenes.
-* Helpful when scripting alongside other Cedra CLI commands.
-
-It will atomatically add 1 CEDRA to your default account
-
-## Usage notes
-
-* **No mainnet minting:** You cannot mint CedraCoin on mainnet; faucets are testnet‑only.
-* **Security:** Keep your private key and auth key secret.
-
-## Troubleshooting
-
-* **`403 Forbidden`** - invalid or malformed `account_address`; double‑check it.
-* **`429 Too Many Requests`** - rate limit reached; wait before retrying.
-* \*\*Balance still \*\***`0`** - transaction not yet finalized; retry in \~30 seconds or check the Cedra explorer.
 

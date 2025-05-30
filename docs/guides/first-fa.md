@@ -60,7 +60,7 @@ Below are the three essential entries with line‑by‑line explanations.
 
 #### 2.1.1 `init_module` - bootstrap
 
-```move
+```rust
 public entry fun init_module(admin: &signer) {
     let constructor_ref = &object::create_named_object(admin, ASSET_SYMBOL);
     let (metadata, mint, transfer) =
@@ -86,7 +86,7 @@ public entry fun init_module(admin: &signer) {
 
 #### 2.1.2 `mint` - controlled inflation
 
-```move
+```rust
 public entry fun mint(admin: &signer, to: address, amount: u64)
 acquires ManagedFungibleAsset {
     let refs = borrow_global<ManagedFungibleAsset>(signer::address_of(admin));
@@ -98,7 +98,7 @@ acquires ManagedFungibleAsset {
 
 #### 2.1.3 `transfer` - peer‑to‑peer move
 
-```move
+```rust
 public entry fun transfer(sender: &signer, to: address, amount: u64) {
     let asset = fungible_asset::metadata<Object<Metadata>>(signer::address_of(sender));
     let fa = primary_fungible_store::withdraw(sender, asset, amount);

@@ -66,6 +66,11 @@ const sidebars: SidebarsConfig = {
           id: 'getting-started/faucet',
           label: 'Faucet'
         },
+        {
+          type: 'doc',
+          id: 'getting-started/counter',
+          label: 'Build a Counter Contract'
+        },
       ],
     },
     {
