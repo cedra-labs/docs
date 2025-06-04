@@ -52,7 +52,7 @@ fa-example/
 ### 2.0 Directory roles
 
 * **`contract/`** – The **Move smart‑contract package**. `Move.toml` lists dependencies, named addresses, compiler flags, etc. Business logic lives in `sources/cedra_asset.move`.
-* **`client/`** – A **TypeScript client** built with the Cedra SDK (`@aptos-labs/ts-sdk` fork) for signing transactions and calling on‑chain entries.
+* **`client/`** – A **TypeScript client** built with the Cedra SDK (`@cedra-labs/ts-sdk` fork) for signing transactions and calling on‑chain entries.
 
 ### 2.1 `cedra_asset.move` – key entry functions
 
@@ -132,42 +132,42 @@ We’ll validate the module end‑to‑end:
 5. Log balances to confirm.
 
 ```ts
-import { Account, Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
+import { Account, Cedra, CedraConfig, Network } from "@cedra-labs/ts-sdk";
 
-const config = new AptosConfig({ network: Network.DEVNET });
-const aptos  = new Aptos(config);
+const config = new CedraConfig({ network: Network.DEVNET });
+const cedra  = new Cedra(config);
 
 const MODULE_ADDRESS = "0x..."; // from publish output
 const MODULE_NAME    = "CedraAsset";
 const FA_TYPE        = `${MODULE_ADDRESS}::${MODULE_NAME}::CedraAsset`;
-const ONE_APT        = 100_000_000n; // Octas
+const ONE_CEDRA        = 100_000_000n; // Octas
 
 async function example() {
   const admin = Account.generate();
   const user  = Account.generate();
 
-  await aptos.faucet.fundAccount({ accountAddress: admin.accountAddress, amount: ONE_APT });
-  await aptos.faucet.fundAccount({ accountAddress: user.accountAddress,  amount: ONE_APT });
+  await cedra.faucet.fundAccount({ accountAddress: admin.accountAddress, amount: ONE_CEDRA });
+  await cedra.faucet.fundAccount({ accountAddress: user.accountAddress,  amount: ONE_CEDRA });
 
   // Mint
-  const mintTxn = await aptos.transaction.build.simple({
+  const mintTxn = await cedra.transaction.build.simple({
     function: `${MODULE_ADDRESS}::${MODULE_NAME}::mint`,
     arguments: [user.accountAddress, 1_000],
   });
-  const { hash: mintHash } = await aptos.signAndSubmitTransaction({ signer: admin, transaction: mintTxn });
-  await aptos.waitForTransaction({ transactionHash: mintHash });
+  const { hash: mintHash } = await cedra.signAndSubmitTransaction({ signer: admin, transaction: mintTxn });
+  await cedra.waitForTransaction({ transactionHash: mintHash });
 
   // Transfer back
-  const transferTxn = await aptos.transaction.build.simple({
+  const transferTxn = await cedra.transaction.build.simple({
     function: `${MODULE_ADDRESS}::${MODULE_NAME}::transfer`,
     arguments: [admin.accountAddress, 250],
   });
-  const { hash: transferHash } = await aptos.signAndSubmitTransaction({ signer: user, transaction: transferTxn });
-  await aptos.waitForTransaction({ transactionHash: transferHash });
+  const { hash: transferHash } = await cedra.signAndSubmitTransaction({ signer: user, transaction: transferTxn });
+  await cedra.waitForTransaction({ transactionHash: transferHash });
 
   // Balances
-  const balAdmin = await aptos.getFungibleAssetBalance({ accountAddress: admin.accountAddress, assetType: FA_TYPE });
-  const balUser  = await aptos.getFungibleAssetBalance({ accountAddress: user.accountAddress,  assetType: FA_TYPE });
+  const balAdmin = await cedra.getFungibleAssetBalance({ accountAddress: admin.accountAddress, assetType: FA_TYPE });
+  const balUser  = await cedra.getFungibleAssetBalance({ accountAddress: user.accountAddress,  assetType: FA_TYPE });
   console.log({ balAdmin, balUser });
 }
 ```
