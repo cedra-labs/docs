@@ -5,7 +5,7 @@ sidebar_position: 3
 
 # Build an Escrow Contract
 
-In this guide, we'll walk through how Cedra's escrow module works by explaining its flow. We'll cover how funds are locked, released, or returned in a secure and predictable way.
+In this guide, we'll walk through how escrow works by explaining its flow. We'll cover how funds are locked, released, or returned in a secure and predictable way.
 
 The escrow system supports two types of locking:
 
@@ -22,7 +22,7 @@ The escrow system supports two types of locking:
 
 ## Core Data Structures
 
-Cedra's escrow module is built around three key data types that enable object-level control over token locking. Understanding these will help you reason about how escrows are tracked and managed.
+Escrow module is built around three key data types that enable object-level control over token locking. Understanding these will help you reason about how escrows are tracked and managed.
 
 ### `LockupRef`
 
@@ -131,7 +131,7 @@ inline fun init_lockup(caller: &signer): Object<Lockup> {
 ```
 The function first checks whether a `LockupRef` already exists for the caller. This ensures that users don’t accidentally create multiple lockups. If one already exists, the function aborts with a clear error.
 
-If the check passes, a new lockup is created using Cedra’s object model. A constructor reference is generated, from which we derive the object’s address and prepare two important lifecycle controls: `extend_ref` and `delete_ref`. These are used later to either extend the object’s capabilities or clean it up and reclaim storage.
+If the check passes, a new lockup is created using Move object model. A constructor reference is generated, from which we derive the object’s address and prepare two important lifecycle controls: `extend_ref` and `delete_ref`. These are used later to either extend the object’s capabilities or clean it up and reclaim storage.
 
 The core of the lockup is the `escrows` field, which is initialized as an empty `SmartTable`. This will eventually hold mappings between each asset-user pair and the corresponding escrow object. The lockup is finalized by writing the object on-chain with the current user set as its creator.
 
@@ -294,7 +294,7 @@ public entry fun claim_escrow(
 ```
 
 When you call `claim_escrow`, the contract first checks that you’re the creator of the lockup. This is a strict ownership rule - only the intended recipient of the escrow can claim the funds.
-Once verified, the escrow object is looked up using the combination of token metadata and the sender’s address. This identifies the specific escrow entry associated with that deposit. The function then calls an internal helper to move the escrowed funds from the escrow’s `FungibleStore` into the recipient’s primary store. This is a direct transfer that respects the Cedra resource model.
+Once verified, the escrow object is looked up using the combination of token metadata and the sender’s address. This identifies the specific escrow entry associated with that deposit. The function then calls an internal helper to move the escrowed funds from the escrow’s `FungibleStore` into the recipient’s primary store. This is a direct transfer that respects the Move resource model.
 
 After the funds are transferred, the escrow object is deleted. This both reclaims storage and ensures there’s no lingering state tied to the now-completed escrow.
 
@@ -407,12 +407,14 @@ Use `lockup_address` to find the on-chain `Lockup` object address for a given us
 public fun lockup_address(escrow_account: address): address acquires LockupRef {
     LockupRef[escrow_account].lockup_address
 }
+```
 
 This is useful when you want to interact with someone else’s lockup (e.g. you're depositing funds into their escrow), but only have their account address.
 
 
 Use `escrowed_funds` to see how many tokens are currently locked in escrow for a given (user, token) pair.
 
+```rust
 #[view]
 /// Tells the amount of escrowed funds currently available
 public fun escrowed_funds(
@@ -433,12 +435,14 @@ public fun escrowed_funds(
         option::none()
     }
 }
+```
 
 If the escrow exists, the function returns the balance as `Option<u64>` — otherwise it returns `none`. You can use this in a frontend to show locked token amounts for a wallet.
 
 
 Use `remaining_escrow_time` to check how many seconds are left before a time-locked escrow can be released.
 
+```rust
 #[view]
 /// Tells the remaining time until escrow unlock
 public fun remaining_escrow_time(
