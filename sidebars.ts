@@ -19,6 +19,31 @@ const sidebars: SidebarsConfig = {
   docs: [
     {
       type: 'category',
+      label: 'Getting Started',
+      link: {
+        type: 'doc',
+        id: 'getting-started/index',
+      },
+      items: [
+        {
+          type: 'doc',
+          id: 'getting-started/cli',
+          label: 'CLI Installation'
+        },
+        {
+          type: 'doc',
+          id: 'getting-started/faucet',
+          label: 'Faucet'
+        },
+        {
+          type: 'doc',
+          id: 'getting-started/counter',
+          label: 'Build a Counter Contract'
+        },
+      ],
+    },
+    {
+      type: 'category',
       label: 'Introduction to Cedra',
       collapsed: false,
       link: {
@@ -48,31 +73,7 @@ const sidebars: SidebarsConfig = {
         },
       ],
     },
-    {
-      type: 'category',
-      label: 'Getting Started',
-      link: {
-        type: 'doc',
-        id: 'getting-started/index',
-      },
-      items: [
-        {
-          type: 'doc',
-          id: 'getting-started/cli',
-          label: 'CLI Installation'
-        },
-        {
-          type: 'doc',
-          id: 'getting-started/faucet',
-          label: 'Faucet'
-        },
-        {
-          type: 'doc',
-          id: 'getting-started/counter',
-          label: 'Build a Counter Contract'
-        },
-      ],
-    },
+    
     {
       type: 'doc',
       label: 'CLI Usage',
@@ -94,7 +95,7 @@ const sidebars: SidebarsConfig = {
         {
           type: 'doc',
           id: 'guides/escrow',
-          label: 'From Lockup to Payout: Building Secure FA Escrows WIP'
+          label: 'Building Secure Token vesting, Marketplace payments via Escrow'
         }
       ],
     },

@@ -262,9 +262,11 @@ Congratulations! You've built your first Move smart contract on Cedra. Here are 
 
 ## 📚 Additional Resources
 
-- [Move Language Documentation](https://move-language.github.io/move/)
-- [Cedra CLI Usage Guide](/docs/cli/usage)
 - [Real World Guides](/docs/real-world-guides)
+- [Cedra CLI Usage Guide](/docs/cli/usage)
+- [Move Language Documentation](https://move-language.github.io/move/)
+
+
 
 :::tip What's Next?
 Ready to build something more complex? Check out our [Fungible Asset Guide](/docs/guides/first-fa) to learn about creating tokens on Cedra! 🪙

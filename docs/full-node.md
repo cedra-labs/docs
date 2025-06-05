@@ -38,7 +38,7 @@ Fullnodes also accept client‑submitted transactions and forward them to valida
 | **Validator fullnode** | Directly follows a validator node. |
 | **Public fullnode**    | Follows another fullnode.          |
 
-The functionality is identical—the label only reflects who the upstream is.
+The functionality is identical - the label only reflects who the upstream is.
 
 ## Why Run a Fullnode?
 

@@ -37,7 +37,7 @@ Ready to build something practical? Check out our comprehensive guides for build
 
 Once you've completed the getting started guides:
 
-1. **Read the Handbook**: Check out our [Handbook for Newcomers](/docs/handbook-for-newcomers) for deeper understanding of Cedra concepts
+1. **Build Your First App**: Follow our [Counter guide](/docs/getting-started/counter) to build first app
 2. **Explore Architecture**: Learn about [Cedra's architecture](/docs/architecture) and design principles
-3. **Build Your First App**: Follow our [real-world guides](/docs/real-world-guides) to build practical applications
+3. **Read the Handbook**: Check out our [Handbook for Newcomers](/docs/handbook-for-newcomers) for deeper understanding of Cedra concepts
 4. **Join the Community**: Connect with other developers and get support
