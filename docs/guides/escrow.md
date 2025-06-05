@@ -488,8 +488,6 @@ Escrow flows begin with a one-time lockup initialization, which sets up a new `L
 ### What's Next?
 
 Now that you understand how escrow works, you can:
-
-* **Try it hands-on**: Follow the [Escrow CLI Guide](/docs/guides/escrow-example) to interact with escrow contracts
 * **Build your own tokens**: Create fungible assets using our [First FA Guide](/docs/guides/first-fa) 
 * **Explore more contracts**: Check out other [Move examples](https://github.com/cedra-labs/move-contract-examples) for inspiration
 
