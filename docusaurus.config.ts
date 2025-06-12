@@ -29,7 +29,7 @@ export default {
       items: [
         {
           label: 'Build', 
-          to: '/getting-started',
+          to: '/',
           position: 'right',
           className: 'navbar__item--contrast'
         },
