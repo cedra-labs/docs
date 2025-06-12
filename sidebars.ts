@@ -45,7 +45,6 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Introduction to Cedra',
-      collapsed: false,
       link: {
         type: 'doc',
         id: 'intro',

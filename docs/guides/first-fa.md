@@ -111,8 +111,8 @@ No special capabilities needed - any holder may transfer.
 
 ## 3. Deploying
 
-1. **Compile** to type‑check & run unit tests.
-2. If output looks correct, **publish** on devnet.
+1. **Compile** to type‑check.
+2. If output looks correct, **publish**.
 3. **Save** the printed Metadata object address (admin + capability store).
 
 ```bash

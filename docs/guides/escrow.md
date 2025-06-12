@@ -14,7 +14,7 @@ The escrow system supports two types of locking:
 
 ## Before we start - check these resources
 
-:::tip **Source code**: [GitHub – escrow module](https://github.com/cedra-labs/move-contract-examples/tree/main/lock)
+:::tip **Source code**: [GitHub – escrow module](https://github.com/cedra-labs/move-contract-examples/tree/main/fa-lock)
 :::
 
  * Local dev env ([ENV](/docs/getting-started))

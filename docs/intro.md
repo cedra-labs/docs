@@ -1,28 +1,32 @@
 ---
-slug: /
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 # Cedra Documentation
 
-Welcome to the official documentation for **Cedra**, it's a layer 1 blockchain built to support the widespread use of blockchain through better technology and user experience.
+Cedra is a next-generation, public-good blockchain that reimagines how infrastructure is built, funded, and governed in the Move ecosystem. Cedra extends the Move resource model with custom modules that make network composition a first-class feature: any team can deploy a fully fledged sub-network—complete with its own gas economics, validator set, and governance—using familiar Move tooling and CLI workflows.
 
-:::tip 🎉 Testnet is Live!
+### Architectural Highlights
 
-**Congratulations!** Cedra testnet is now live and available for testing and development.
+- **Block-STM parallel execution** – Adapted from the Diem research lineage, Block-STM dynamically detects transaction conflicts and executes non-overlapping smart-contract calls in parallel. This yields massive throughput on commodity hardware while remaining 100 % deterministic, so even archival nodes can verify blocks independently.  
+- **Modular network topology** – Instead of sharding for scale alone, Cedra treats “networks-within-the-network” as a product feature. Builders can carve out dedicated spaces for gaming, DeFi, or enterprise use cases without fragmenting liquidity or security.  
+- **Fair-launch tokenomics** – The CED token debuted with no VC presale, no premine, and transparent on-chain distribution schedules. Staking and validator rewards funnel value directly to the people who keep the chain alive.  
 
-**🚀 Testnet API Endpoint:** [https://testnet.cedra.dev/v1](https://testnet.cedra.dev/v1)
+### Governance & Incentives
 
-### 🔍 Explore the Network
+Cedra practices **proof-of-collaboration**: proposals originate in public discussion, mature in open GitHub repos, and are finalized through on-chain voting. Validators are run by the community, and delegation is frictionless, so influence tracks real contribution rather than capital concentration. Grants from the Cedra Foundation target tooling, documentation, and real-world products, accelerating time-to-mainnet for new teams.
 
-- **👥 Check Validators:** [View current validator set](https://testnet.cedra.dev/v1/accounts/0x1/resource/0x1::stake::ValidatorSet)
-- **🪙 Cedra Coin Info:** [Default coin information](https://testnet.cedra.dev/v1/accounts/0x1/resource/0x1::coin::CoinInfo%3C0x1::cedra_coin::CedraCoin%3E)
+### Developer Experience
 
-### 📚 Ready to Build?
+Move’s strong static typing, asset-safety guarantees, and Rust-like syntax lower the cognitive load for Web3 builders. Cedra layers on pre-audited templates, funding guides, and hackathon starter kits that turn “Hello, Move” projects into production dApps in days, not months. With EVM-adjacent bridges, developers can tap existing liquidity while enjoying Move’s resource-based security model.
 
-If you want to dive deeper, check our [**full node documentation**](/docs/full-node) and learn how to get test tokens from our [**faucet**](/docs/getting-started/faucet).
+### Culture & Values
 
-:::
+Cedra champions **builder sovereignty, fairness, open collaboration, rapid iteration,** and a playful, meme-infused community spirit. The emotional promise is one of trust, confidence, support, and belonging: if you contribute, you matter—and you share in the upside.
+
+> *If Ethereum were launching today, it would look like Cedra.*
+
+By aligning high-performance tech with radically open governance, Cedra positions itself as the foundation on which the next wave of community-owned economies will run—whether that’s tokenizing Europe, the world, or ideas we haven’t imagined yet.
 
 ## Key Features
 

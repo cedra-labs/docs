@@ -28,8 +28,14 @@ export default {
       },
       items: [
         {
+          label: 'Build', 
+          to: '/getting-started',
+          position: 'right',
+          className: 'navbar__item--contrast'
+        },
+        {
           label: 'Code', 
-          href: 'https://github.com/cedra-labs/cedra',
+          href: 'https://github.com/cedra-labs/cedra-network',
           position: 'right'
         },
       ],
