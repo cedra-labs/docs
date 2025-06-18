@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Cedra Documentation
 
-Cedra is a next-generation, public-good blockchain that reimagines how infrastructure is built, funded, and governed in the Move ecosystem. Cedra extends the Move resource model with custom modules that make network composition a first-class feature: any team can deploy a fully fledged sub-network—complete with its own gas economics, validator set, and governance—using familiar Move tooling and CLI workflows.
+Cedra is a next-generation, public-good blockchain that reimagines how infrastructure is built, funded, and governed in the Move ecosystem. Cedra extends the Move resource model with custom modules that make network composition a first-class feature: any team can deploy a fully fledged sub-network - complete with its own gas economics, validator set, and governance - using familiar Move tooling and CLI workflows.
 
 ### Architectural Highlights
 
@@ -22,11 +22,11 @@ Move’s strong static typing, asset-safety guarantees, and Rust-like syntax low
 
 ### Culture & Values
 
-Cedra champions **builder sovereignty, fairness, open collaboration, rapid iteration,** and a playful, meme-infused community spirit. The emotional promise is one of trust, confidence, support, and belonging: if you contribute, you matter—and you share in the upside.
+Cedra champions **builder sovereignty, fairness, open collaboration, rapid iteration,** and a playful, meme-infused community spirit. The emotional promise is one of trust, confidence, support, and belonging: if you contribute, you matter - and you share in the upside.
 
 > *If Ethereum were launching today, it would look like Cedra.*
 
-By aligning high-performance tech with radically open governance, Cedra positions itself as the foundation on which the next wave of community-owned economies will run—whether that’s tokenizing Europe, the world, or ideas we haven’t imagined yet.
+By aligning high-performance tech with radically open governance, Cedra positions itself as the foundation on which the next wave of community-owned economies will run - whether that’s tokenizing Europe, the world, or ideas we haven’t imagined yet.
 
 ## Key Features
 

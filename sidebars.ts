@@ -93,6 +93,11 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'doc',
+          id: 'guides/first-nft',
+          label: 'NFT Contract - Full Code Walkthrough'
+        },
+        {
+          type: 'doc',
           id: 'guides/escrow',
           label: 'Building Secure Token vesting, Marketplace payments via Escrow'
         }

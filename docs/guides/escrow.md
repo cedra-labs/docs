@@ -383,7 +383,7 @@ public entry fun return_my_funds(
 }
 ```
 
-This function is designed to be used by the person who originally deposited funds into escrow. It looks up the escrow entry based on your account and the token type. Once it finds the escrow, the contract checks whether the funds are time-locked. If they are, it verifies that the unlock time has passed. If the time hasn't passed yet, the function aborts — this prevents users from bypassing time locks.
+This function is designed to be used by the person who originally deposited funds into escrow. It looks up the escrow entry based on your account and the token type. Once it finds the escrow, the contract checks whether the funds are time-locked. If they are, it verifies that the unlock time has passed. If the time hasn't passed yet, the function aborts - this prevents users from bypassing time locks.
 
 :::caution **Time lock enforcement**
 Unlike `return_user_funds`, this function **strictly enforces** time locks. Original senders cannot retrieve their funds early from time-locked escrows.
@@ -395,7 +395,7 @@ Finally, the funds are moved from the escrow's storage back into your account, a
 
 ## Step 4: Checking Status
 
-As you interact with escrow contracts — whether you're locking, claiming, or returning tokens — it’s important to have visibility into the state of your escrows. The module provides several view-only functions that help you do exactly that.
+As you interact with escrow contracts - whether you're locking, claiming, or returning tokens - it’s important to have visibility into the state of your escrows. The module provides several view-only functions that help you do exactly that.
 
 These functions are read-only and can be used by frontends, dashboards, or scripts to show real-time escrow status without modifying the blockchain.
 
@@ -437,7 +437,7 @@ public fun escrowed_funds(
 }
 ```
 
-If the escrow exists, the function returns the balance as `Option<u64>` — otherwise it returns `none`. You can use this in a frontend to show locked token amounts for a wallet.
+If the escrow exists, the function returns the balance as `Option<u64>` - otherwise it returns `none`. You can use this in a frontend to show locked token amounts for a wallet.
 
 
 Use `remaining_escrow_time` to check how many seconds are left before a time-locked escrow can be released.
@@ -485,7 +485,7 @@ You now understand escrow as a user flow - not just code.
 
 ## Conclusion
 
-At the heart of the system are three key components: `LockupRef`, which links a user account to their lockup manager; `Lockup`, an on-chain object that holds and manages escrow entries; and `Escrow`, which stores actual tokens and controls how they can be claimed or returned. These abstractions separate ownership, logic, and control — giving developers and users a clean, auditable lifecycle for escrowed funds.
+At the heart of the system are three key components: `LockupRef`, which links a user account to their lockup manager; `Lockup`, an on-chain object that holds and manages escrow entries; and `Escrow`, which stores actual tokens and controls how they can be claimed or returned. These abstractions separate ownership, logic, and control - giving developers and users a clean, auditable lifecycle for escrowed funds.
 
 Escrow flows begin with a one-time lockup initialization, which sets up a new `Lockup` object and stores a reference to it in the user's account. From there, funds can be deposited into escrow via two entry points: a simple version with no time restrictions and a time-locked version that prevents access until a specified timestamp. Each deposit creates or reuses an `Escrow` object tied to a unique (token, user) pair.
 
