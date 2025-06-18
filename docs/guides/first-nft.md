@@ -32,6 +32,9 @@ module CedraNFT::CedraCollection {
 * **collection / token** – the Digital Asset primitives.
 * **std::string / std::option** – UTF‑8 and optional value utilities.
 
+:::tip Pro Tip
+Each `use` statement imports specific functionality - think of it as your toolkit for building NFTs!
+:::
 
 ## 2. Initialization & collection setup
 
@@ -64,6 +67,9 @@ public entry fun create_collection(creator: &signer) {
 * Uses `create_unlimited_collection`, so the supply is unbounded.
 * No royalties yet (`option::none()`), leaving room for your upgrades.
 
+:::info Quick Insight
+The `init_module` function runs automatically when you publish your contract. This means your collection is ready to use immediately after deployment - no extra setup required!
+:::
 
 ## 3. Creator‑gated mint
 
@@ -108,6 +114,9 @@ public entry fun mint_nft(
 * `supply = 1` enforces non‑fungible uniqueness.
 * Immediately transfers ownership, so the NFT never sits in the creator’s account.
 
+:::warning Security Note
+Notice the `assert!` check? This prevents unauthorized minting. Only the original collection creator can mint new NFTs - this is your access control in action!
+:::
 
 ## 5. Transfer NFT
 
@@ -129,6 +138,9 @@ public entry fun transfer_nft(
 * Reuses the object system’s built‑in permission checks - no custom logic required.
 * Returns nothing; success means the object has already changed hands on‑chain.
 
+:::tip Gas Saver
+Transfers use Move's built-in object system, which handles all the ownership validation for you. This means secure transfers with minimal gas costs!
+:::
 
 ## 6. Read‑only helpers
 
@@ -197,6 +209,9 @@ public fun get_collection_data(creator_addr: address): (String, String, String) 
 * Call `collection_exists` first to avoid aborts.
 * Returns three empty strings as a defined fallback when the collection is missing.
 
+:::note Developer Friendly
+These `#[view]` functions are free to call! Use them liberally in your frontend to check state without spending gas.
+:::
 
 ## 7. Let's use it!
 
@@ -244,6 +259,9 @@ await aptos.view({
 console.log("✓ transfer complete");
 ```
 
+:::caution Before You Run
+Remember to replace the placeholder keys and addresses with real values! For production, always use environment variables to store private keys securely.
+:::
 
 ## 6. Next steps
 
