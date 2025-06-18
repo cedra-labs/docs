@@ -251,5 +251,3 @@ console.log("✓ transfer complete");
 * Provide `burn_nft` via `token::burn` + `object::destroy`.
 * Implement `mutate_uri` with a `MutatorRef` for mutable metadata.
 * Check next example in [Real World Guides](/real-world-guides) page.
-
-Happy hacking on **Cedra**!
