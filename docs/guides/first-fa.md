@@ -201,3 +201,4 @@ try { await example(); } catch (e: any) {
 * Fork [repo](https://github.com/cedra-labs/move-contract-examples/tree/main/fa-example) and tweak `ASSET_NAME`, `ASSET_SYMBOL`, `decimals`.
 * Protect `MintRef` with a multisig.
 * Build React hooks with SDK subscriptions for live balances.
+* Check other examples in [Real World Guides](/real-world-guides) page.

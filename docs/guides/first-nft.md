@@ -13,6 +13,9 @@
 * Map each action to the underlying Move code and **access‑control checks**
 * Extend the contract with burns, royalties, or mutable metadata
 
+:::tip **Source code**: [GitHub – NFT module](https://github.com/cedra-labs/move-contract-examples/tree/main/nft-example)
+:::
+
 
 ## 1. Module header & imports
 
@@ -268,4 +271,4 @@ Remember to replace the placeholder keys and addresses with real values! For pro
 * Add royalties (`aptos_token_objects::royalty`) in `create_collection`.
 * Provide `burn_nft` via `token::burn` + `object::destroy`.
 * Implement `mutate_uri` with a `MutatorRef` for mutable metadata.
-* Check next example in [Real World Guides](/real-world-guides) page.
+* Check other examples in [Real World Guides](/real-world-guides) page.

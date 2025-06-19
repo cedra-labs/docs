@@ -7,25 +7,50 @@ export default function ArticleFooter(): React.ReactNode {
     <div className={styles.articleFooter}>
       <hr />
       <div className={styles.footerContent}>
-        <h3>Next Steps</h3>
-        <p>
-          Found this helpful? Explore more Cedra development resources and join our community.
-        </p>
-        <div className={styles.footerButtons}>
-          <Link
-            className="button button--primary button--md"
-            to="https://github.com/cedra-labs/cedra"
-          >
-            Explore Code
-          </Link>
-        </div>
-        <div className={styles.footerMeta}>
+        <div className={styles.mainSection}>
+          <h3>Help Improve Cedra</h3>
           <p>
-            Have feedback on this page?<br />
-            <a href="https://github.com/cedra-labs/docs/issues/new" target="_blank"> 
-              Submit an issue
-            </a>
+            Found an issue or want to contribute? We welcome improvements to our docs and examples.
           </p>
+          
+          <div className={styles.actions}>
+            <Link
+              className="button button--primary button--md"
+              to="https://github.com/cedra-labs/docs"
+              target="_blank"
+            >
+              Improve Docs & Report Issues
+            </Link>
+            <Link
+              className="button button--secondary button--md"
+              to="https://github.com/cedra-labs/move-contract-examples/tree/main"
+              target="_blank"
+            >
+              Code Examples
+            </Link>
+          </div>
+        </div>
+
+        <div className={styles.communitySection}>
+          <h4>🚀 Join the Builder Community</h4>
+          <div className={styles.communityLinks}>
+            <a 
+              href="https://t.me/+Ba3QXd0VG9U0Mzky" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.communityLink}
+            >
+              💬 Builders Chat
+            </a>
+            <a 
+              href="https://t.me/cedranetwork" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.communityLink}
+            >
+              📢 Cedra News
+            </a>
+          </div>
         </div>
       </div>
     </div>

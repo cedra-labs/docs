@@ -98,6 +98,11 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'doc',
+          id: 'guides/fee-splitter',
+          label: 'Build a Fee Splitter Contract'
+        },
+        {
+          type: 'doc',
           id: 'guides/escrow',
           label: 'Building Secure Token vesting, Marketplace payments via Escrow'
         }
