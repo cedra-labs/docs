@@ -6,12 +6,7 @@ The Cedra Command Line Interface (CLI) is the primary tool for developers and us
 
 ## Installation
 
-### Prerequisites
-
-* **Operating System**: macOS, Linux, or Windows
-* **Git** *(optional)*: Only required if you plan to build from source
-
-### Option 1 – Download a pre‑built binary (recommended)
+### Option 1 – Download a pre‑built binary (recommended)
 
 1. Visit the **Cedra CLI v1.0.0** release page: [https://github.com/cedra-labs/cedra-network/releases/tag/cedra-cli-v1.0.0](https://github.com/cedra-labs/cedra-network/releases/tag/cedra-cli-v1.0.0).
 2. In the **Assets** section, choose the file that matches your platform:
@@ -31,14 +26,44 @@ The Cedra Command Line Interface (CLI) is the primary tool for developers and us
 
    * **macOS / Linux**: `/usr/local/bin` or `$HOME/.local/bin`
    * **Windows**: `C:\Windows\System32` or any folder listed in *Environment Variables → Path*
-5. Open a new terminal or command prompt and verify the installation:
+5. Check current CLI version:
 
 ```bash
 cedra --version
-# cedra 1.0.0
 ```
 
-### Option 2 – Build from source
+### Option 2 – Install via Chocolatey (Windows only)
+
+1. Run the following command:
+
+```powershell
+choco install cedra
+```
+
+2. Once installed, verify:
+
+```powershell
+cedra --version
+```
+
+More details available here: [Chocolatey Cedra CLI Package](https://community.chocolatey.org/packages/cedra/1.0.0)
+
+### Option 3 – Install via Debian package (Ubuntu/Debian-based)
+
+If you're using Ubuntu/Debian and prefer using `.deb` files:
+
+```bash
+wget https://launchpad.net/~username/+archive/ubuntu/ppa/+files/cedra-cli_0.0.1_amd64.deb
+sudo dpkg -i cedra-cli_0.0.1_amd64.deb
+```
+
+After installation, confirm:
+
+```bash
+cedra --version
+```
+
+### Option 4 – Build from source
 
 If you prefer compiling yourself or contributing to Cedra:
 
@@ -49,6 +74,13 @@ cargo build --release
 ```
 
 The compiled binary will be at `target/release/cedra` (or `.exe` on Windows). Add it to your **PATH** and run `cedra --version` to confirm.
+
+### Option 5 – Install via Homebrew (coming soon)
+
+:::info
+The Cedra CLI for Homebrew is currently under review by the Homebrew community. Once approved and merged, it will be available via the standard Homebrew package manager.
+:::
+
 
 ## What's next?
 * **Dive depper into the CLI** - via [CLI guide](/cli/usage)
