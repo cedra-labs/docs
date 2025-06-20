@@ -57,7 +57,7 @@ This documentation site uses Algolia DocSearch for powerful search capabilities.
 ```bash
 ALGOLIA_APP_ID=YOUR_ACTUAL_APP_ID
 ALGOLIA_API_KEY=YOUR_ACTUAL_API_KEY
-ALGOLIA_INDEX_NAME=cedra
+ALGOLIA_INDEX_NAME=Main
 ```
 
 2. The environment variables will be loaded automatically when you start the development server.
@@ -71,7 +71,7 @@ To use Algolia search in your deployed site, add these environment variables to 
 3. Click "New repository secret" and add the following secrets:
    - Name: `ALGOLIA_APP_ID`, Value: Your Algolia application ID
    - Name: `ALGOLIA_API_KEY`, Value: Your Algolia API key
-   - Name: `ALGOLIA_INDEX_NAME`, Value: Your Algolia index name (usually "cedra")
+   - Name: `ALGOLIA_INDEX_NAME`, Value: Your Algolia index name (usually "Main")
 
 4. Update your GitHub Actions workflow file (`.github/workflows/deploy.yml`) to include these environment variables:
 
