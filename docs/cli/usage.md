@@ -1,7 +1,7 @@
 # CLI Usage 
 
 :::info Need to Install CLI?
-If you're looking for installation instructions, check our [Getting Started CLI guide](/docs/getting-started/cli) for step-by-step installation and setup.
+If you're looking for installation instructions, check our [Getting Started CLI guide](/getting-started/cli) for step-by-step installation and setup.
 :::
 
 ## 📖 Overview

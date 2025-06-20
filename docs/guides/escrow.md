@@ -18,7 +18,7 @@ The escrow system supports two types of locking:
 :::
 
  * Local dev env ([ENV](/docs))
- * A fungible asset (like the one from [First FA](/docs/guides/first-fa))
+ * A fungible asset (like the one from [First FA](/guides/first-fa))
 
 ## Core Data Structures
 
@@ -492,6 +492,6 @@ Escrow flows begin with a one-time lockup initialization, which sets up a new `L
 ### What's Next?
 
 Now that you understand how escrow works, you can:
-* **Build your own tokens**: Create fungible assets using our [First FA Guide](/docs/guides/first-fa) 
+* **Build your own tokens**: Create fungible assets using our [First FA Guide](/guides/first-fa) 
 * **Explore more contracts**: Check out other [Move examples](https://github.com/cedra-labs/move-contract-examples) for inspiration
 

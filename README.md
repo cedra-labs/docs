@@ -43,7 +43,7 @@ npm run deploy:github
 The site configuration is in `docusaurus.config.ts`. Key settings include:
 
 - `url`: The URL where the site is hosted (currently set to `https://cedra-labs.github.io`)
-- `baseUrl`: The base URL path (currently set to `/docs/`)
+- `baseUrl`: The base URL path (currently set to `/`)
 - `organizationName` and `projectName`: Used for GitHub Pages deployment
 
 ## Search Functionality

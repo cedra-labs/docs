@@ -5,9 +5,9 @@ Welcome to your first Move smart contract on Cedra! In this tutorial, you'll lea
 ## 📋 Prerequisites
 
 Before we start, make sure you have:
-- [Cedra CLI installed](/docs/getting-started/cli)
-- [A configured Cedra account](/docs/cli/usage#1-initial-configuration)
-- [Basic understanding of blockchain concepts](/docs/handbook-for-newcomers.md)
+- [Cedra CLI installed](/getting-started/cli)
+- [A configured Cedra account](/cli/usage#1-initial-configuration)
+- [Basic understanding of blockchain concepts](/handbook-for-newcomers.md)
 
 ## 🚀 Step 1: Create a New Move Project
 
@@ -262,12 +262,12 @@ Congratulations! You've built your first Move smart contract on Cedra. Here are 
 
 ## 📚 Additional Resources
 
-- [Real World Guides](/docs/real-world-guides)
-- [Cedra CLI Usage Guide](/docs/cli/usage)
+- [Real World Guides](/real-world-guides)
+- [Cedra CLI Usage Guide](/cli/usage)
 - [Move Language Documentation](https://move-language.github.io/move/)
 
 
 
 :::tip What's Next?
-Ready to build something more complex? Check out our [Fungible Asset Guide](/docs/guides/first-fa) to learn about creating tokens on Cedra! 🪙
+Ready to build something more complex? Check out our [Fungible Asset Guide](/guides/first-fa) to learn about creating tokens on Cedra! 🪙
 ::: 

@@ -21,7 +21,7 @@ Cedra is the first community-owned Layer-1 blockchain built on the Move language
 
 ### 📚 Ready to Build?
 
-If you want to dive deeper, check our [**full node documentation**](/docs/full-node) and learn how to get test tokens from our [**faucet**](/docs/getting-started/faucet).
+If you want to dive deeper, check our [**full node documentation**](/full-node) and learn how to get test tokens from our [**faucet**](/getting-started/faucet).
 
 :::
 
@@ -29,7 +29,7 @@ If you want to dive deeper, check our [**full node documentation**](/docs/full-n
 ### 1. 🛠️ Install CLI
 Start by installing the Cedra Command Line Interface, which is essential for all development activities.
 
-[**CLI Installation Guide →**](/docs/getting-started/cli)
+[**CLI Installation Guide →**](/getting-started/cli)
 
 ### 2. 🔧 Set Up IDE Extension
 Install Move language support for your preferred IDE to get syntax highlighting, code completion, and error detection.
@@ -52,18 +52,18 @@ This command creates a new Move project with the basic structure needed for smar
 ### 4. 💰 Get Test Tokens
 Learn about faucets and how to get test tokens for development and testing.
 
-[**Faucet Guide →**](/docs/getting-started/faucet)
+[**Faucet Guide →**](/getting-started/faucet)
 
 ### 5. 📚 Explore Real World Guides
 Ready to build something practical? Check out our comprehensive guides for building real applications.
 
-[**Real World Guides →**](/docs/real-world-guides)
+[**Real World Guides →**](/real-world-guides)
 
 ## Next Steps
 
 Once you've completed the getting started guides:
 
-1. **Build Your First App**: Follow our [Counter guide](/docs/getting-started/counter) to build first app
-2. **Explore Architecture**: Learn about [Cedra's architecture](/docs/architecture) and design principles
-3. **Read the Handbook**: Check out our [Handbook for Newcomers](/docs/handbook-for-newcomers) for deeper understanding of Cedra concepts
+1. **Build Your First App**: Follow our [Counter guide](/getting-started/counter) to build first app
+2. **Explore Architecture**: Learn about [Cedra's architecture](/architecture) and design principles
+3. **Read the Handbook**: Check out our [Handbook for Newcomers](/handbook-for-newcomers) for deeper understanding of Cedra concepts
 4. **Join the Community**: Connect with other developers and get support
