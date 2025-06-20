@@ -5,7 +5,7 @@ dotenv.config();
 export default {
   title: 'Cedra Docs',
   url: 'https://cedra-labs.github.io',   // GitHub Pages URL
-  baseUrl: '/docs/',                      // Repository name with trailing slash
+  baseUrl: '/',                      // Repository name with trailing slash
   organizationName: 'cedra-labs',         // GitHub org/user
   projectName: 'docs',                    // Repository name
   deploymentBranch: 'gh-pages',           // Branch for GitHub Pages deployment
