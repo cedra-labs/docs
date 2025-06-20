@@ -4,7 +4,7 @@
   <ShortName>Cedra Docs</ShortName>
   <Description>Search Cedra Docs</Description>
   <InputEncoding>UTF-8</InputEncoding>
-  <Url type="text/html" method="get" template="https://cedra-labs.github.io/docs/search?q={searchTerms}"/>
-  <Url type="application/opensearchdescription+xml" rel="self" template="https://cedra-labs.github.io/docs/opensearch.xml" />
-  <moz:SearchForm>https://cedra-labs.github.io/docs/</moz:SearchForm>
+  <Url type="text/html" method="get" template="https://cedra-labs.github.io/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://cedra-labs.github.io/opensearch.xml" />
+  <moz:SearchForm>https://cedra-labs.github.io/</moz:SearchForm>
 </OpenSearchDescription>
