@@ -16,7 +16,7 @@ export default function ArticleFooter(): React.ReactNode {
           <div className={styles.actions}>
             <Link
               className="button button--primary button--md"
-              to="https://github.com/cedra-labs/docs"
+              to="https://docs.cedra.network/"
               target="_blank"
             >
               Improve Docs & Report Issues

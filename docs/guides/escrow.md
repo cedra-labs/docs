@@ -17,7 +17,7 @@ The escrow system supports two types of locking:
 :::tip **Source code**: [GitHub – escrow module](https://github.com/cedra-labs/move-contract-examples/tree/main/fa-lock)
 :::
 
- * Local dev env ([ENV](/docs))
+ * Local dev env ([ENV](/))
  * A fungible asset (like the one from [First FA](/guides/first-fa))
 
 ## Core Data Structures
