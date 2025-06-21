@@ -43,6 +43,11 @@
   overflow: hidden;
 }
 
+[data-theme='dark'] .communitySection {
+  background: transparent;
+  border: 1px solid var(--ifm-toc-border-color);
+}
+
 .communitySection h4 {
   margin-bottom: 1rem;
   color: var(--ifm-color-emphasis-900);
