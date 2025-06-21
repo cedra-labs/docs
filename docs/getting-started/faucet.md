@@ -1,6 +1,6 @@
 # Get Cedra Test Tokens via CLI & cURL
 
-This short guide explains how to request Cedra testnet tokens (CEDRA) **from CLI** and **from the command line** using `curl`. These tokens are only for development and testing-**they have no real‑world value**, and it is **impossible to mint CedraCoin on the Cedra mainnet**.
+This short guide explains how to request Cedra testnet tokens (CEDRA) **from CLI** and **from the command line** using `curl`. These tokens are only for development and testing - **they have no real‑world value**, and it is **impossible to mint CedraCoin on the Cedra mainnet**.
 
 ## Prerequisites
 

@@ -6,77 +6,311 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-color-primary: #2563eb;
+  --ifm-color-primary-dark: #1d4ed8;
+  --ifm-color-primary-darker: #1e40af;
+  --ifm-color-primary-darkest: #1e3a8a;
+  --ifm-color-primary-light: #3b82f6;
+  --ifm-color-primary-lighter: #60a5fa;
+  --ifm-color-primary-lightest: #93c5fd;
   --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --docusaurus-highlighted-code-line-bg: rgba(37, 99, 235, 0.1);
+  
+  --ifm-background-color: #ffffff;
+  --ifm-font-color-base: #1f2937;
+  --ifm-font-color-secondary: #6b7280;
+  --ifm-heading-color: #111827;
+  --ifm-link-color: #2563eb;
+  --ifm-navbar-background-color: #ffffff;
+  --ifm-navbar-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  --ifm-toc-border-color: #e5e7eb;
+  
+  /* Typography improvements */
+  --ifm-font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --ifm-font-weight-semibold: 600;
+  --ifm-font-weight-bold: 700;
+  --ifm-line-height-base: 1.6;
+  --ifm-spacing-horizontal: 1rem;
+  --ifm-spacing-vertical: 1rem;
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ifm-color-primary: #60a5fa;
+  --ifm-color-primary-dark: #3b82f6;
+  --ifm-color-primary-darker: #2563eb;
+  --ifm-color-primary-darkest: #1d4ed8;
+  --ifm-color-primary-light: #93c5fd;
+  --ifm-color-primary-lighter: #bfdbfe;
+  --ifm-color-primary-lightest: #dbeafe;
+  --docusaurus-highlighted-code-line-bg: rgba(96, 165, 250, 0.2);
+  --ifm-background-color: #0f172a;
+  --ifm-font-color-base: #f1f5f9;
+  --ifm-font-color-secondary: #94a3b8;
+  --ifm-heading-color: #ffffff;
+  --ifm-link-color: #60a5fa;
+  --ifm-navbar-background-color: #1e293b;
+  --ifm-navbar-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  --ifm-toc-border-color: #334155;
 }
 
-/* Custom logo styles */
 .navbar__logo {
   height: 2.5rem;
-  margin-right: 1rem;
+  margin-right: 1.5rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
 }
 
-/* Make the logo adapt to light/dark mode */
-[data-theme='light'] .navbar__logo svg text {
-  fill: #000000;
+.navbar__logo:hover {
+  opacity: 0.8;
 }
 
-[data-theme='dark'] .navbar__logo svg text {
-  fill: #ffffff;
-}
-
-/* Adjust spacing for the logo with two text elements */
+/* Logo styling with proper dark mode visibility */
 .navbar__logo svg {
   width: auto;
   max-width: 200px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  height: 100%;
 }
 
-/* Contrast button styling */
+[data-theme='light'] .navbar__logo svg text:first-child {
+  fill: #111827 !important;
+  font-weight: 700;
+}
+
+[data-theme='light'] .navbar__logo svg text:last-child {
+  fill: #6b7280 !important;
+  font-weight: 400;
+}
+
+[data-theme='dark'] .navbar__logo svg text:first-child {
+  fill: #ffffff !important;
+  font-weight: 700;
+}
+
+[data-theme='dark'] .navbar__logo svg text:last-child {
+  fill: #94a3b8 !important;
+  font-weight: 400;
+}
+
+/* CEDRA-inspired button styling */
 .navbar__item--contrast a.navbar__link {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
   color: white !important;
-  padding: 0.5rem 1rem !important;
+  padding: 0.5rem 1.25rem !important;
   border-radius: 0.5rem !important;
   font-weight: 600 !important;
-  margin-left: 0.5rem !important;
-  transition: all 0.3s ease !important;
+  margin-left: 0.75rem !important;
+  transition: all 0.2s ease !important;
   text-decoration: none !important;
+  border: none !important;
+  font-size: 0.875rem !important;
 }
 
 .navbar__item--contrast a.navbar__link:hover {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
   text-decoration: none !important;
   color: white !important;
 }
 
 [data-theme='dark'] .navbar__item--contrast a.navbar__link {
-  background: linear-gradient(135deg, #34d399 0%, #10b981 100%) !important;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
   color: white !important;
 }
 
 [data-theme='dark'] .navbar__item--contrast a.navbar__link:hover {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-  box-shadow: 0 4px 12px rgba(52, 211, 153, 0.4) !important;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
   color: white !important;
+}
+
+/* CEDRA-inspired typography and layout enhancements */
+.markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+}
+
+.markdown h1 {
+  font-size: 2.5rem;
+  color: var(--ifm-heading-color);
+}
+
+.markdown h2 {
+  font-size: 2rem;
+  color: var(--ifm-heading-color);
+}
+
+.markdown h3 {
+  font-size: 1.5rem;
+  color: var(--ifm-heading-color);
+}
+
+.markdown p {
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+  color: var(--ifm-font-color-base);
+}
+
+.markdown a {
+  color: var(--ifm-link-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.markdown a:hover {
+  color: var(--ifm-color-primary-dark);
+  text-decoration: underline;
+}
+
+/* Enhanced code blocks with CEDRA styling */
+.markdown pre {
+  background-color: #f8fafc;
+  border: 1px solid var(--ifm-toc-border-color);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+[data-theme='dark'] .markdown pre {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+}
+
+.markdown code {
+  background-color: rgba(37, 99, 235, 0.08);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.375rem;
+  font-size: 0.9em;
+  font-family: 'JetBrains Mono', 'Fira Code', Monaco, Consolas, monospace;
+  color: #1e293b;
+}
+
+[data-theme='dark'] .markdown code {
+  background-color: rgba(96, 165, 250, 0.15);
+  color: #e2e8f0;
+}
+
+/* Fix code blocks inside pre tags */
+[data-theme='dark'] .markdown pre code {
+  background-color: transparent;
+  color: #e2e8f0;
+}
+
+/* Improved sidebar and table of contents */
+.table-of-contents {
+  border-left: 2px solid var(--ifm-toc-border-color);
+  padding-left: 1rem;
+}
+
+.table-of-contents__link {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  padding: 0.25rem 0;
+  transition: color 0.2s ease;
+}
+
+.table-of-contents__link--active {
+  color: var(--ifm-color-primary);
+  font-weight: 600;
+}
+
+/* Clean card-like containers */
+.admonition {
+  border-radius: 0.75rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  border-left: 4px solid var(--ifm-color-primary);
+}
+
+.admonition-heading {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Content-efficient layout improvements */
+.container {
+  max-width: 1400px;
+  padding: 0 1rem;
+}
+
+.main-wrapper {
+  padding: 0.5rem 0;
+}
+
+.sidebar_node_modules-\@docusaurus-theme-classic-lib-theme-DocSidebar-Desktop-styles-module {
+  padding: 1rem 0.75rem;
+}
+
+.navbar {
+  padding: 1rem;
+  backdrop-filter: blur(8px);
+  background-color: rgba(255, 255, 255, 0.95);
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+[data-theme='dark'] .navbar {
+  background-color: rgba(30, 41, 59, 0.95);
+}
+
+/* Enhanced content area spacing */
+article {
+  padding: 1rem 0;
+  line-height: 1.7;
+}
+
+.theme-doc-markdown {
+  padding: 0 0.5rem;
+}
+
+/* Improved footer with CEDRA styling */
+.footer {
+  background-color: var(--ifm-navbar-background-color);
+  border-top: 1px solid var(--ifm-toc-border-color);
+  padding: 1.5rem 0;
+  margin-top: 2rem;
+}
+
+/* Clean navigation improvements */
+.pagination-nav {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ifm-toc-border-color);
+}
+
+.pagination-nav__link {
+  border-radius: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--ifm-toc-border-color);
+  transition: all 0.2s ease;
+}
+
+.pagination-nav__link:hover {
+  background-color: rgba(37, 99, 235, 0.05);
+  border-color: var(--ifm-color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+}
+
+[data-theme='dark'] .pagination-nav__link:hover {
+  background-color: rgba(96, 165, 250, 0.1);
+}
+
+/* Enhanced search styling */
+.DocSearch-Button {
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.DocSearch-Button:hover {
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
 }

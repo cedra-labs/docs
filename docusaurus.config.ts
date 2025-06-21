@@ -10,6 +10,7 @@ export default {
   projectName: 'docs',                    // Repository name
   deploymentBranch: 'gh-pages',           // Branch for GitHub Pages deployment
   trailingSlash: false,                   // avoids double-slash URLs on GH Pages
+  favicon: 'favicon.ico',
   headTags: [
     {
       tagName: 'meta',
@@ -20,11 +21,23 @@ export default {
     }
   ],
   themeConfig: {
+    colorMode: {
+      defaultMode: 'light',
+      disableSwitch: false,
+      respectPrefersColorScheme: false,
+    },
     navbar: {
       title: '',
       logo: {
         alt: 'CEDRA developers',
-        src: 'img/cedra-logo.svg',
+        src: 'data:image/svg+xml;base64,' + Buffer.from(`<svg width="200" height="40" viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="30" font-family="Inter, Arial, sans-serif" font-weight="700" font-size="28" fill="#111827">CEDRA</text>
+  <text x="105" y="30" font-family="Inter, Arial, sans-serif" font-weight="400" font-size="14" fill="#6b7280">developers</text>
+</svg>`).toString('base64'),
+        srcDark: 'data:image/svg+xml;base64,' + Buffer.from(`<svg width="200" height="40" viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="30" font-family="Inter, Arial, sans-serif" font-weight="700" font-size="28" fill="#ffffff">CEDRA</text>
+  <text x="105" y="30" font-family="Inter, Arial, sans-serif" font-weight="400" font-size="14" fill="#94a3b8">developers</text>
+</svg>`).toString('base64'),
       },
       items: [
         {
