@@ -10,6 +10,7 @@ export default {
   projectName: 'docs',                    // Repository name
   deploymentBranch: 'gh-pages',           // Branch for GitHub Pages deployment
   trailingSlash: false,                   // avoids double-slash URLs on GH Pages
+  favicon: 'favicon.ico',
   headTags: [
     {
       tagName: 'meta',
