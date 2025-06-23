@@ -69,7 +69,7 @@ If you prefer compiling yourself or contributing to Cedra:
 
 ```bash
 git clone https://github.com/cedra-labs/cedra-network
-cd cedra-core/cedra-cli
+cd cedra-network/devtools/cedra-cargo-cli
 cargo build --release
 ```
 
