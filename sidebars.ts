@@ -44,6 +44,56 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Move Programming Fundamentals',
+      link: {
+        type: 'doc',
+        id: 'move/index',
+      },
+      items: [
+        {
+          type: 'doc',
+          id: 'move/introduction',
+          label: 'Resource First'
+        },
+        {
+          type: 'doc',
+          id: 'move/basics',
+          label: 'Basic Syntax and Data Types'
+        },
+        {
+          type: 'doc',
+          id: 'move/modules',
+          label: 'Dive deep into Move Modules'
+        },
+        {
+          type: 'doc',
+          id: 'move/functions',
+          label: 'Functions in Move'
+        },
+        {
+          type: 'doc',
+          id: 'move/resource',
+          label: 'Resource Types'
+        },
+        {
+          type: 'doc',
+          id: 'move/ownership',
+          label: 'Ownership & Borrowing'
+        },
+        {
+          type: 'doc',
+          id: 'move/flow',
+          label: 'Conditionals, Loops, and Control Flow'
+        },
+        {
+          type: 'doc',
+          id: 'move/errors',
+          label: 'Error Handling and Assertions'
+        }
+      ],
+    },
+    {
+      type: 'category',
       label: 'Introduction to Cedra',
       link: {
         type: 'doc',
@@ -107,6 +157,11 @@ const sidebars: SidebarsConfig = {
           label: 'Building Secure Token vesting, Marketplace payments via Escrow'
         }
       ],
+    },
+    {
+      type: 'doc',
+      label: 'Glossary', 
+      id: 'glossary'
     },
   ],
 };
