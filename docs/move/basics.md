@@ -148,6 +148,10 @@ staking = "0x9ABC"
 
 Vectors are Move's only built-in collection type – a dynamic array that can grow or shrink. Understanding vectors is crucial because they're everywhere in Move code.
 
+:::info Real-World Usage
+See vectors in action in our [Fee Splitter Guide](/guides/fee-splitter) where `vector<Recipient>` stores payment recipients, or in the [Escrow Contract](/guides/escrow) where vectors manage multiple locked funds.
+:::
+
 ### Creating Vectors
 
 Move provides multiple ways to create vectors, each suited to different scenarios:
@@ -251,6 +255,10 @@ This restrictiveness is a feature! It makes these structs perfect for representi
 
 Move's abilities are like superpowers you grant to your structs. There are four abilities, each enabling specific operations:
 
+:::tip See Abilities in Action
+Our [Fungible Asset Guide](/guides/first-fa) shows how `has store` enables tokens to be stored in wallets, while our [NFT Guide](/guides/first-nft) demonstrates `has key, store` for unique collectibles that can exist independently or in collections.
+:::
+
 **copy** - Allows the type to be copied:
 ```rust
 struct Config has copy {
@@ -331,6 +339,10 @@ struct Coin has store {
 **NFT** with `key, store` can exist as a top-level resource (a standalone NFT at an address) OR be stored in collections (like a vector of NFTs in a gallery).
 
 **Coin** with only `store` is the classic resource pattern. It can't be copied (no duplication of money), can't be dropped (no destroying value), but can be stored in wallets or other containers.
+
+:::success Try It Yourself
+Ready to see these patterns in action? Our [NFT Guide](/guides/first-nft) shows exactly how `NFT has key, store` works in practice, while our [Fungible Asset Guide](/guides/first-fa) demonstrates the `Coin has store` pattern for creating your own cryptocurrency.
+:::
 
 ## References: Borrowing Without Taking
 
@@ -520,4 +532,4 @@ You now have a solid foundation in Move's syntax and type system. Every concept 
 
 ## What's Next?
 
-In our next article, **"Move Modules: Understanding Modular Programming"**, we'll explore how to organize code into modules, control visibility with public and friend functions, and build larger applications with proper separation of concerns.
+In our next article, **[Move Modules: Understanding Modular Programming](/move/modules)**, we'll explore how to organize code into modules, control visibility with public and friend functions, and build larger applications with proper separation of concerns.

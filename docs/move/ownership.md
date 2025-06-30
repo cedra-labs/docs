@@ -184,6 +184,13 @@ These guarantees come at compile time with zero runtime cost!
 
 Move provides special functions for borrowing from global storage, where resources live at addresses:
 
+:::tip See It in Practice
+Our guides use global storage extensively:
+- [FA Token Storage](/guides/first-fa#211-init_module---bootstrap) - How tokens are stored using `move_to`
+- [Escrow Lockup Management](/guides/escrow#step-1-creating-a-lockup) - Complex borrowing patterns with `borrow_global_mut`
+- [NFT Collection Access](/guides/first-nft#63-get-collection-metadata) - Safe reading with `borrow_global`
+:::
+
 ```rust
 struct Vault has key {
     coins: u64,
@@ -298,6 +305,10 @@ This pattern separates validation (needs only immutable references) from mutatio
 
 Sometimes it's cleaner to extract fields rather than passing references:
 
+:::info Pattern Usage
+The [Fee Splitter](/guides/fee-splitter#35-distribute-fees) shows this pattern when iterating through recipients - it extracts values from the struct rather than passing multiple references around.
+:::
+
 ```rust
 struct ComplexData has drop {
     values: vector<u64>,
@@ -411,4 +422,4 @@ The borrow checker might seem strict at first, but it's catching real bugs. Ever
 
 ## What's Next?
 
-In our next article, **"Conditionals, Loops, and Control Flow"**, we'll explore how to control program execution in Move. You'll learn about if expressions, loops, pattern matching, and how to write efficient control flow while maintaining resource safety.
+In our next article, **[Conditionals, Loops, and Control Flow](/move/flow)**, we'll explore how to control program execution in Move. You'll learn about if expressions, loops, pattern matching, and how to write efficient control flow while maintaining resource safety.

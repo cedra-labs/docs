@@ -70,6 +70,13 @@ module 0x42::marketplace {
 
 Notice the grouping? This isn't just organization – it's a debugging tool. When you see error 101, you immediately know it's a validation issue related to pricing. Error 201? That's a state problem. This systematic approach becomes invaluable as your project grows.
 
+:::tip Real-World Error Organization
+See how our guides organize errors:
+- [Fungible Asset Errors](/guides/first-fa#5-debug-cheat-sheet) - Standard abort codes for token operations
+- [Escrow Error Categories](/guides/escrow#core-data-structures) - Grouped by operation type
+- [Fee Splitter Validation](/guides/fee-splitter#32-constants--errors) - Clear error constants with descriptive names
+:::
+
 Now let's implement the listing function:
 
 ```rust
@@ -168,6 +175,10 @@ See the flexibility? The same `find_listing` function serves different purposes.
 ### The Validation Pattern: Separating Checks from Actions
 
 Complex operations often require multiple validations. Separating validation logic from execution logic makes code cleaner and more testable:
+
+:::info Pattern Implementation
+The [NFT minting](/guides/first-nft#3-creator-gated-mint) shows this pattern with its creator validation. The [Escrow contract](/guides/escrow#step-3-releasing-funds) demonstrates comprehensive validation before fund release.
+:::
 
 ```rust
 // Pure validation function - returns bool, never aborts
@@ -888,4 +899,10 @@ The simplicity of Move's error model – abort on any error – actually makes p
 
 ## What's Next?
 
-In our next article, **"Generics and Type Parameters in Move"**, we'll explore how Move's type system enables code reuse while maintaining safety. You'll learn how to write functions and structs that work with multiple types, create type-safe abstractions, and understand Move's unique approach to generic programming.
+You've now completed the Move fundamentals series! With your understanding of resources, modules, functions, control flow, and error handling, you're ready to build real applications.
+
+Check out our **[Real World Guides](/real-world-guides)** to put your knowledge into practice:
+- Build your first token with the **[Fungible Asset Guide](/guides/first-fa)**
+- Create unique collectibles with the **[NFT Contract Walkthrough](/guides/first-nft)**
+- Implement secure payments with the **[Escrow Contract Guide](/guides/escrow)**
+- Set up revenue sharing with the **[Fee Splitter Module](/guides/fee-splitter)**

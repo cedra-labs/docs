@@ -164,6 +164,11 @@ public entry fun register_user(user: &signer, username: vector<u8>) {
 
 :::info Entry Functions
 Functions marked `entry` are special – they can be called directly from transactions but cannot return values. They're your module's user interface.
+
+**See Entry Functions in Action:**
+- [NFT Minting](/guides/first-nft#3-creator-gated-mint) - The `mint_nft` entry function
+- [FA Transfer](/guides/first-fa#213-transfer---peer-to-peer-move) - The `transfer` entry function  
+- [Escrow Operations](/guides/escrow#step-2-locking-funds-into-escrow) - Multiple entry functions for locking and releasing funds
 :::
 
 ## Generic Functions: Write Once, Use Many
@@ -186,6 +191,10 @@ public fun transfer<TokenType>(
 ```
 
 The `<TokenType>` declares a type parameter. When calling this function, Move infers or requires the type:
+
+:::tip Real-World Generic Usage
+Our [Fungible Asset Guide](/guides/first-fa) uses generics extensively. The entire FA framework is built on generic types like `FungibleStore<T>` and functions like `mint<T>` that work with any token type.
+:::
 
 ```rust
 // Move infers USDC from the context
@@ -265,6 +274,13 @@ If you forget `acquires`, the compiler catches it – another safety net.
 ### View Functions
 
 Functions marked `#[view]` are read-only queries:
+
+:::success View Functions in Practice
+Check out these view functions in our guides:
+- [Escrow Status Checks](/guides/escrow#step-4-checking-status) - Multiple view functions for checking locked funds
+- [Fee Splitter Info](/guides/fee-splitter#36-read-only-helpers) - Query recipient shares and existence
+- [NFT Collection Data](/guides/first-nft#6-read-only-helpers) - Read collection metadata without gas costs
+:::
 
 ```rust
 #[view]
@@ -492,4 +508,4 @@ Remember: good functions are predictable, well-documented, and do one thing well
 
 ## What's Next?
 
-In our next article, **"Resource Types: The Heart of Move's Security Model"**, we'll explore how Move's resource types provide unprecedented safety for digital assets. You'll learn how to create resources that can't be copied or lost, and why this makes Move perfect for blockchain development.
+In our next article, **[Resource Types: The Heart of Move's Security Model](/move/resource)**, we'll explore how Move's resource types provide unprecedented safety for digital assets. You'll learn how to create resources that can't be copied or lost, and why this makes Move perfect for blockchain development.

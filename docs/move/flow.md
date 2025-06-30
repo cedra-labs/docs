@@ -127,6 +127,12 @@ Let's dive into two loop constructs: `while` for condition-based loops and `loop
 
 While loops execute as long as their condition is true:
 
+:::tip Real-World Loop Examples
+See loops in action:
+- [Fee Splitter Distribution](/guides/fee-splitter#35-distribute-fees) - Iterating through recipients to distribute payments
+- [Escrow Time Checks](/guides/escrow#remaining_escrow_time) - Calculating remaining lock time
+:::
+
 ```rust
 public fun find_first_empty_slot(slots: &vector<Option<u64>>): u64 {
     let i = 0;
@@ -325,6 +331,10 @@ Certain control flow patterns appear frequently in Move programs. Understanding 
 ### Early Return Pattern
 
 Use early returns to handle edge cases and reduce nesting:
+
+:::success Pattern in Practice
+The [Escrow Contract](/guides/escrow#step-3-releasing-funds) uses early returns extensively in its validation logic. The [NFT minting function](/guides/first-nft#3-creator-gated-mint) also demonstrates this pattern with its creator check.
+:::
 
 ```rust
 public fun complex_validation(account: &Account, amount: u64, recipient: address): bool {
@@ -599,4 +609,4 @@ Understanding these patterns helps you write efficient, safe code that clearly e
 
 ## What's Next?
 
-In our next article, **"Error Handling and Assertions in Move"**, we'll explore how to handle failures gracefully. You'll learn about Move's abort codes, assertion patterns, and strategies for building robust error handling into your modules.
+In our next article, **[Error Handling and Assertions in Move](/move/errors)**, we'll explore how to handle failures gracefully. You'll learn about Move's abort codes, assertion patterns, and strategies for building robust error handling into your modules.

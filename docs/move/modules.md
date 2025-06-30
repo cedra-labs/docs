@@ -192,6 +192,10 @@ Entry functions have special rules:
 
 Sometimes you need to share functionality with specific modules without making it fully public. Friend functions solve this:
 
+:::info Real-World Example
+See friend functions in action in complex multi-module systems. While our example guides use simpler patterns, the [Escrow Contract](/guides/escrow) shows how modules can work together with clear boundaries using similar access control principles.
+:::
+
 ```rust
 module 0x42::vault {
     friend 0x42::vault_manager;
@@ -279,6 +283,10 @@ Certain patterns appear repeatedly in Move development. Understanding these patt
 
 When you need to manage a collection of items, the registry pattern provides a clean solution:
 
+:::tip Pattern in Practice
+The [Escrow Contract](/guides/escrow) uses a similar pattern with its `LockupRef` and `Lockup` structures to manage multiple escrow entries. The [Fee Splitter](/guides/fee-splitter) also demonstrates registry-like storage for managing multiple recipients.
+:::
+
 ```rust
 module 0x42::user_registry {
     use std::table::{Self, Table};
@@ -309,6 +317,10 @@ This pattern centralizes data management. All user information lives in one plac
 ### The Capability Pattern
 
 Capabilities are a powerful way to manage permissions:
+
+:::success See It Live
+Our [Fungible Asset Guide](/guides/first-fa) demonstrates this pattern with `MintRef` and `BurnRef` capabilities that control who can create or destroy tokens. The pattern makes permission management explicit and transferable.
+:::
 
 ```rust
 module 0x42::admin {
@@ -406,6 +418,6 @@ The module system might feel restrictive at first, but these constraints guide y
 
 ## What's Next?
 
-In our next article, **"Functions in Move: Declaration and Usage"**, we'll dive deep into function design, parameters, return values, and advanced patterns for building robust APIs.
+In our next article, **[Functions in Move: Declaration and Usage](/move/functions)**, we'll dive deep into function design, parameters, return values, and advanced patterns for building robust APIs.
 
 Start practicing by creating a simple module – perhaps a todo list or basic token. As you get comfortable, try implementing patterns like registries or capabilities. Remember: good modules are focused, well-documented, and designed with security in mind.

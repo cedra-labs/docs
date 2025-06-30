@@ -10,6 +10,10 @@ In traditional programming, data can be freely copied and discarded. You can dup
 
 Move takes a radically different approach. Resources are special types that follow strict rules:
 
+:::tip See Resources in Action
+Want to see real resources? Our [Fungible Asset Guide](/guides/first-fa) shows how tokens use the resource model to prevent duplication, while [NFTs](/guides/first-nft) demonstrate unique, non-fungible resources. The [Escrow Contract](/guides/escrow) showcases complex resource management with time-locked funds.
+:::
+
 ```rust
 struct Coin has store {
     value: u64
@@ -230,6 +234,10 @@ Certain patterns emerge repeatedly when working with resources. Understanding th
 
 Capabilities are resources that represent permissions or rights:
 
+:::info Real Implementation
+Our [Fungible Asset Guide](/guides/first-fa#211-init_module---bootstrap) shows this pattern in production with `MintRef` and `BurnRef` capabilities. These resources control who can create or destroy tokens, making permission management explicit and secure.
+:::
+
 ```rust
 struct MintCapability has key, store {
     supply_limit: u64,
@@ -273,6 +281,10 @@ The BurnCapability works similarly but for destruction. Only the authorized burn
 ### The Hot Potato Pattern
 
 A "hot potato" is a resource without any abilities – it must be handled immediately:
+
+:::success Pattern Example
+The [Escrow Contract](/guides/escrow#escrow) uses a similar pattern with its time-locked escrows. Once created, these resources must be explicitly claimed or refunded - they can't be forgotten or ignored.
+:::
 
 ```rust
 struct Receipt {
@@ -484,4 +496,4 @@ Resources might feel restrictive at first, but they're actually liberating. They
 
 ## What's Next?
 
-In our next article, **"Move Ownership and Borrowing"**, we'll dive deep into Move's ownership system. You'll learn how references work, when to use mutable vs immutable borrows, and patterns for efficient resource access without taking ownership.
+In our next article, **[Move Ownership and Borrowing](/move/ownership)**, we'll dive deep into Move's ownership system. You'll learn how references work, when to use mutable vs immutable borrows, and patterns for efficient resource access without taking ownership.
