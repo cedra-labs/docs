@@ -92,7 +92,6 @@
   fill: #94a3b8 !important;
   font-weight: 400;
 }
-
 /* CEDRA-inspired button styling */
 .navbar__item--contrast a.navbar__link {
   background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
@@ -159,21 +158,13 @@
 
 .markdown a {
   color: var(--ifm-link-color);
-  text-decoration: none;
   font-weight: 500;
-  transition: color 0.2s ease;
-}
-
-.markdown a:hover {
-  color: var(--ifm-color-primary-dark);
-  text-decoration: underline;
 }
 
 /* Enhanced code blocks with CEDRA styling */
 .markdown pre {
   background-color: #f8fafc;
   border: 1px solid var(--ifm-toc-border-color);
-  border-radius: 0.75rem;
   padding: 1rem;
   margin: 1rem 0;
   overflow-x: auto;

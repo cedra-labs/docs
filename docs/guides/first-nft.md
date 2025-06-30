@@ -16,6 +16,14 @@
 :::tip **Source code**: [GitHub – NFT module](https://github.com/cedra-labs/move-contract-examples/tree/main/nft-example)
 :::
 
+:::info Move Concepts Applied
+This NFT implementation demonstrates key Move concepts:
+- **[Resource Safety](/move/resource)** - NFTs are unique resources that can't be duplicated
+- **[Module Organization](/move/modules)** - Clean separation of initialization, minting, and transfer logic
+- **[View Functions](/move/functions#view-functions)** - Gas-free queries for collection data
+- **[Access Control](/move/errors#the-anatomy-of-good-error-handling)** - Creator-only minting with assert checks
+:::
+
 
 ## 1. Module header & imports
 

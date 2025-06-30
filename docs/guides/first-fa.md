@@ -6,6 +6,14 @@
 
 Cedra **Fungible Asset (FA)** is a standard rebuilds ERC‑20‑style tokens for the Move VM, replacing brittle global tables with **ownable objects** - safer, cheaper, composable.
 
+:::info Move Concepts Used
+This guide applies several Move fundamentals:
+- **[Resources](/move/resource)** - Tokens are resources that can't be copied or destroyed
+- **[Abilities](/move/basics#the-ability-system)** - The `has store` ability enables tokens to be stored in wallets
+- **[Capabilities](/move/modules#the-capability-pattern)** - MintRef and BurnRef control token creation/destruction
+- **[Entry Functions](/move/functions#parameters-how-data-flows-in)** - Public entry points for minting and transferring
+:::
+
 ### 1.1 Design pillars
 
 * **Object‑based balances** – Every holder’s balance lives in an `Object<FungibleStore>`. Gas is refunded when balance hits zero.

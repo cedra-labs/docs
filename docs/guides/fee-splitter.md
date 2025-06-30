@@ -11,6 +11,14 @@ The **Fee Splitter** lets an owner define recipients & proportional shares, the
 :::tip **Source code**: [GitHub – fee splitter module](https://github.com/cedra-labs/move-contract-examples/tree/main/fee-splitter)
 :::
 
+:::info Move Concepts Demonstrated
+This fee splitter showcases several Move patterns:
+- **[Vector Operations](/move/basics#vectors-dynamic-collections)** - Managing recipient lists with vectors
+- **[Struct Abilities](/move/basics#the-ability-system)** - Using `has copy, drop, store` for recipient data
+- **[View Functions](/move/functions#view-functions)** - Read-only helpers for querying state
+- **[Error Handling](/move/errors)** - Systematic error constants and validation
+:::
+
 What you’ll learn
 * How the Move module validates inputs and stores the split table
 * How `distribute_fees` calculates exact payouts in overflow‑safe math
@@ -220,10 +228,6 @@ public fun is_recipient(
 * Iterates linearly through recipients → fine for small vectors; consider indexing for 100+ payees.
 * Useful for UI badges (“You earn X % of fees”).
 
----
-
----
-
 ## 4. Technical Notes  🛠️
 
 :::note Basis‑points maths
@@ -356,4 +360,3 @@ const runHappyPath = async () => {
 * Add a `revoke_recipient` flow by publishing a V2 module that supports mutable vectors.
 * Integrate with an NFT minting contract to auto‑forward royalties on every sale.
 * Check other examples in [Real World Guides](/real-world-guides) page.
-```

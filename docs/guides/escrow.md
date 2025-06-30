@@ -24,6 +24,14 @@ The escrow system supports two types of locking:
 
 Escrow module is built around three key data types that enable object-level control over token locking. Understanding these will help you reason about how escrows are tracked and managed.
 
+:::info Move Fundamentals in Use
+This escrow implementation leverages several Move concepts:
+- **[Resource Management](/move/resource)** - Escrows are resources that must be explicitly handled
+- **[Global Storage](/move/ownership#global-storage-borrowing)** - Using `borrow_global_mut` for lockup access
+- **[Pattern Matching](/move/flow#pattern-matching-and-destructuring)** - Destructuring escrow variants
+- **[Time-based Logic](/move/flow#control-flow-patterns)** - Implementing time locks with control flow
+:::
+
 ### `LockupRef`
 
 A small resource that lives in the user's account. It stores the address of the user's `Lockup` object.
