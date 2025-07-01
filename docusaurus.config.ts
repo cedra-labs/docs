@@ -4,10 +4,10 @@ dotenv.config();
 
 export default {
   title: 'Cedra Docs',
-  url: 'https://cedra-labs.github.io',   // GitHub Pages URL
-  baseUrl: '/',                      // Repository name with trailing slash
+  url: 'https://docs.cedra.labs',        // Custom domain URL
+  baseUrl: '/',                          // Use '/' for custom domain
   organizationName: 'cedra-labs',         // GitHub org/user
-  projectName: 'docs',                    // Repository name
+  projectName: 'cedra-docs',              // Repository name (update if different)
   deploymentBranch: 'gh-pages',           // Branch for GitHub Pages deployment
   trailingSlash: false,                   // avoids double-slash URLs on GH Pages
   favicon: 'favicon.ico',
