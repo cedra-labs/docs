@@ -4,8 +4,8 @@
   <ShortName>Cedra Docs</ShortName>
   <Description>Search Cedra Docs</Description>
   <InputEncoding>UTF-8</InputEncoding>
-  <Image width="16" height="16" type="image/x-icon">https://cedra-labs.github.io/favicon.ico</Image>
-  <Url type="text/html" method="get" template="https://cedra-labs.github.io/search?q={searchTerms}"/>
-  <Url type="application/opensearchdescription+xml" rel="self" template="https://cedra-labs.github.io/opensearch.xml" />
-  <moz:SearchForm>https://cedra-labs.github.io/</moz:SearchForm>
+  <Image width="16" height="16" type="image/x-icon">https://docs.cedra.labs/favicon.ico</Image>
+  <Url type="text/html" method="get" template="https://docs.cedra.labs/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://docs.cedra.labs/opensearch.xml" />
+  <moz:SearchForm>https://docs.cedra.labs/</moz:SearchForm>
 </OpenSearchDescription>
