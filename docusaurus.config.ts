@@ -4,7 +4,7 @@ dotenv.config();
 
 export default {
   title: 'Cedra Docs',
-  url: 'https://docs.cedra.labs',        // Custom domain URL
+  url: 'https://docs.cedra.network',        // Custom domain URL
   baseUrl: '/',                          // Use '/' for custom domain
   organizationName: 'cedra-labs',         // GitHub org/user
   projectName: 'cedra-docs',              // Repository name (update if different)
