@@ -59,6 +59,7 @@ curl "https://testnet.cedra.dev/v1/accounts/<ACCOUNT_ADDRESS>/balance/0x1::cedra
 Replace `<ACCOUNT_ADDRESS>` with your account address (0x…).
 
 ## What's next?
+* **Run first transaction** - via [First TX guide](/getting-started/tx)
 * **Start your write your first contract** - via [CLI guide](/getting-started/counter)
 * **Dive depper into the CLI** - via [CLI guide](/cli/usage)
 * **Build your first DApp** - via our [Real World Guides](/real-world-guides)

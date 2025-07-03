@@ -17,8 +17,7 @@ This tutorial will guide you through creating and submitting your first transact
 
 :::tip Prerequisites
 Before starting this guide, make sure you have:
-- ✅ [Installed the CEDRA CLI](./install-cli)
-- ✅ [Set up your IDE extension](./ide-setup)
+- ✅ [Installed the CEDRA CLI](./cli)
 - ✅ [Obtained test tokens from the faucet](./faucet)
 :::
 
@@ -201,7 +200,7 @@ async function main() {
 ```
 
 :::note Gas Fees
-Gas is the computational fee for processing transactions. Total cost = `gas_used × gas_unit_price`. Learn more about [gas and fees](../concepts/gas-and-fees).
+Gas is the computational fee for processing transactions. Total cost = `gas_used × gas_unit_price`.
 :::
 
 ### Step 5: Sign and Submit
@@ -210,7 +209,7 @@ Now let's sign the transaction with Alice's private key and submit it:
 
 ```typescript title="src/first-transaction.ts" {87-125}
 async function main() {
-  
+
   // ... previous code ...
   console.log("\n=== Signing Transaction ===");
   const senderAuthenticator = await client.transaction.sign({
