@@ -37,6 +37,11 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'doc',
+          id: 'getting-started/tx',
+          label: 'First Transactions'
+        },
+        {
+          type: 'doc',
           id: 'getting-started/counter',
           label: 'Build a Counter Contract'
         },
