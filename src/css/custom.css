@@ -164,15 +164,12 @@
 /* Enhanced code blocks with CEDRA styling */
 .markdown pre {
   background-color: #f8fafc;
-  border: 1px solid var(--ifm-toc-border-color);
   padding: 1rem;
-  margin: 1rem 0;
   overflow-x: auto;
 }
 
 [data-theme='dark'] .markdown pre {
   background-color: #1e293b;
-  border: 1px solid #334155;
 }
 
 .markdown code {

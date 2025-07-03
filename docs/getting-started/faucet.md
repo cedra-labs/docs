@@ -29,7 +29,7 @@ cedra account fund-with-faucet
 
 ```bash
 curl --location --request POST \
-  "https://faucet.cedra.dev/mint?amount=<AMOUNT>&auth_key=<AUTH_KEY>" \
+  "https://faucet-api.cedra.dev/mint?amount=<AMOUNT>&auth_key=<AUTH_KEY>" \
   --data ''
 ```
 
@@ -42,7 +42,7 @@ Replace:
 
 ```bash
 curl --location --request POST \
-  "https://faucet.cedra.dev/mint?amount=10&auth_key=e3219c42819854d01f0ea6865b78061cdf657374637fee8aee7501f9e6e185db" \
+  "https://faucet-api.cedra.dev/mint?amount=10&auth_key=e3219c42819854d01f0ea6865b78061cdf657374637fee8aee7501f9e6e185db" \
   --data ''
 ```
 
