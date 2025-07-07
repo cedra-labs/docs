@@ -58,6 +58,22 @@ curl "https://testnet.cedra.dev/v1/accounts/<ACCOUNT_ADDRESS>/balance/0x1::cedra
 
 Replace `<ACCOUNT_ADDRESS>` with your account address (0x…).
 
+## 4 · Get other test assets (BTC & ETH)
+
+If you need other fungible assets like BTC or Ethereum for testing, you can mint them directly using the Cedra CLI:
+
+**Mint test ETH (1 ETH):**
+```bash
+cedra move run --function-id 0x45d869282e5605c700c8f153c80770b5dc9af2beadc3a35aa1c03aabff25f41c::minter::mint_ETH --args u64:100000000 --assume-yes
+```
+
+**Mint test BTC (1 BTC):**
+```bash
+cedra move run --function-id 0x45d869282e5605c700c8f153c80770b5dc9af2beadc3a35aa1c03aabff25f41c::minter::mint_BTC --args u64:100000000 --assume-yes
+```
+
+These commands will mint 1 unit of each asset (100000000 in smallest denomination) to your account.
+
 ## What's next?
 * **Run first transaction** - via [First TX guide](/getting-started/tx)
 * **Start your write your first contract** - via [CLI guide](/getting-started/counter)
