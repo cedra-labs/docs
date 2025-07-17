@@ -26,15 +26,27 @@ const sidebars: SidebarsConfig = {
       },
       items: [
         {
-          type: 'doc',
-          id: 'getting-started/cli',
-          label: 'CLI Installation'
+          type: 'category',
+          label: 'Development Environment',
+          items: [
+            {
+              type: 'doc',
+              id: 'getting-started/libs',
+              label: 'Setup Nodejs and Rust'
+            },
+            {
+              type: 'doc',
+              id: 'getting-started/cli',
+              label: 'CLI Installation'
+            },
+            {
+              type: 'doc',
+              id: 'getting-started/faucet',
+              label: 'Faucet'
+            }
+          ],
         },
-        {
-          type: 'doc',
-          id: 'getting-started/faucet',
-          label: 'Faucet'
-        },
+        
         {
           type: 'doc',
           id: 'getting-started/tx',
