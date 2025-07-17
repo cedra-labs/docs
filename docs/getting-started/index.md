@@ -26,12 +26,17 @@ If you want to dive deeper, check our [**full node documentation**](/full-node) 
 :::
 
 
-### 1. 🛠️ Install CLI
-Start by installing the Cedra Command Line Interface, which is essential for all development activities.
+### 1. 📋 Prerequisites
+Before you begin, ensure you have the necessary development tools installed.
+
+[**Install Rust and Node.js →**](/getting-started/libs)
+
+### 2. 🛠️ Install CLI
+Once prerequisites are ready, install the Cedra Command Line Interface, which is essential for all development activities.
 
 [**CLI Installation Guide →**](/getting-started/cli)
 
-### 2. 🔧 Set Up IDE Extension
+### 3. 🔧 Set Up IDE Extension
 Install Move language support for your preferred IDE to get syntax highlighting, code completion, and error detection.
 
 **For VSCode:**
@@ -40,7 +45,7 @@ Install Move language support for your preferred IDE to get syntax highlighting,
 **For JetBrains IDEs:**
 - Install the [Move Language Plugin](https://plugins.jetbrains.com/plugin/14721-move-on-aptos) for IntelliJ IDEA, CLion, or other JetBrains IDEs
 
-### 3. 🚀 Initialize Your First Project
+### 4. 🚀 Initialize Your First Project
 Create your first Move project to start building smart contracts.
 
 ```bash
@@ -49,12 +54,12 @@ cedra move init --name first_smart_contract
 
 This command creates a new Move project with the basic structure needed for smart contract development.
 
-### 4. 💰 Get Test Tokens
+### 5. 💰 Get Test Tokens
 Learn about faucets and how to get test tokens for development and testing.
 
 [**Faucet Guide →**](/getting-started/faucet)
 
-### 5. 📚 Explore Real World Guides
+### 6. 📚 Explore Real World Guides
 Ready to build something practical? Check out our comprehensive guides for building real applications.
 
 [**Real World Guides →**](/real-world-guides)

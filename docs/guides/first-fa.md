@@ -2,6 +2,13 @@
 
 > **All code is taken directly from the `fa-example` folder in the ([cedra‑labs repo](https://github.com/cedra-labs/move-contract-examples/tree/main/fa-example))**
 
+:::tip Prerequisites
+Before starting this guide, make sure you have:
+- ✅ [Installed Rust and Node.js](/getting-started/libs) - Required for development toolchain
+- ✅ [Installed the Cedra CLI](/getting-started/cli) - Essential for deploying contracts
+- ✅ [Obtained test tokens from the faucet](/getting-started/faucet) - Needed for deployment gas
+:::
+
 ## 1. What *is* a Fungible Asset?
 
 Cedra **Fungible Asset (FA)** is a standard rebuilds ERC‑20‑style tokens for the Move VM, replacing brittle global tables with **ownable objects** - safer, cheaper, composable.

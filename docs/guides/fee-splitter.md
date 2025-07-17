@@ -8,6 +8,13 @@ sidebar\_position: 5
 
 The **Fee Splitter** lets an owner define recipients & proportional shares, then route a payment to all of them in one transaction. Works with **any** fungible asset (`CEDRA`, `USDC`, …) and is ideal for NFT royalties, marketplace fees, or affiliate payouts.
 
+:::tip Prerequisites
+Before starting this guide, make sure you have:
+- ✅ [Installed Rust and Node.js](/getting-started/libs) - Required for development toolchain
+- ✅ [Installed the Cedra CLI](/getting-started/cli) - Essential for deploying contracts
+- ✅ [Obtained test tokens from the faucet](/getting-started/faucet) - Needed for deployment gas
+:::
+
 :::tip **Source code**: [GitHub – fee splitter module](https://github.com/cedra-labs/move-contract-examples/tree/main/fee-splitter)
 :::
 
