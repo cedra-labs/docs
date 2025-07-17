@@ -1,7 +1,11 @@
 # CLI Usage 
 
-:::info Need to Install CLI?
-If you're looking for installation instructions, check our [Getting Started CLI guide](/getting-started/cli) for step-by-step installation and setup.
+:::info Prerequisites & Installation
+Before using the Cedra CLI, ensure you have:
+- ✅ [Installed Rust and Node.js](/getting-started/libs) - Required prerequisites
+- ✅ [Installed the Cedra CLI](/getting-started/cli) - Step-by-step installation guide
+
+If you haven't installed the CLI yet, check our [Getting Started CLI guide](/getting-started/cli) for complete setup instructions.
 :::
 
 ## 📖 Overview
