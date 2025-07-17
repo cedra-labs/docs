@@ -72,7 +72,7 @@ Notice the grouping? This isn't just organization – it's a debugging tool. Whe
 
 :::tip Real-World Error Organization
 See how our guides organize errors:
-- [Fungible Asset Errors](/guides/first-fa#5-debug-cheat-sheet) - Standard abort codes for token operations
+- [Fungible Asset Errors](/guides/first-fa#5-debug-cheatsheet) - Standard abort codes for token operations
 - [Escrow Error Categories](/guides/escrow#core-data-structures) - Grouped by operation type
 - [Fee Splitter Validation](/guides/fee-splitter#32-constants--errors) - Clear error constants with descriptive names
 :::
@@ -177,7 +177,7 @@ See the flexibility? The same `find_listing` function serves different purposes.
 Complex operations often require multiple validations. Separating validation logic from execution logic makes code cleaner and more testable:
 
 :::info Pattern Implementation
-The [NFT minting](/guides/first-nft#3-creator-gated-mint) shows this pattern with its creator validation. The [Escrow contract](/guides/escrow#step-3-releasing-funds) demonstrates comprehensive validation before fund release.
+The [NFT minting](/guides/first-nft#3-creatorgated-mint) shows this pattern with its creator validation. The [Escrow contract](/guides/escrow#step-3-releasing-funds) demonstrates comprehensive validation before fund release.
 :::
 
 ```rust

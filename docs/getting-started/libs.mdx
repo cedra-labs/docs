@@ -1,0 +1,252 @@
+# Prerequisites: Rust and Node.js Installation
+
+Ready to build on Cedra? Let's get your development environment set up! 🚀
+
+You'll need two powerful tools in your arsenal:
+
+🦀 **Rust** - The backbone for building Cedra from source and crafting Move modules  
+📦 **Node.js** - Your gateway to DApp development and frontend magic
+
+## 🎯 Version Requirements
+
+For the smoothest Cedra experience, we recommend:
+- **Rust**: 1.70.0 or higher
+- **Node.js**: 18.x LTS or 20.x LTS
+- **npm**: 8.0.0 or higher
+
+## 🦀 Installing Rust
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+:::tip Platform Support
+Rust runs beautifully on Windows 10/11 (64-bit), macOS 10.12+, and Linux (kernel 3.2+)
+:::
+
+<Tabs groupId="operating-systems">
+<TabItem value="macos" label="🍎 macOS">
+
+Via Homebrew Way. One command, and you're done!
+
+```bash
+brew install rust
+```
+
+The Official Installer Route
+Download and run the official installer
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+Don't forget to activate Rust in your current shell:
+```bash
+source "$HOME/.cargo/env"
+```
+
+</TabItem>
+<TabItem value="windows" label="🪟 Windows">
+
+#### Official Installer (Recommended)
+
+1. Grab [rustup-init.exe](https://win.rustup.rs/x86_64) 
+2. Run it and follow the friendly prompts
+3. Select "1) Proceed with installation (default)"
+4. Give your terminal a fresh restart
+
+#### Chocolatey Lovers. Sweet and simple
+
+```powershell
+choco install rust
+```
+
+</TabItem>
+<TabItem value="linux" label="🐧 Linux">
+
+Official Installer (Universal)
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+Activate Rust in your shell:
+```bash
+source "$HOME/.cargo/env"
+```
+
+Via Package Manager
+
+```bash
+# Update and install in two steps
+sudo apt update
+sudo apt install rustc cargo
+```
+
+</TabItem>
+</Tabs>
+
+
+
+### ✅ Verify Your Rust Installation
+Check if everything's working
+
+```bash
+rustc --version
+cargo --version
+```
+
+📚 **Need more details?** Check out [rust-lang.org/tools/install](https://www.rust-lang.org/tools/install)
+
+## 📦 Installing Node.js
+
+Time to set up your JavaScript runtime! We recommend Node.js 18.x LTS or 20.x LTS for maximum stability.
+
+<Tabs groupId="operating-systems">
+<TabItem value="macos" label="🍎 macOS">
+
+#### Homebrew (Lightning Fast)
+
+```bash
+brew install node
+```
+
+#### Node Version Manager (For the Power Users)
+
+1. Get nvm up and running:
+   ```bash
+   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+   ```
+
+2. Refresh your shell:
+   ```bash
+   source ~/.bashrc
+   ```
+
+3. Install the latest LTS:
+   ```bash
+   nvm install --lts
+   nvm use --lts
+   ```
+
+#### Traditional Installer
+
+Prefer clicking? Download from [nodejs.org](https://nodejs.org/) and follow the wizard!
+
+</TabItem>
+<TabItem value="windows" label="🪟 Windows">
+
+Official Installer
+
+1. Head to [nodejs.org](https://nodejs.org/)
+2. Download the LTS version
+3. Run the installer (keep "Add to PATH" checked!)
+
+Chocolatey Magic
+
+```powershell
+choco install nodejs
+```
+
+Version Manager (nvm-windows)
+
+1. Download [nvm-windows](https://github.com/coreybutler/nvm-windows/releases)
+2. Install it, then run as Administrator:
+   ```powershell
+   nvm install lts
+   nvm use lts
+   ```
+
+</TabItem>
+<TabItem value="linux" label="🐧 Linux">
+
+#### NodeSource Repository (Recommended)
+
+```bash
+# Add NodeSource repo and install
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt-get install -y nodejs
+```
+
+#### Node Version Manager (Flexible Option)
+
+1. Install nvm:
+   ```bash
+   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+   ```
+
+2. Reload your shell config:
+   ```bash
+   source ~/.bashrc
+   ```
+
+3. Install Node.js:
+   ```bash
+   nvm install --lts
+   nvm use --lts
+   ```
+
+</TabItem>
+</Tabs>
+
+### 🔧 Final Touches
+
+1. **Supercharge npm:**
+   ```bash
+   # Always use the latest npm
+   npm install -g npm@latest
+   ```
+
+2. **Fix npm permissions (Linux/macOS):**
+   ```bash
+   # Create a safe space for global packages
+   mkdir ~/.npm-global
+   npm config set prefix '~/.npm-global'
+   echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
+   source ~/.bashrc
+   ```
+
+3. **Install developer essentials:**
+   ```bash
+   # The holy trinity of JavaScript tools
+   npm install -g yarn pnpm typescript
+   ```
+
+### ✅ Verify Node.js is Ready
+
+```bash
+# Check your versions
+node --version
+npm --version
+```
+
+Expected output:
+```
+v20.10.0
+10.2.3
+```
+
+Give it a test run:
+```bash
+# Hello, Node.js!
+node -e "console.log('Node.js is installed successfully! 🎉')"
+```
+
+📚 **Want to dive deeper?** Visit [nodejs.org/en/download](https://nodejs.org/en/download/)
+
+## 🚀 You're All Set!
+
+Congratulations! With Rust and Node.js installed, you have the foundation needed for Cedra development. Here's your roadmap forward:
+
+### 🎯 Immediate Next Steps
+
+1. **[Install the Cedra CLI](/getting-started/cli)** ⬅️ _Do this next!_
+   - Essential tool for all Cedra development
+   - Compiles Move contracts, manages accounts, and interacts with the blockchain
+
+2. **[Get Test Tokens from Faucet](/getting-started/faucet)**
+   - You'll need CEDRA tokens for deploying contracts
+   - Free testnet tokens for development
+
+3. **[Build Your First Counter App](/getting-started/counter)**
+   - Hands-on tutorial to create your first smart contract
+   - Learn Move basics with a practical example

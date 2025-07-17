@@ -130,7 +130,7 @@ While loops execute as long as their condition is true:
 :::tip Real-World Loop Examples
 See loops in action:
 - [Fee Splitter Distribution](/guides/fee-splitter#35-distribute-fees) - Iterating through recipients to distribute payments
-- [Escrow Time Checks](/guides/escrow#remaining_escrow_time) - Calculating remaining lock time
+- [Escrow Time Checks](/guides/escrow#step-4-checking-status) - Calculating remaining lock time
 :::
 
 ```rust
@@ -333,7 +333,7 @@ Certain control flow patterns appear frequently in Move programs. Understanding 
 Use early returns to handle edge cases and reduce nesting:
 
 :::success Pattern in Practice
-The [Escrow Contract](/guides/escrow#step-3-releasing-funds) uses early returns extensively in its validation logic. The [NFT minting function](/guides/first-nft#3-creator-gated-mint) also demonstrates this pattern with its creator check.
+The [Escrow Contract](/guides/escrow#step-3-releasing-funds) uses early returns extensively in its validation logic. The [NFT minting function](/guides/first-nft#3-creatorgated-mint) also demonstrates this pattern with its creator check.
 :::
 
 ```rust

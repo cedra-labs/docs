@@ -2,6 +2,11 @@
 
 The Cedra Command Line Interface (CLI) is the primary tool for developers and users to interact with the Cedra blockchain. It lets you manage accounts, deploy Move modules, test code, execute transactions, and query network state.
 
+:::tip Prerequisites
+Before installing the Cedra CLI, make sure you have:
+- ✅ [Installed Rust and Node.js](/getting-started/libs) - Required for building from source and running JavaScript/TypeScript clients
+:::
+
 > **Next step:** After installation, open a terminal and run `cedra --version` to confirm your setup, then explore the [CLI guide](/cli/usage) for all available commands.
 
 ## Installation

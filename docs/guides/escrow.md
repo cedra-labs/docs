@@ -12,6 +12,13 @@ The escrow system supports two types of locking:
 * Simple escrow (manual release)
 * Time-locked escrow (claimable after a specific time)
 
+:::tip Prerequisites
+Before starting this guide, make sure you have:
+- ✅ [Installed Rust and Node.js](/getting-started/libs) - Required for development toolchain
+- ✅ [Installed the Cedra CLI](/getting-started/cli) - Essential for deploying contracts
+- ✅ [Obtained test tokens from the faucet](/getting-started/faucet) - Needed for deployment gas
+:::
+
 ## Before we start - check these resources
 
 :::tip **Source code**: [GitHub – escrow module](https://github.com/cedra-labs/move-contract-examples/tree/main/fa-lock)

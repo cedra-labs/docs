@@ -1,6 +1,13 @@
-# NFT Contract  -  Full Code Walkthrough
+# NFT Contract  -  Full Code Walkthrough
 
-**What is an NFT?** A *Non‑Fungible Token* is a unique, indivisible on‑chain object whose immutable identity and metadata distinguish it from all other tokens. Think digital collectibles, tickets, or game items - as opposed to interchangeable fungible coins.
+:::tip Prerequisites
+Before starting this guide, make sure you have:
+- ✅ [Installed Rust and Node.js](/getting-started/libs) - Required for development toolchain
+- ✅ [Installed the Cedra CLI](/getting-started/cli) - Essential for deploying contracts
+- ✅ [Obtained test tokens from the faucet](/getting-started/faucet) - Needed for deployment gas
+:::
+
+**What is an NFT?** A *Non‑Fungible Token* is a unique, indivisible on‑chain object whose immutable identity and metadata distinguish it from all other tokens. Think digital collectibles, tickets, or game items - as opposed to interchangeable fungible coins.**What is an NFT?** A *Non‑Fungible Token* is a unique, indivisible on‑chain object whose immutable identity and metadata distinguish it from all other tokens. Think digital collectibles, tickets, or game items - as opposed to interchangeable fungible coins.
 
 > **Goal**: Understand *exactly* how this NFT contract works on‑chain and how to call it from a TypeScript client.
 

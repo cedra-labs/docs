@@ -166,8 +166,8 @@ public entry fun register_user(user: &signer, username: vector<u8>) {
 Functions marked `entry` are special – they can be called directly from transactions but cannot return values. They're your module's user interface.
 
 **See Entry Functions in Action:**
-- [NFT Minting](/guides/first-nft#3-creator-gated-mint) - The `mint_nft` entry function
-- [FA Transfer](/guides/first-fa#213-transfer---peer-to-peer-move) - The `transfer` entry function  
+- [NFT Minting](/guides/first-nft#3-creatorgated-mint) - The `mint_nft` entry function
+- [FA Transfer](/guides/first-fa#213-transfer---peertopeer-move) - The `transfer` entry function  
 - [Escrow Operations](/guides/escrow#step-2-locking-funds-into-escrow) - Multiple entry functions for locking and releasing funds
 :::
 
@@ -279,7 +279,7 @@ Functions marked `#[view]` are read-only queries:
 Check out these view functions in our guides:
 - [Escrow Status Checks](/guides/escrow#step-4-checking-status) - Multiple view functions for checking locked funds
 - [Fee Splitter Info](/guides/fee-splitter#36-read-only-helpers) - Query recipient shares and existence
-- [NFT Collection Data](/guides/first-nft#6-read-only-helpers) - Read collection metadata without gas costs
+- [NFT Collection Data](/guides/first-nft#6-readonly-helpers) - Read collection metadata without gas costs
 :::
 
 ```rust
