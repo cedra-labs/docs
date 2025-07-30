@@ -21,7 +21,7 @@ cedra move init --name counter
 
 This creates a new Move package with the following structure:
 ```
-counter/
+counter-project/
 ├── Move.toml
 └── sources/
 ```
@@ -102,7 +102,7 @@ module counter::simple_counter {
 
 ## 🧪 Step 3: Add Tests
 
-Let's add comprehensive tests to our contract. Add the following test functions to your `counter.move` file:
+Let's add comprehensive tests to our contract. Add the following test functions to your `tests/counter.move` file:
 
 ```rust
 #[test_only]
@@ -165,7 +165,7 @@ Now let's compile and test our contract:
 
 ```bash
 # Navigate to the counter directory
-cd counter
+cd counter-project
 
 # Compile the contract
 cedra move compile
