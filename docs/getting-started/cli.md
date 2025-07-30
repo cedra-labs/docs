@@ -58,8 +58,8 @@ More details available here: [Chocolatey Cedra CLI Package](https://community.ch
 If you're using Ubuntu/Debian and prefer using `.deb` files:
 
 ```bash
-wget https://launchpad.net/~username/+archive/ubuntu/ppa/+files/cedra-cli_1.0.1_amd64.deb
-sudo dpkg -i cedra-cli_1.0.1_amd64.deb
+wget https://launchpad.net/~cedra-network/+archive/ubuntu/deps/+files/cedra-cli_1.0.1~noble_amd64.deb
+sudo dpkg -i cedra-cli_1.0.1~noble_amd64.deb
 ```
 
 After installation, confirm:
