@@ -4,7 +4,7 @@ sidebar_position: 1
 ---
 
 # Getting Started with Cedra
-Cedra is the first community-owned Layer-1 blockchain built on the Move language that lets anyone spin up and govern their own sovereign networks. Designed as a public good, Cedra fuses protocol development, funding, and growth into open collaboration among core contributors, a non-profit foundation, and a worldwide guild of builders.
+Cedra is the first community-owned blockchain built on the Move language that lets anyone spin up and govern their own sovereign networks. Designed as a public good, Cedra fuses protocol development, funding, and growth into open collaboration among core contributors, a non-profit foundation, and a worldwide guild of builders.
 
 
 

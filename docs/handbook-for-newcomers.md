@@ -18,7 +18,7 @@ Instead of trusting a central server, users rely on a network of nodes to agree 
 
 ## Cedra Overview
 
-Cedra is a Layer‑1 blockchain based on Aptos. It uses the same core technology but extends it with custom features. We inherit the best and elevate it to the next level using bleeding‑edge technology.
+Cedra is a blockchain based on Aptos. It uses the same core technology but extends it with custom features. We inherit the best and elevate it to the next level using bleeding‑edge technology.
 
 ### Inherited from Aptos
 
