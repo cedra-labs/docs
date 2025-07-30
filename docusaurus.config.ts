@@ -74,6 +74,10 @@ export default {
         customCss: require.resolve('./src/css/custom.css'),
       },
       pages: false, // Disable pages plugin
+      gtag: {
+        trackingID: 'G-QJ1YFC04H0',
+        anonymizeIP: true,
+      },
     }],
   ],
 };
