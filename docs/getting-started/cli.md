@@ -53,13 +53,21 @@ cedra --version
 
 More details available here: [Chocolatey Cedra CLI Package](https://community.chocolatey.org/packages/cedra/1.0.1)
 
-### Option 3 – Install via Debian package (Ubuntu/Debian-based)
+### Option 3 – Install via APT repository (Ubuntu/Debian-based)
 
-If you're using Ubuntu/Debian and prefer using `.deb` files:
+For Ubuntu/Debian users, the recommended method is to install via the official PPA:
 
 ```bash
-wget https://launchpad.net/~username/+archive/ubuntu/ppa/+files/cedra-cli_1.0.1_amd64.deb
-sudo dpkg -i cedra-cli_1.0.1_amd64.deb
+sudo add-apt-repository ppa:cedra-network/deps
+sudo apt update
+sudo apt install cedra-cli
+```
+
+Alternatively, you can download and install the `.deb` file directly:
+
+```bash
+wget https://launchpad.net/~cedra-network/+archive/ubuntu/deps/+files/cedra-cli_1.0.1~noble_amd64.deb
+sudo dpkg -i cedra-cli_1.0.1~noble_amd64.deb
 ```
 
 After installation, confirm:
