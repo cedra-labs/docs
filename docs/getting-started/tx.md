@@ -85,7 +85,6 @@ async function main() {
   // Display network info
   const chainId = await client.getChainId();
   console.log(`Chain ID: ${chainId}`);
-  console.log(`API Endpoint: ${config.fullnode}\n`);
   
   // Continue with account creation...
 }
