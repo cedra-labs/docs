@@ -7,55 +7,19 @@ Before installing the Cedra CLI, make sure you have:
 - ✅ [Installed Rust and Node.js](/getting-started/libs) - Required for building from source and running JavaScript/TypeScript clients
 :::
 
-> **Next step:** After installation, open a terminal and run `cedra --version` to confirm your setup, then explore the [CLI guide](/cli/usage) for all available commands.
 
 ## Installation
 
-### Option 1 – Download a pre‑built binary (recommended)
+#### Recommended Installation Methods.
+We recommend using your operating system's package manager for the easiest installation experience:
+- **Linux (Ubuntu/Debian)**: Use APT repository
+- **Windows**: Use Chocolatey
+- **macOS**: Use pre-built binaries until Homebrew is approved
 
-1. Visit the **Cedra CLI v1.0.1** release page: [https://github.com/cedra-labs/cedra-network/releases/tag/cedra-cli-v1.0.1](https://github.com/cedra-labs/cedra-network/releases/tag/cedra-cli-v1.0.1).
-2. In the **Assets** section, choose the file that matches your platform:
 
-| OS           | Architecture          | File name                                 |
-| ------------ | --------------------- | ----------------------------------------- |
-| Linux        | x86\_64               | `cedra-cli-1.0.1-Linux-x86_64.zip`        |
-| Linux        | aarch64               | `cedra-cli-1.0.1-Linux-aarch64.zip`       |
-| macOS        | x86\_64               | `cedra-cli-1.0.1-macOS-x86_64.zip`        |
-| macOS        | arm64 (Apple Silicon) | `cedra-cli-1.0.1-macOS-arm64.zip`         |
-| Ubuntu 22.04 | x86\_64               | `cedra-cli-1.0.1-Ubuntu-22.04-x86_64.zip` |
-| Ubuntu 24.04 | x86\_64               | `cedra-cli-1.0.1-Ubuntu-24.04-x86_64.zip` |
-| Windows      | x86\_64               | `cedra-cli-1.0.1-Windows-x86_64.zip`      |
+### Option 1 - Install via APT repository (Ubuntu/Debian - recommended)
 
-3. Extract the archive.
-4. Move the `cedra` (or `cedra.exe` on Windows) executable to a folder that is in your **PATH**:
-
-   * **macOS / Linux**: `/usr/local/bin` or `$HOME/.local/bin`
-   * **Windows**: `C:\Windows\System32` or any folder listed in *Environment Variables → Path*
-5. Check current CLI version:
-
-```bash
-cedra --version
-```
-
-### Option 2 – Install via Chocolatey (Windows only)
-
-1. Run the following command:
-
-```powershell
-choco install cedra
-```
-
-2. Once installed, verify:
-
-```powershell
-cedra --version
-```
-
-More details available here: [Chocolatey Cedra CLI Package](https://community.chocolatey.org/packages/cedra/1.0.1)
-
-### Option 3 – Install via APT repository (Ubuntu/Debian-based)
-
-For Ubuntu/Debian users, the recommended method is to install via the official PPA:
+For Ubuntu/Debian users, install via the official PPA:
 
 ```bash
 sudo add-apt-repository ppa:cedra-network/deps
@@ -71,6 +35,55 @@ sudo dpkg -i cedra-cli_1.0.1~noble_amd64.deb
 ```
 
 After installation, confirm:
+
+```bash
+cedra --version
+```
+
+### Option 2 – Install via Chocolatey (Windows - recommended)
+
+1. Run the following command:
+
+```powershell
+choco install cedra
+```
+
+2. Once installed, verify:
+
+```powershell
+cedra --version
+```
+
+More details available here: [Chocolatey Cedra CLI Package](https://community.chocolatey.org/packages/cedra/1.0.1)
+
+### Option 3 – Download a pre‑built binary (fallback option)
+
+:::info When to use pre-built binaries
+Use pre-built binaries if:
+- Your OS package manager is not available
+- You're on macOS (while waiting for Homebrew approval)
+- You need a specific version not available in package managers
+:::
+
+1. Visit the **Cedra CLI v1.0.1** release page: [https://github.com/cedra-labs/cedra-network/releases/tag/cedra-cli-v1.0.1](https://github.com/cedra-labs/cedra-network/releases/tag/cedra-cli-v1.0.1).
+2. In the **Assets** section, choose the file that matches your platform:
+
+| OS           | Architecture          | File name                                 |
+| ------------ | --------------------- | ----------------------------------------- |
+| Linux        | x86\_64               | `cedra-cli-1.0.1-Linux-x86_64.zip`        |
+| Linux        | aarch64               | `cedra-cli-1.0.1-Linux-aarch64.zip`       |
+| macOS        | x86\_64               | `cedra-cli-1.0.1-macOS-x86_64.zip`        |
+| macOS        | arm64 (Apple Silicon) | `cedra-cli-1.0.1-macOS-arm64.zip`         |
+| Ubuntu 22.04 | x86\_64               | `cedra-cli-1.0.1-Ubuntu-22.04-x86_64.zip` |
+| Ubuntu 24.04 | x86\_64               | `cedra-cli-1.0.1-Ubuntu-24.04-x86_64.zip` |
+| Windows      | x86\_64               | `cedra-cli-1.0.1-Windows-x86_64.zip`      |
+
+3. Extract the archive.
+4. Move the `cedra` (or `cedra.exe` on Windows) executable to a folder that is in your **PATH**:
+
+   * **macOS / Linux**: `/usr/local/bin` or `$HOME/.local/bin`
+   * **Windows**: `C:\Windows\System32` or any folder listed in *Environment Variables → Path*
+5. Check current CLI version:
 
 ```bash
 cedra --version
