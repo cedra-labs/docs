@@ -277,7 +277,6 @@ You should see output similar to:
 === Connecting to CEDRA ===
 ✅ Connected to CEDRA testnet
 Chain ID: 4
-API Endpoint: https://testnet.cedra.dev/v1
 
 === Creating Accounts ===
 Alice's address: 0x978c213990c4833df71548df7ce49d54c759d6b6d932de22b24d56060b7af2aa
