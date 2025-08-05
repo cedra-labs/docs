@@ -33,8 +33,8 @@ cd cedra-first-transaction
 ### Initialize a TypeScript Project
 
 ```bash
-npm init -y
-npm install @cedra-labs/ts-sdk typescript @types/node ts-node
+pnpm init
+pnpm install @cedra-labs/ts-sdk typescript @types/node ts-node
 ```
 
 Create a `tsconfig.json` file:
