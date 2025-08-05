@@ -41,13 +41,13 @@ export default {
       },
       items: [
         {
-          label: 'Build', 
-          to: '/',
+          label: 'Feedback', 
+          to: 'https://tally.so/r/nWavBe',
           position: 'right',
           className: 'navbar__item--contrast'
         },
         {
-          label: 'Code', 
+          label: 'Code Examples', 
           href: 'https://github.com/cedra-labs/cedra-network',
           position: 'right'
         },
