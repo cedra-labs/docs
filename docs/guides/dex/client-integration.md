@@ -1,42 +1,20 @@
 # DEX Client Integration Guide
 
-## Introduction
-
 Building a user-friendly client is crucial for DEX adoption. This tutorial walks through creating a TypeScript client that interacts with your Cedra DEX, demonstrating best practices for wallet integration, transaction handling, and user experience.
 
-## What You'll Learn
+:::tip Complete DEX Source Code
+View the full Move implementation: [`cedra-labs/move-contract-examples/dex`](https://github.com/cedra-labs/move-contract-examples/tree/main/dex)
+:::
 
+### What You'll Learn
 - Setting up Cedra TypeScript SDK
 - Implementing core DEX operations
 - Building educational examples
 - Error handling and user feedback
 - Best practices for production clients
 
-## Prerequisites
-
-- Completed DEX smart contract deployment
-- Node.js 18+ installed
-- Basic TypeScript knowledge
-- Understanding of DEX operations
-
-## Project Setup
-
-### Dependencies
-
-```json
-{
-  "dependencies": {
-    "@cedra-labs/ts-sdk": "^2.2.4"
-  },
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "tsx": "^4.0.0",
-    "typescript": "^5.0.0"
-  }
-}
-```
-
 ### Configuration Structure
+Our story begins with project setup. You'll create a clean TypeScript configuration that connects to the Cedra network. The `config.ts` file becomes your command center, defining network endpoints and module addresses. Think of it as setting up your workshop before crafting something beautiful.
 
 ```typescript
 // config.ts
@@ -62,11 +40,11 @@ export const MODULES = {
 };
 ```
 
-## Core Client Implementation
+---
 
-### 1. Display Utilities
+### Display Utilities
 
-Creating clear, informative displays is essential for user understanding:
+Raw blockchain data is intimidating - numbers like 1000000000 don't mean much to users. Your first set of functions transforms these machine values into human-readable formats. The `formatAmount()` function turns those scary numbers into friendly "10.5 ETH". The `displayBalances()` function creates beautiful ASCII tables that make users smile when checking their tokens.
 
 ```typescript
 // Format token amounts for display
@@ -94,10 +72,10 @@ export async function displayBalances(
   console.log("└─────────┴──────────────────┘");
 }
 ```
+---
+###  Account Management
 
-### 2. Account Management
-
-Handle account creation and funding:
+Next, you'll implement account creation and funding. The `setupAccounts()` function generates test wallets - Alice and Bob become your first traders. The funding functions ensure they have tokens to play with. This is where users first feel the magic - watching their newly created account receive its first tokens.
 
 ```typescript
 // Fund account with test tokens
@@ -125,10 +103,11 @@ async function setupAccounts(): Promise<{ alice: Account; bob: Account }> {
   return { alice, bob };
 }
 ```
+---
 
-### 3. Token Operations
+### Token Operations
 
-Implement token metadata retrieval and minting:
+The token functions are where things get interesting. `getTokenMetadata()` navigates the complex world of token standards, extracting the addresses your DEX needs. The `mintTestTokens()` function gives users their trading ammunition. Each successful mint shows a satisfying confirmation message, making users feel in control.
 
 ```typescript
 // Get token metadata address
@@ -180,10 +159,11 @@ export async function mintTestTokens(
   console.log(`   ✓ Minted successfully (tx: ${pendingTxn.hash.slice(0, 10)}...)`);
 }
 ```
+---
 
-### 4. Pool Management
+### Pool Management
 
-Create and manage trading pairs:
+This is where your DEX comes alive. The `createTradingPair()` function births new markets with a single call. Users watch as their transaction creates a whole new trading opportunity. The `getReserves()` function becomes their window into pool health, showing real-time liquidity depths.
 
 ```typescript
 // Create a new trading pair
@@ -245,10 +225,11 @@ export async function getReserves(lpMetadata: string): Promise<[number, number]>
   }
 }
 ```
+---
 
-### 5. Liquidity Operations
+### Liquidity Operations
 
-Add liquidity with automatic slippage protection:
+The `addLiquidity()` function transforms users from traders to market makers. The code automatically calculates slippage protection - users don't need to understand the math, they just see their liquidity being added safely. The function returns LP tokens as proof of their contribution, like receiving shares in the market they're helping create.
 
 ```typescript
 export async function addLiquidity(
@@ -294,9 +275,18 @@ export async function addLiquidity(
 }
 ```
 
-### 6. Swap Implementation
+---
 
-Execute swaps with output tracking:
+### Swap Implementation
+
+The crown jewel - `executeSwap()`. This function orchestrates the entire trading experience:
+
+- It checks the user's balance (no embarrassing failed transactions)<br />
+- Calculates the expected output (users see what they'll get)<br />
+- Executes the trade with protection (slippage limits keep them safe)<br />
+- Shows the actual result (transparency builds trust)<br />
+
+The `calculateSwapOutput()` helper lets users preview their trades. They can experiment with different amounts, watching how price impact changes, learning by doing rather than reading formulas.
 
 ```typescript
 export async function executeSwap(
@@ -360,322 +350,24 @@ export async function calculateSwapOutput(
 }
 ```
 
-## Educational Examples
-
-### Example 1: Price Impact Visualization
-
-```typescript
-async function demonstratePriceImpact(lpToken: string) {
-  separator("📈 Understanding Price Impact");
-  
-  console.log("\n💡 Larger trades have exponentially higher price impact");
-  
-  const [reserveIn, reserveOut] = await getReserves(lpToken);
-  
-  const tradeSizes = [
-    { percent: 0.1, amount: Math.floor(reserveIn * 0.001) },
-    { percent: 1, amount: Math.floor(reserveIn * 0.01) },
-    { percent: 10, amount: Math.floor(reserveIn * 0.1) },
-  ];
-  
-  console.log("\n📊 Price Impact Analysis:");
-  console.log("┌──────────┬─────────────┬─────────────┬─────────────┐");
-  console.log("│ % Pool   │ Input       │ Output      │ Impact      │");
-  console.log("├──────────┼─────────────┼─────────────┼─────────────┤");
-  
-  for (const trade of tradeSizes) {
-    const output = await calculateSwapOutput(trade.amount, reserveIn, reserveOut);
-    const spotPrice = reserveOut / reserveIn;
-    const executionPrice = output / trade.amount;
-    const priceImpact = ((spotPrice - executionPrice) / spotPrice) * 100;
-    
-    console.log(
-      `│ ${trade.percent.toString().padEnd(8)} │ ` +
-      `${formatAmount(trade.amount).padEnd(11)} │ ` +
-      `${formatAmount(output).padEnd(11)} │ ` +
-      `${priceImpact.toFixed(2).padStart(10)}% │`
-    );
-  }
-  
-  console.log("└──────────┴─────────────┴─────────────┴─────────────┘");
-}
-```
-
-### Example 2: Liquidity Ratio Management
-
-```typescript
-async function demonstrateLiquidityRatios(
-  bob: Account,
-  lpToken: string,
-  tokenX: string,
-  tokenY: string
-) {
-  separator("💧 Adding Liquidity to Existing Pool");
-  
-  console.log("\n💡 Liquidity must match pool ratio");
-  
-  const [reserveX, reserveY] = await getReserves(lpToken);
-  const currentRatio = reserveY / reserveX;
-  
-  console.log("📊 Current Pool State:");
-  console.log(`   • Ratio: 1 X = ${currentRatio.toFixed(4)} Y`);
-  
-  const desiredX = 50_000_000;  // 0.5 ETH
-  const desiredY = 30_000_000;  // 0.3 BTC (more than needed)
-  
-  const optimalY = Math.floor((desiredX * reserveY) / reserveX);
-  const optimalX = Math.floor((desiredY * reserveX) / reserveY);
-  
-  console.log(`\n📐 Optimal amounts calculation:`);
-  console.log(`   • For ${formatAmount(desiredX)} X, optimal Y = ${formatAmount(optimalY)}`);
-  console.log(`   • For ${formatAmount(desiredY)} Y, optimal X = ${formatAmount(optimalX)}`);
-  
-  // Show which token will be returned
-  if (desiredY > optimalY) {
-    console.log(`   • Excess Y returned: ${formatAmount(desiredY - optimalY)}`);
-  } else {
-    console.log(`   • Excess X returned: ${formatAmount(desiredX - optimalX)}`);
-  }
-  
-  await addLiquidity(bob, lpToken, tokenX, tokenY, desiredX, desiredY);
-}
-```
-
-### Example 3: Error Handling
-
-```typescript
-async function demonstrateErrorHandling(
-  bob: Account,
-  lpToken: string,
-  tokenIn: string,
-  tokenOut: string
-) {
-  separator("⚠️  Common Errors and Solutions");
-  
-  // Zero amount swap
-  console.log("\n❌ Attempting to swap 0 tokens:");
-  try {
-    await executeSwap(bob, lpToken, tokenIn, tokenOut, 0);
-  } catch (error: any) {
-    console.log(`   Error: ${error.message}`);
-    console.log("   ✓ Solution: Always validate amounts > 0");
-  }
-  
-  // Insufficient balance
-  console.log("\n❌ Attempting to swap more than balance:");
-  const balance = await getTokenBalance(bob.accountAddress.toString(), tokenIn);
-  try {
-    await executeSwap(bob, lpToken, tokenIn, tokenOut, balance * 2);
-  } catch (error: any) {
-    console.log(`   Error: Insufficient balance`);
-    console.log("   ✓ Solution: Check balance before swapping");
-  }
-  
-  // Slippage protection
-  console.log("\n✅ Using slippage protection:");
-  const swapAmount = Math.floor(balance * 0.1);
-  const [reserveIn, reserveOut] = await getReserves(lpToken);
-  const expectedOut = await calculateSwapOutput(swapAmount, reserveIn, reserveOut);
-  const minAcceptable = Math.floor(expectedOut * 0.99); // 1% slippage
-  
-  console.log(`   • Expected: ${formatAmount(expectedOut)}`);
-  console.log(`   • Minimum: ${formatAmount(minAcceptable)}`);
-  console.log("   • Protects against front-running");
-}
-```
-
-## Production Best Practices
-
-### 1. Transaction Management
-
-```typescript
-class TransactionManager {
-  private pendingTxs: Map<string, Promise<any>> = new Map();
-  
-  async executeTransaction(
-    id: string,
-    builder: () => Promise<any>
-  ): Promise<any> {
-    // Prevent duplicate transactions
-    if (this.pendingTxs.has(id)) {
-      console.log("⏳ Transaction already pending...");
-      return this.pendingTxs.get(id);
-    }
-    
-    const txPromise = builder()
-      .finally(() => this.pendingTxs.delete(id));
-    
-    this.pendingTxs.set(id, txPromise);
-    return txPromise;
-  }
-}
-```
-
-### 2. Price Feed Integration
-
-```typescript
-class PriceOracle {
-  private priceCache: Map<string, { price: number; timestamp: number }> = new Map();
-  private CACHE_DURATION = 30_000; // 30 seconds
-  
-  async getPrice(lpToken: string): Promise<number> {
-    const cached = this.priceCache.get(lpToken);
-    if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
-      return cached.price;
-    }
-    
-    const [reserveX, reserveY] = await getReserves(lpToken);
-    const price = reserveY / reserveX;
-    
-    this.priceCache.set(lpToken, { price, timestamp: Date.now() });
-    return price;
-  }
-}
-```
-
-### 3. User Experience Enhancements
-
-```typescript
-class DEXClient {
-  async swapWithFeedback(
-    account: Account,
-    lpToken: string,
-    tokenIn: string,
-    tokenOut: string,
-    amountIn: number
-  ): Promise<void> {
-    // Pre-flight checks
-    console.log("🔍 Checking swap parameters...");
-    
-    const balance = await getTokenBalance(account.accountAddress.toString(), tokenIn);
-    if (balance < amountIn) {
-      throw new Error(`Insufficient balance: ${formatAmount(balance)} < ${formatAmount(amountIn)}`);
-    }
-    
-    // Calculate expected output
-    const [reserveIn, reserveOut] = await getReserves(lpToken);
-    const expectedOut = await calculateSwapOutput(amountIn, reserveIn, reserveOut);
-    
-    // Show preview
-    console.log("\n📋 Swap Preview:");
-    console.log(`   • Input: ${formatAmount(amountIn)}`);
-    console.log(`   • Expected Output: ${formatAmount(expectedOut)}`);
-    console.log(`   • Rate: ${(expectedOut / amountIn).toFixed(6)}`);
-    
-    // Execute with loading indicator
-    console.log("\n⏳ Executing swap...");
-    const actualOut = await executeSwap(
-      account, 
-      lpToken, 
-      tokenIn, 
-      tokenOut, 
-      amountIn,
-      Math.floor(expectedOut * 0.99) // 1% slippage
-    );
-    
-    // Show results
-    console.log("\n✅ Swap Complete!");
-    console.log(`   • Received: ${formatAmount(actualOut)}`);
-    console.log(`   • Slippage: ${((1 - actualOut / expectedOut) * 100).toFixed(2)}%`);
-  }
-}
-```
-
-### 4. Error Recovery
-
-```typescript
-async function retryWithBackoff<T>(
-  fn: () => Promise<T>,
-  maxRetries: number = 3
-): Promise<T> {
-  let lastError: any;
-  
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      return await fn();
-    } catch (error) {
-      lastError = error;
-      
-      // Don't retry on user errors
-      if (error.message?.includes('INSUFFICIENT_BALANCE')) {
-        throw error;
-      }
-      
-      // Exponential backoff
-      const delay = Math.pow(2, i) * 1000;
-      console.log(`⏳ Retrying in ${delay}ms...`);
-      await new Promise(resolve => setTimeout(resolve, delay));
-    }
-  }
-  
-  throw lastError;
-}
-```
-
-## Testing Your Client
-
-### Integration Test Example
-
-```typescript
-describe("DEX Client Integration", () => {
-  let alice: Account;
-  let bob: Account;
-  let lpToken: string;
-  
-  beforeAll(async () => {
-    // Setup
-    alice = Account.generate();
-    bob = Account.generate();
-    await fundAccount(alice);
-    await fundAccount(bob);
-    
-    // Create pool
-    const ethMetadata = await getTokenMetadata("ETH");
-    const btcMetadata = await getTokenMetadata("BTC");
-    lpToken = await createTradingPair(alice, ethMetadata, btcMetadata);
-  });
-  
-  test("should execute complete flow", async () => {
-    // Add liquidity
-    await addLiquidity(alice, lpToken, ethMetadata, btcMetadata, 
-      100_000_000, 50_000_000);
-    
-    // Execute swap
-    const output = await executeSwap(bob, lpToken, ethMetadata, btcMetadata, 
-      10_000_000, 4_900_000);
-    
-    expect(output).toBeGreaterThan(4_900_000);
-    expect(output).toBeLessThan(5_000_000);
-  });
-});
-```
-
-## Deployment Checklist
-
-Before deploying your client:
-
-- [ ] Environment variables properly configured
-- [ ] Error handling for all operations
-- [ ] Loading states for async operations
-- [ ] Transaction confirmation UI
-- [ ] Slippage settings accessible
-- [ ] Price impact warnings
-- [ ] Balance validation
-- [ ] Network status indicator
-- [ ] Transaction history
-- [ ] Analytics integration
-
 ## Summary
-
-You've learned how to build a comprehensive DEX client:
-
-- **SDK Integration**: Using Cedra TypeScript SDK effectively
-- **Core Operations**: Implementing all DEX functions
-- **User Experience**: Clear feedback and error handling
-- **Educational Examples**: Teaching users through code
-- **Production Patterns**: Scalable, maintainable architecture
+This client transforms your DEX from a technical achievement into a user experience. Every function has been crafted to hide complexity while maintaining transparency. Users can trade without understanding Automated Market Makers, yet the educational examples are there when curiosity strikes.
 
 Your DEX client is now ready to provide a smooth trading experience!
+
+## 🎉 Congratulations, DEX Builder!
+You've completed the entire Cedra DEX Development Course!
+From your first Move contract to this polished TypeScript client, you've built a complete decentralized exchange. You understand not just how DEXs work, but how to make them work for real users.
+Your DEX can now:
+
+- Create markets for any token pair
+
+- Execute swaps with professional-grade safety features
+- Manage liquidity with automatic optimization
+- Teach users through interactive examples
+- Handle errors gracefully and informatively
+
+You're no longer just learning about DeFi - you're building it. Every line of code in this client represents knowledge earned through the course.
 
 ## Next Steps
 
@@ -684,4 +376,7 @@ Your DEX client is now ready to provide a smooth trading experience!
 3. **Advanced Orders**: Add limit orders, stop-loss
 4. **Analytics**: Track user behavior and pool performance
 
-Happy building on Cedra!
+
+### Don't forget about our other contract examples:
+* **Build your own tokens**: Create fungible assets using our [First FA Guide](/guides/first-fa) 
+* **Explore more contracts**: Check out other [Move examples](https://github.com/cedra-labs/move-contract-examples) for inspiration

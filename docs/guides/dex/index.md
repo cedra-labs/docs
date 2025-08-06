@@ -1,5 +1,5 @@
 # Build a DEX on Cedra - Complete Guide
-<!-- # TODO: Add cross links with a code and next articles -->
+<!-- # TODO: Add cross links with a code and next articles, update move to rust -->
 
 Welcome to the comprehensive guide for building a decentralized exchange (DEX) on Cedra. This six-part series will take you from understanding the fundamentals to deploying a production-ready DEX with advanced features.
 

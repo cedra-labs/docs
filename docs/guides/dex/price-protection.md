@@ -1,27 +1,19 @@
 # Adding Price Protection Mechanisms
 
-## Introduction
-
 Price protection is crucial for DEX users to avoid unexpected losses from price movements and MEV attacks. This tutorial teaches you how to implement slippage tolerance and price impact limits to create a safer trading experience on Cedra.
 
-## What You'll Learn
+#### What You'll Learn
 
 - Understanding price impact vs slippage
 - Calculating price movements in real-time
 - Implementing protection mechanisms
 - Best practices for user safety
 
-## Prerequisites
-
-- Completed Tutorials 1-3
-- Understanding of AMM mechanics
-- Basic knowledge of basis points (bps)
+---
 
 ## Price Impact vs Slippage: Key Differences
 
-### Price Impact
-
-**Definition**: The difference between spot price and execution price due to trade size.
+Price Impact is a difference between spot price and execution price due to trade size.
 
 ```
 Price Impact = (Execution Price - Spot Price) / Spot Price
@@ -33,9 +25,7 @@ Price Impact = (Execution Price - Spot Price) / Spot Price
 - Execution price: ~2,227 USDC/ETH
 - Price impact: (2,227 - 2,000) / 2,000 = 11.35%
 
-### Slippage
-
-**Definition**: The difference between expected and actual output due to other trades.
+Slippage the difference between expected and actual output due to other trades.
 
 ```
 Slippage = (Expected Output - Actual Output) / Expected Output
@@ -48,8 +38,6 @@ Slippage = (Expected Output - Actual Output) / Expected Output
 
 ## Understanding the Slippage Module
 
-### Module Constants
-
 ```move
 const MAX_SLIPPAGE_BPS: u64 = 500;      // 5% maximum slippage
 const MAX_PRICE_IMPACT_BPS: u64 = 300;  // 3% maximum price impact
@@ -59,7 +47,7 @@ These constants protect users from:
 - **Large price movements**: 3% max impact prevents manipulation
 - **Sandwich attacks**: 5% max slippage limits MEV profitability
 
-### Basis Points Explained
+What is Basis Points?
 
 - 1 basis point (bps) = 0.01%
 - 100 bps = 1%
@@ -67,9 +55,7 @@ These constants protect users from:
 
 Using basis points avoids floating-point math while maintaining precision.
 
-## Calculating Price Impact
-
-### The calculate_price_impact Function
+#### Calculating Price Impact
 
 ```move
 public fun calculate_price_impact(
@@ -79,9 +65,14 @@ public fun calculate_price_impact(
 ): u64
 ```
 
-### Implementation Deep Dive
+:::tip View Source
+Full implementation: [`calculate_price_impact`](https://github.com/cedra-labs/move-contract-examples/blob/main/dex/sources/3-slippage.move#L25-L44)
+:::
 
-```move
+Let's examine how price impact calculation works under the hood. This implementation compares the spot price (current pool ratio) with the execution price (actual price paid after the swap) to determine how much a trade moves the market. By calculating this in basis points, we avoid floating-point arithmetic while maintaining precision - critical for financial calculations on
+blockchain.
+
+```rust
 // 1. Calculate actual output after fees
 let amount_out = math_amm::get_amount_out(amount_in, reserve_in, reserve_out);
 
@@ -100,7 +91,7 @@ if (execution_price > spot_price) {
 }
 ```
 
-### Real-World Calculation Example
+#### Real-World Calculation Example
 
 ```move
 // Pool: 1,000 ETH / 2,000,000 USDC
@@ -120,10 +111,11 @@ let impact = calculate_price_impact(usdc_needed, reserve_usdc, reserve_eth);
 // Execution price: 2,026.1 USDC/ETH
 // Impact: 131 bps (1.31%)
 ```
+---
 
 ## Implementing Slippage Protection
 
-### The validate_slippage Function
+The slippage validation ensures users receive at least their minimum acceptable output, protecting against price movements between quote and execution. This calculation measures the percentage difference between what the user expected and what they actually received. If the difference exceeds the user's tolerance, the transaction reverts - preventing losses from front-running or sudden market movements.
 
 ```move
 public fun validate_slippage(
@@ -149,7 +141,11 @@ let slippage = if (expected_output > actual_output) {
 assert!((slippage as u64) <= max_slippage_bps, ERROR_SLIPPAGE_TOO_HIGH);
 ```
 
-### Practical Example
+:::tip View Source
+See validation logic: [`validate_slippage`](https://github.com/cedra-labs/move-contract-examples/blob/main/dex/sources/3-slippage.move#L49-L59)
+:::
+
+#### Practical Example
 
 ```move
 // User expects 1,980 USDC for 1 ETH
@@ -163,10 +159,11 @@ let slippage_bps = ((1_980 - 1_950) * 10000) / 1_980;
 // Validate against user's tolerance (e.g., 2%)
 validate_slippage(expected, actual, 200); // 200 bps = 2%
 ```
+---
 
 ## The Safe Swap Function
 
-### Complete Implementation
+The safe swap function combines all our protection mechanisms into a single, user-friendly entry point. It performs comprehensive checks before executing any trade: first validating that the price impact won't exceed safe limits, then ensuring the output meets the user's minimum requirements, and finally executing the swap only if all protections pass.
 
 ```move
 public entry fun safe_swap(
@@ -178,17 +175,7 @@ public entry fun safe_swap(
     min_amount_out: u64,
     max_slippage_bps: u64
 )
-```
 
-This function combines all protection mechanisms:
-
-1. **Price Impact Check**: Ensures trade won't move price too much
-2. **Slippage Validation**: Confirms output meets user expectations
-3. **Atomic Execution**: All checks pass or transaction reverts
-
-### Step-by-Step Flow
-
-```move
 // 1. Get current pool state
 let (reserve_x, reserve_y) = swap::reserves(lp_metadata);
 
@@ -211,358 +198,27 @@ swap::swap_exact_input(
     amount_in, 
     min_amount_out
 );
+
 ```
 
-## Protection Strategies
+:::tip View Source
+Complete safe swap implementation: [`safe_swap`](https://github.com/cedra-labs/move-contract-examples/blob/main/dex/sources/3-slippage.move#L61-L94)
+:::
 
-### Strategy 1: Dynamic Slippage Based on Trade Size
+1. **Price Impact Check**: Ensures trade won't move price too much
+2. **Slippage Validation**: Confirms output meets user expectations
+3. **Atomic Execution**: All checks pass or transaction reverts
 
-```move
-fun calculate_dynamic_slippage(amount_in: u64, reserve_in: u64): u64 {
-    let trade_percentage = (amount_in as u128) * 10000u128 / (reserve_in as u128);
-    
-    if (trade_percentage < 100) {        // < 1% of pool
-        50   // 0.5% slippage
-    } else if (trade_percentage < 500) { // < 5% of pool
-        100  // 1% slippage
-    } else {
-        200  // 2% slippage for large trades
-    }
-}
-```
-
-### Strategy 2: Time-Weighted Average Price (TWAP)
-
-```move
-struct PriceHistory has key {
-    prices: vector<u64>,
-    timestamps: vector<u64>,
-    current_index: u64
-}
-
-fun update_twap(pool: address, current_price: u64) acquires PriceHistory {
-    let history = borrow_global_mut<PriceHistory>(pool);
-    let now = timestamp::now_seconds();
-    
-    // Store price every minute
-    if (now - *vector::borrow(&history.timestamps, history.current_index) >= 60) {
-        history.current_index = (history.current_index + 1) % vector::length(&history.prices);
-        *vector::borrow_mut(&mut history.prices, history.current_index) = current_price;
-        *vector::borrow_mut(&mut history.timestamps, history.current_index) = now;
-    }
-}
-
-fun get_twap(pool: address, period: u64): u64 acquires PriceHistory {
-    // Calculate average price over period
-    let history = borrow_global<PriceHistory>(pool);
-    let mut sum = 0u128;
-    let mut count = 0u64;
-    let now = timestamp::now_seconds();
-    
-    let i = 0;
-    while (i < vector::length(&history.prices)) {
-        let timestamp = *vector::borrow(&history.timestamps, i);
-        if (now - timestamp <= period) {
-            sum = sum + (*vector::borrow(&history.prices, i) as u128);
-            count = count + 1;
-        }
-        i = i + 1;
-    }
-    
-    (sum / (count as u128) as u64)
-}
-```
-
-### Strategy 3: MEV Protection with Commit-Reveal
-
-```move
-struct PendingSwap has key {
-    commitment: vector<u8>,
-    amount_in: u64,
-    min_out: u64,
-    deadline: u64
-}
-
-// Phase 1: Commit to swap
-public entry fun commit_swap(
-    user: &signer,
-    commitment: vector<u8>,  // hash(amount_in, min_out, nonce)
-    deadline: u64
-) {
-    move_to(user, PendingSwap {
-        commitment,
-        amount_in: 0,
-        min_out: 0,
-        deadline
-    });
-}
-
-// Phase 2: Reveal and execute
-public entry fun reveal_swap(
-    user: &signer,
-    lp_metadata: Object<Metadata>,
-    amount_in: u64,
-    min_out: u64,
-    nonce: u64
-) acquires PendingSwap {
-    let pending = move_from<PendingSwap>(signer::address_of(user));
-    
-    // Verify commitment
-    let revealed = hash::sha3_256(
-        bcs::to_bytes(&amount_in) + 
-        bcs::to_bytes(&min_out) + 
-        bcs::to_bytes(&nonce)
-    );
-    assert!(revealed == pending.commitment, ERROR_INVALID_REVEAL);
-    
-    // Execute swap
-    safe_swap(user, lp_metadata, ..., amount_in, min_out, 100);
-}
-```
-
-## Integration Examples
-
-### Example 1: User-Friendly Web3 Integration
-
-```typescript
-class SafeDEX {
-  // Calculate recommended slippage based on trade size
-  async getRecommendedSlippage(
-    poolAddress: string,
-    amountIn: bigint
-  ): Promise<number> {
-    const [reserveIn, reserveOut] = await this.getReserves(poolAddress);
-    const priceImpact = this.calculatePriceImpact(amountIn, reserveIn, reserveOut);
-    
-    // Add buffer to price impact
-    if (priceImpact < 50) return 100;      // 1% for small trades
-    if (priceImpact < 200) return 300;     // 3% for medium trades
-    return 500;                            // 5% for large trades
-  }
-  
-  // Execute swap with auto-protection
-  async swapWithProtection(
-    user: Account,
-    poolAddress: string,
-    amountIn: bigint,
-    customSlippage?: number
-  ) {
-    const slippage = customSlippage ?? await this.getRecommendedSlippage(poolAddress, amountIn);
-    const expectedOut = await this.getAmountOut(poolAddress, amountIn);
-    const minOut = (expectedOut * BigInt(10000 - slippage)) / 10000n;
-    
-    return await this.cedra.transaction.build.simple({
-      function: `${MODULE_ADDRESS}::slippage::safe_swap`,
-      arguments: [
-        poolAddress,
-        inputToken,
-        outputToken,
-        amountIn.toString(),
-        minOut.toString(),
-        slippage
-      ]
-    });
-  }
-}
-```
-
-### Example 2: Arbitrage Bot Protection
-
-```move
-module dex::anti_mev {
-    struct LastSwap has key {
-        trader: address,
-        block_height: u64,
-        amount: u64
-    }
-    
-    public entry fun protected_swap(
-        user: &signer,
-        lp_metadata: Object<Metadata>,
-        amount_in: u64,
-        min_out: u64
-    ) acquires LastSwap {
-        let user_addr = signer::address_of(user);
-        let current_block = block::get_current_block_height();
-        
-        // Check for same-block repeated swaps
-        if (exists<LastSwap>(user_addr)) {
-            let last = borrow_global<LastSwap>(user_addr);
-            assert!(
-                last.block_height < current_block, 
-                ERROR_SAME_BLOCK_SWAP
-            );
-        }
-        
-        // Execute swap
-        slippage::safe_swap(user, lp_metadata, ..., amount_in, min_out, 100);
-        
-        // Record swap
-        move_to(user, LastSwap {
-            trader: user_addr,
-            block_height: current_block,
-            amount: amount_in
-        });
-    }
-}
-```
-
-## Testing Price Protection
-
-### Unit Test Suite
-
-```move
-#[test]
-fun test_price_impact_calculation() {
-    // Small trade: < 0.1% of pool
-    let impact = calculate_price_impact(
-        1_000_000,        // 1 token
-        1_000_000_000,    // 1000 token reserve
-        2_000_000_000     // 2000 token reserve
-    );
-    assert!(impact < 10, 0); // Less than 0.1%
-    
-    // Large trade: 10% of pool
-    let impact = calculate_price_impact(
-        100_000_000,      // 100 tokens
-        1_000_000_000,    // 1000 token reserve
-        2_000_000_000     // 2000 token reserve
-    );
-    assert!(impact > 1000, 1); // More than 10%
-}
-
-#[test]
-#[expected_failure(abort_code = ERROR_PRICE_IMPACT_TOO_HIGH)]
-fun test_excessive_price_impact() {
-    // Try to trade 50% of pool
-    safe_swap(
-        user,
-        lp_metadata,
-        x_metadata,
-        y_metadata,
-        500_000_000,      // 50% of reserve
-        0,
-        500
-    );
-}
-
-#[test]
-fun test_slippage_protection() {
-    let expected = 1_000_000;
-    let actual = 950_000;
-    
-    // Should pass with 10% tolerance
-    validate_slippage(expected, actual, 1000);
-    
-    // Should fail with 1% tolerance
-    validate_slippage(expected, actual, 100); // This will abort
-}
-```
-
-## Best Practices
-
-### 1. Default Protection Levels
-
-```move
-const DEFAULT_SLIPPAGE_BPS: u64 = 100;     // 1% default
-const WARNING_IMPACT_BPS: u64 = 200;       // Warn at 2%
-const CRITICAL_IMPACT_BPS: u64 = 500;      // Block at 5%
-```
-
-### 2. User Education
-
-Provide clear feedback about protection:
-
-```move
-struct SwapReceipt has drop {
-    amount_in: u64,
-    amount_out: u64,
-    price_impact_bps: u64,
-    slippage_applied_bps: u64,
-    protection_triggered: bool
-}
-
-public fun swap_with_receipt(
-    user: &signer,
-    ...
-): SwapReceipt {
-    // Execute swap and return detailed receipt
-}
-```
-
-### 3. Emergency Circuit Breakers
-
-```move
-struct CircuitBreaker has key {
-    max_trade_size: u64,
-    daily_volume_limit: u64,
-    current_volume: u64,
-    last_reset: u64
-}
-
-fun check_circuit_breaker(amount: u64) acquires CircuitBreaker {
-    let breaker = borrow_global_mut<CircuitBreaker>(@dex);
-    
-    // Reset daily counter
-    let now = timestamp::now_seconds();
-    if (now - breaker.last_reset > 86400) {
-        breaker.current_volume = 0;
-        breaker.last_reset = now;
-    }
-    
-    // Check limits
-    assert!(amount <= breaker.max_trade_size, ERROR_TRADE_TOO_LARGE);
-    assert!(
-        breaker.current_volume + amount <= breaker.daily_volume_limit,
-        ERROR_DAILY_LIMIT_EXCEEDED
-    );
-    
-    breaker.current_volume = breaker.current_volume + amount;
-}
-```
-
-## Common Issues and Solutions
-
-### Issue: "Price impact too high"
-**Causes**:
-- Trade size too large relative to pool
-- Insufficient liquidity
-
-**Solutions**:
-- Break trade into smaller chunks
-- Use multi-hop routing through deeper pools
-- Wait for more liquidity
-
-### Issue: "Slippage tolerance exceeded"
-**Causes**:
-- High volatility period
-- Front-running attempts
-- Network congestion
-
-**Solutions**:
-- Increase slippage tolerance
-- Use private mempools
-- Implement commit-reveal pattern
-
-### Issue: False positives blocking legitimate trades
-**Causes**:
-- Protection thresholds too strict
-- Calculation precision issues
-
-**Solutions**:
-- Implement dynamic thresholds
-- Add governance controls
-- Use time-weighted averages
-
-## Summary
+## Next Steps
 
 You've learned how to implement comprehensive price protection:
 
 - **Price Impact Calculation**: Measure true cost of trades
 - **Slippage Protection**: Ensure users get expected outputs
 - **Safe Swap Function**: Combine all protections atomically
-- **Advanced Strategies**: TWAP, MEV protection, circuit breakers
 
-These mechanisms create a safer trading environment while maintaining DEX efficiency.
+### [Multi-hop Routing for Optimal Execution](./multi-hop-routing)
+Build a router that finds the best path through multiple pools for optimal trade execution.
 
-Your DEX now provides institutional-grade price protection!
+### [DEX Client Integration Guide](./client-integration)
+Create a TypeScript/React frontend that interacts with your DEX smart contracts.

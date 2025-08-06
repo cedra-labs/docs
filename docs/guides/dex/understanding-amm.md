@@ -63,6 +63,10 @@ module tutorial::amm_demo {
 }
 ```
 
+:::tip View Complete Math Module
+Explore all AMM math functions: [`math_amm.move`](https://github.com/cedra-labs/move-contract-examples/blob/main/dex/sources/1-math-amm.move)
+:::
+
 ### The 0.3% Standard
 
 Every swap incurs a 0.3% fee, which:
@@ -76,6 +80,10 @@ let amount_in_with_fee = (amount_in as u128) * 997u128; // 99.7% after 0.3% fee
 let numerator = amount_in_with_fee * (reserve_out as u128);
 let denominator = (reserve_in as u128) * 1000u128 + amount_in_with_fee;
 ```
+
+:::tip View Source
+See the complete implementation: [`get_amount_out`](https://github.com/cedra-labs/move-contract-examples/blob/main/dex/sources/1-math-amm.move#L12-L26)
+:::
 
 Trading 100 USDC for ETH with 0.3% fee:
 - Effective input: 99.70 USDC
@@ -99,6 +107,10 @@ let lp_amount = if (total_supply == 0) {
     )
 }
 ```
+
+:::tip View Source
+See LP token calculations in action: [`add_liquidity`](https://github.com/cedra-labs/move-contract-examples/blob/main/dex/sources/2-swap.move#L106-L163)
+:::
 
 1. **Initial Liquidity**: Alice adds 100 ETH + 200,000 USDC
    - Receives: 1,414 LP tokens (sqrt(100 * 200,000))

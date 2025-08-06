@@ -31,12 +31,18 @@ struct TradingPair has key {
 }
 ```
 
+:::tip View Source
+See the complete struct definition: [`TradingPair`](https://github.com/cedra-labs/move-contract-examples/blob/main/dex/sources/2-swap.move#L20-L28)
+:::
+
 Each component serves a specific purpose:
 - **Reserves**: Separate stores for each token prevent conflicts
 - **Mint/Burn refs**: Control LP token supply
 - **Extend refs**: Enable programmatic management of reserves
 
-#### Step 1: Creating a Trading Pair
+---
+
+### Step 1: Creating a Trading Pair
 
 
 ```move
@@ -53,7 +59,11 @@ This function:
 3. Sets up separate reserve stores
 4. Returns LP token metadata for future operations
 
-#### Practical Example
+:::tip View Source
+Complete implementation: [`create_pair`](https://github.com/cedra-labs/move-contract-examples/blob/main/dex/sources/2-swap.move#L31-L71)
+:::
+
+You can see real example below:
 
 ```rust
 {
@@ -77,12 +87,11 @@ This function:
     }
 }
 ```
+---
 
-## Step 2: Adding Liquidity
+### Step 2: Adding Liquidity
 
 When adding liquidity, you must maintain the current pool ratio to ensure fair pricing. The `add_liquidity` function handles this automatically.
-
-### The add_liquidity Function
 
 ```move
 public entry fun add_liquidity(
@@ -101,7 +110,6 @@ Parameters explained:
 - **amount_x_desired, amount_y_desired**: Maximum amounts you're willing to provide
 - **amount_x_min, amount_y_min**: Minimum amounts to protect against slippage
 
-### Initial Liquidity Logic
 
 For the first liquidity provider:
 ```move
@@ -114,7 +122,14 @@ if (reserve_x == 0 && reserve_y == 0) {
 }
 ```
 
-## Step 3: Executing Swaps
+---
+
+### Step 3: Executing Swaps
+
+To execute swap you should:
+1. Validates input amount is non-zero
+2. Calculates output using AMM formula
+3. Checks output meets minimum requirement
 
 ```move
 public entry fun swap_exact_input(
@@ -127,13 +142,13 @@ public entry fun swap_exact_input(
 )
 ```
 
-This function:
-1. Validates input amount is non-zero
-2. Calculates output using AMM formula
-3. Checks output meets minimum requirement
-4. Executes the swap atomically
+:::tip View Source
+See the swap implementation: [`swap_exact_input`](https://github.com/cedra-labs/move-contract-examples/blob/main/dex/sources/2-swap.move#L74-L103)
+:::
 
-## Step 4: Monitoring Pool State
+---
+
+### Step 4: Monitoring Pool State
 
 The swap module provides several view functions for monitoring that we can use:
 
@@ -148,186 +163,9 @@ let exists = swap::pair_exists(lp_metadata);
 let (exists, reserve_x, reserve_y) = swap::get_pair_info(lp_metadata);
 ```
 
-### Calculating Pool Metrics
-
-```move
-// Calculate current price
-let price_x_in_y = (reserve_y * 1_000_000) / reserve_x; // 6 decimal precision
-
-// Calculate pool TVL (Total Value Locked)
-let tvl_in_y = reserve_y * 2; // Assuming equal value
-
-// Calculate your LP share
-let lp_balance = primary_fungible_store::balance(user_addr, lp_metadata);
-let total_supply = fungible_asset::supply(lp_metadata);
-let share_percentage = (lp_balance * 100) / total_supply;
-```
-
-## Common Integration Patterns
-
-### Pattern 1: Safe Swap with Price Check
-
-```move
-fun safe_swap_with_price_check(
-    user: &signer,
-    lp_metadata: Object<Metadata>,
-    amount_in: u64,
-    max_price_impact_bps: u64 // basis points (100 = 1%)
-) {
-    // Get current reserves
-    let (reserve_in, reserve_out) = swap::reserves(lp_metadata);
-    
-    // Calculate expected output
-    let expected_out = math_amm::get_amount_out(amount_in, reserve_in, reserve_out);
-    
-    // Calculate price impact
-    let spot_price = (reserve_out * 1_000_000) / reserve_in;
-    let execution_price = (amount_in * 1_000_000) / expected_out;
-    let price_impact = ((execution_price - spot_price) * 10_000) / spot_price;
-    
-    // Verify price impact is acceptable
-    assert!(price_impact <= max_price_impact_bps, ERROR_PRICE_IMPACT_TOO_HIGH);
-    
-    // Execute swap with 0.5% slippage tolerance
-    let min_out = (expected_out * 995) / 1000;
-    swap::swap_exact_input(
-        user,
-        lp_metadata,
-        input_metadata,
-        output_metadata,
-        amount_in,
-        min_out
-    );
-}
-```
-
-### Pattern 2: Zap Function (Single-Sided Liquidity)
-
-```move
-fun zap_single_token_to_lp(
-    user: &signer,
-    lp_metadata: Object<Metadata>,
-    token_metadata: Object<Metadata>,
-    amount: u64
-) {
-    // Split input amount
-    let swap_amount = amount / 2;
-    let add_amount = amount - swap_amount;
-    
-    // Swap half to the other token
-    swap::swap_exact_input(
-        user,
-        lp_metadata,
-        token_metadata,
-        other_token_metadata,
-        swap_amount,
-        0 // Calculate min_out based on current price
-    );
-    
-    // Add liquidity with both tokens
-    swap::add_liquidity(
-        user,
-        lp_metadata,
-        token_metadata,
-        other_token_metadata,
-        add_amount,
-        swapped_amount,
-        0,
-        0
-    );
-}
-```
-
-## Testing Your Trading Pair
-
-### Unit Test Example
-
-```move
-#[test(admin = @0x123, user = @0x456)]
-fun test_complete_flow(admin: &signer, user: &signer) acquires TradingPair {
-    // Setup
-    let eth = create_test_token(admin, b"ETH", 8);
-    let usdc = create_test_token(admin, b"USDC", 6);
-    
-    // Create pair
-    let lp = swap::create_pair(admin, eth, usdc);
-    
-    // Add initial liquidity
-    mint_tokens(admin, eth, 100_000_000); // 100 ETH
-    mint_tokens(admin, usdc, 200_000_000_000); // 200,000 USDC
-    
-    swap::add_liquidity(
-        admin, lp, eth, usdc,
-        100_000_000, 200_000_000_000,
-        0, 0
-    );
-    
-    // Verify reserves
-    let (r_x, r_y) = swap::reserves(lp);
-    assert!(r_x == 100_000_000, 0);
-    assert!(r_y == 200_000_000_000, 1);
-    
-    // Test swap
-    mint_tokens(user, eth, 1_000_000); // 1 ETH
-    swap::swap_exact_input(
-        user, lp, eth, usdc,
-        1_000_000, 1_900_000_000 // Expect ~1,977 USDC
-    );
-    
-    // Verify user received USDC
-    let user_usdc = primary_fungible_store::balance(signer::address_of(user), usdc);
-    assert!(user_usdc > 1_900_000_000, 2);
-}
-```
-
-## Troubleshooting Guide
-
-### Error: "Pair already exists"
-- Each token pair can only have one pool
-- Check if pair already exists using `pair_exists()` view function
-
-### Error: "Insufficient output"
-- Slippage tolerance too tight
-- Pool reserves changed between calculation and execution
-- Solution: Increase `min_amount_out` parameter
-
-### Error: "Zero amount"
-- Ensure input amounts are greater than 0
-- Check token decimals match expected values
-
-### Gas Optimization Tips
-
-1. **Batch Operations**: Combine multiple operations in single transaction
-2. **Use View Functions**: Check state before executing transactions
-3. **Optimal Amounts**: Use quote function to avoid failed transactions
-
-## Security Considerations
-
-### 1. Reentrancy Protection
-Move's resource model prevents reentrancy by design:
-```move
-// Resources can only be moved once
-let asset_in = primary_fungible_store::withdraw(user, x_metadata, amount_in);
-fungible_asset::deposit(pair.reserve_x, asset_in);
-```
-
-### 2. Integer Overflow Protection
-All arithmetic operations are checked:
-```move
-// Safe multiplication with automatic overflow checks
-let lp_supply = ((amount_x as u128) * total_supply / (reserve_x as u128) as u64);
-```
-
-### 3. Access Control
-Only authorized signers can modify reserves:
-```move
-// Only pair contract can withdraw from reserves
-let fa = fungible_asset::withdraw(
-    &object::generate_signer_for_extending(&pair.reserve_y_ref),
-    pair.reserve_y,
-    amount_out
-);
-```
+:::tip Complete Swap Module
+Explore the full trading pair implementation: [`swap.move`](https://github.com/cedra-labs/move-contract-examples/blob/main/dex/sources/2-swap.move)
+:::
 
 ## Summary
 
@@ -336,6 +174,23 @@ You've learned how to:
 - Add liquidity while maintaining pool ratios
 - Execute swaps with slippage protection
 - Monitor and interact with pool state
-- Implement common integration patterns
 
-Your trading pair is now ready for production use!
+Your trading pair is now ready for use!
+
+## Next Steps
+
+You've learned how AMMs use the x*y=k formula to enable decentralized trading. Key takeaways:
+
+- Constant product formula maintains market equilibrium
+- Trading fees compensate liquidity providers
+- Price impact increases with trade size
+- LP tokens represent proportional pool ownership
+
+### [Adding Price Protection Mechanisms](./price-protection)
+Implement slippage protection, minimum output amounts, and deadline checks to protect users.
+
+### [Multi-hop Routing for Optimal Execution](./multi-hop-routing)
+Build a router that finds the best path through multiple pools for optimal trade execution.
+
+### [DEX Client Integration Guide](./client-integration)
+Create a TypeScript/React frontend that interacts with your DEX smart contracts.
