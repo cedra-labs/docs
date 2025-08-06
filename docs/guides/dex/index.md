@@ -1,0 +1,65 @@
+# Build a DEX on Cedra - Complete Guide
+<!-- # TODO: Add cross links with a code and next articles -->
+
+Welcome to the comprehensive guide for building a decentralized exchange (DEX) on Cedra. This six-part series will take you from understanding the fundamentals to deploying a production-ready DEX with advanced features.
+
+---
+
+## What You'll Build
+
+By the end of this guide, you'll have created a production-ready DEX featuring:
+- **Automated Market Maker (AMM)** pools with constant product formula (x*y=k)
+- **Multi-token trading pairs** with automatic price discovery
+- **Advanced price protection** including slippage tolerance and price impact limits
+- **Multi-hop routing** for optimal trade execution across pools
+- **Complete TypeScript client** with React integration
+
+---
+
+## Guide Structure
+
+### [1. Understanding Automated Market Makers](./dex/understanding-amm)
+Deep dive into AMM mechanics, constant product formulas, liquidity provision, and impermanent loss.
+
+### [2. Building Your First Trading Pair](./dex/first-trading-pair)
+Hands-on implementation of a basic trading pair with swap, add liquidity, and remove liquidity functions.
+
+### [3. Adding Price Protection Mechanisms](./dex/price-protection)
+Implement slippage protection, minimum output amounts, and deadline checks to protect users.
+
+### [4. Multi-hop Routing for Optimal Execution](./dex/multi-hop-routing)
+Build a router that finds the best path through multiple pools for optimal trade execution.
+
+### [5. DEX Client Integration Guide](./dex/client-integration)
+Create a TypeScript/React frontend that interacts with your DEX smart contracts.
+
+:::tip Source Code Available
+All code from this tutorial series is available in our GitHub repository:
+
+🔗 **[github.com/cedra-labs/move-contract-examples/tree/main/dex](https://github.com/cedra-labs/move-contract-examples/tree/main/dex)**
+
+The repository includes:
+- ✅ Complete Move smart contracts
+- ✅ TypeScript SDK integration examples  
+- ✅ Comprehensive test suites
+- ✅ Deployment scripts
+- ✅ Documentation and comments
+:::
+
+## Prerequisites
+
+Before starting this guide, ensure you have:
+- ✅ [Installed Rust and Node.js](/getting-started/libs)
+- ✅ [Installed the Cedra CLI](/getting-started/cli)
+- ✅ [Obtained test tokens from the faucet](/getting-started/faucet)
+- ✅ Basic understanding of [Move programming fundamentals](/move)
+
+---
+
+## Ready to Build the Future of DeFi?
+
+By the end, you'll have the knowledge and code to compete with established DEXs while leveraging Cedra's superior performance and cost efficiency.
+
+Start with [Understanding Automated Market Makers](./dex/understanding-amm) →
+
+Or jump directly to the [complete source code](https://github.com/cedra-labs/move-contract-examples/tree/main/dex) to see the full implementation.

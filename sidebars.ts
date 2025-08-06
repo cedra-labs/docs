@@ -172,6 +172,41 @@ const sidebars: SidebarsConfig = {
           type: 'doc',
           id: 'guides/escrow',
           label: 'Building Secure Token vesting, Marketplace payments via Escrow'
+        },
+        {
+          type: 'category',
+          label: 'Build a DEX on Cedra',
+          link: {
+            type: 'doc',
+            id: 'guides/dex/index',
+          },
+          items: [
+            {
+              type: 'doc',
+              id: 'guides/dex/understanding-amm',
+              label: '1. Understanding Automated Market Makers'
+            },
+            {
+              type: 'doc',
+              id: 'guides/dex/first-trading-pair',
+              label: '2. Building Your First Trading Pair'
+            },
+            {
+              type: 'doc',
+              id: 'guides/dex/price-protection',
+              label: '3. Adding Price Protection Mechanisms'
+            },
+            {
+              type: 'doc',
+              id: 'guides/dex/multi-hop-routing',
+              label: '4. Multi-hop Routing for Optimal Execution'
+            },
+            {
+              type: 'doc',
+              id: 'guides/dex/client-integration',
+              label: '5. DEX Client Integration Guide'
+            }
+          ]
         }
       ],
     },
