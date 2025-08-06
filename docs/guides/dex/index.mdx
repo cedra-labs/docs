@@ -1,5 +1,4 @@
 # Build a DEX on Cedra - Complete Guide
-<!-- # TODO: Add cross links with a code and next articles, update move to rust -->
 
 Welcome to the comprehensive guide for building a decentralized exchange (DEX) on Cedra. This six-part series will take you from understanding the fundamentals to deploying a production-ready DEX with advanced features.
 
@@ -18,6 +17,19 @@ By the end of this guide, you'll have created a production-ready DEX featuring:
 
 ## Guide Structure
 
+:::tip Source Code Available
+All code from this tutorial series is available in our GitHub repository:
+
+🔗 **[github.com/cedra-labs/move-contract-examples/tree/main/dex](https://github.com/cedra-labs/move-contract-examples/tree/main/dex)**
+
+The repository includes:
+- ✅ Complete Move smart contracts
+- ✅ TypeScript SDK integration examples  
+- ✅ Comprehensive test suites
+- ✅ Deployment scripts
+- ✅ Documentation and comments
+:::
+
 ### [1. Understanding Automated Market Makers](./dex/understanding-amm)
 Deep dive into AMM mechanics, constant product formulas, liquidity provision, and impermanent loss.
 
@@ -33,26 +45,34 @@ Build a router that finds the best path through multiple pools for optimal trade
 ### [5. DEX Client Integration Guide](./dex/client-integration)
 Create a TypeScript/React frontend that interacts with your DEX smart contracts.
 
-:::tip Source Code Available
-All code from this tutorial series is available in our GitHub repository:
-
-🔗 **[github.com/cedra-labs/move-contract-examples/tree/main/dex](https://github.com/cedra-labs/move-contract-examples/tree/main/dex)**
-
-The repository includes:
-- ✅ Complete Move smart contracts
-- ✅ TypeScript SDK integration examples  
-- ✅ Comprehensive test suites
-- ✅ Deployment scripts
-- ✅ Documentation and comments
-:::
+import {CardList} from '@site/src/components/CardList';
 
 ## Prerequisites
+
+<CardList>
+  <CardList.Card 
+    title="Development Environment" 
+    description="Install Rust, Node.js, and the Cedra CLI following our setup guide"
+    to="/getting-started/libs"
+  />
+  <CardList.Card 
+    title="Test Tokens" 
+    description="Get testnet tokens from our faucet to deploy and test your DEX"
+    to="/getting-started/faucet"
+  />
+  <CardList.Card 
+    title="Move Basics" 
+    description="Understand Move fundamentals - the smart contract language powering Cedra"
+    to="/move"
+  />
+</CardList>
+<!-- ## Prerequisites
 
 Before starting this guide, ensure you have:
 - ✅ [Installed Rust and Node.js](/getting-started/libs)
 - ✅ [Installed the Cedra CLI](/getting-started/cli)
 - ✅ [Obtained test tokens from the faucet](/getting-started/faucet)
-- ✅ Basic understanding of [Move programming fundamentals](/move)
+- ✅ Basic understanding of [Move programming fundamentals](/move) -->
 
 ---
 

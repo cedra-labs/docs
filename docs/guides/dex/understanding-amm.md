@@ -30,38 +30,48 @@ When someone buys 10 ETH:
 2. To maintain k, USDC must increase: 2,000,000,000 / 990 = 2,020,202
 3. User pays: 2,020,202 - 2,000,000 = 20,202 USDC
 
-### Price Impact Demonstration
+### Price Impact in Action
 
-Let's see how trade size affects price:
+The relationship between trade size and price impact isn't linear - it's exponential. This fundamental property of the constant product formula protects pools from being drained while ensuring continuous liquidity availability. Let's explore this through a practical demonstration that shows how dramatically prices change as trades get larger.
 
-```move
+```rust
 module tutorial::amm_demo {
     use simple_dex::math_amm;
     
     #[test]
     fun demonstrate_price_impact() {
-        let reserve_eth = 1000000; // 1,000 ETH (6 decimals)
-        let reserve_usdc = 2000000000; // 2,000,000 USDC (6 decimals)
+        // Initialize our pool with a 1:2000 ETH/USDC ratio
+        // This represents a typical mid-sized liquidity pool
+        let reserve_eth = 1000000; // 1,000 ETH with 6 decimal precision
+        let reserve_usdc = 2000000000; // 2,000,000 USDC establishing $2000/ETH price
         
-        // Small trade: 1 ETH
+        // Small trades barely move the price - this is what enables
+        // efficient trading for regular users. The pool can handle
+        // many small trades without significant price deterioration
         let small_output = math_amm::get_amount_out(
-            1000000, // 1 ETH
+            1000000, // Trading just 1 ETH
             reserve_eth,
             reserve_usdc
         );
-        // Result: ~1,996 USDC (0.2% slippage)
+        // The output is approximately 1,996 USDC, showing only 0.2% slippage
+        // This minor price impact makes the pool attractive for traders
         
-        // Large trade: 100 ETH
+        // Large trades tell a different story. As trade size increases
+        // relative to pool reserves, the price impact grows exponentially
+        // This natural mechanism prevents pool manipulation
         let large_output = math_amm::get_amount_out(
-            100000000, // 100 ETH
+            100000000, // Trading 100 ETH (10% of pool)
             reserve_eth,
             reserve_usdc
         );
-        // Result: ~181,488 USDC per 100 ETH = 1,814.88 per ETH
-        // Price impact: ~9.2%
+        // The total output is ~181,488 USDC for 100 ETH
+        // That's only 1,814.88 per ETH - a 9.2% price impact!
+        // This dramatic difference protects the pool while rewarding liquidity providers
     }
 }
+
 ```
+This exponential price curve serves multiple purposes: it maintains pool stability by making large trades increasingly expensive, creates arbitrage opportunities that keep prices aligned across markets, and ensures there's always liquidity available at some price point. The beauty of this system lies in its simplicity - no complex order matching or market makers needed, just pure mathematics ensuring fair and continuous trading.
 
 :::tip View Complete Math Module
 Explore all AMM math functions: [`math_amm.move`](https://github.com/cedra-labs/move-contract-examples/blob/main/dex/sources/1-math-amm.move)
@@ -74,7 +84,7 @@ Every swap incurs a 0.3% fee, which:
 - Creates sustainable yield for the protocol
 - Prevents arbitrage attacks
 
-```move
+```rust
 // From math_amm.move
 let amount_in_with_fee = (amount_in as u128) * 997u128; // 99.7% after 0.3% fee
 let numerator = amount_in_with_fee * (reserve_out as u128);
@@ -96,7 +106,7 @@ Trading 100 USDC for ETH with 0.3% fee:
 
 When you provide liquidity, you receive LP tokens representing your pool share:
 
-```move
+```rust
 // Simplified LP calculation
 let lp_amount = if (total_supply == 0) {
     sqrt(amount_x * amount_y) // Initial liquidity

@@ -281,10 +281,10 @@ export async function addLiquidity(
 
 The crown jewel - `executeSwap()`. This function orchestrates the entire trading experience:
 
-- It checks the user's balance (no embarrassing failed transactions)<br />
-- Calculates the expected output (users see what they'll get)<br />
-- Executes the trade with protection (slippage limits keep them safe)<br />
-- Shows the actual result (transparency builds trust)<br />
+1. **Balance Check**: Verifies sufficient funds (no embarrassing failed transactions)
+2. **Output Preview**: Calculates expected returns (users see what they'll get)
+3. **Protected Execution**: Applies slippage limits (keeps trades safe)
+4. **Transparent Results**: Shows actual outcomes (builds user trust)
 
 The `calculateSwapOutput()` helper lets users preview their trades. They can experiment with different amounts, watching how price impact changes, learning by doing rather than reading formulas.
 
@@ -349,10 +349,6 @@ export async function calculateSwapOutput(
   return Number(amountOut);
 }
 ```
-
-## Summary
-This client transforms your DEX from a technical achievement into a user experience. Every function has been crafted to hide complexity while maintaining transparency. Users can trade without understanding Automated Market Makers, yet the educational examples are there when curiosity strikes.
-
 Your DEX client is now ready to provide a smooth trading experience!
 
 ## 🎉 Congratulations, DEX Builder!
@@ -368,15 +364,9 @@ Your DEX can now:
 - Handle errors gracefully and informatively
 
 You're no longer just learning about DeFi - you're building it. Every line of code in this client represents knowledge earned through the course.
+### Continue Your Journey
 
-## Next Steps
+Now that you've mastered DEX development, explore these related challenges:
 
-1. **Add Features**: Implement charts, order history, favorites
-2. **Mobile Support**: Build React Native client
-3. **Advanced Orders**: Add limit orders, stop-loss
-4. **Analytics**: Track user behavior and pool performance
-
-
-### Don't forget about our other contract examples:
-* **Build your own tokens**: Create fungible assets using our [First FA Guide](/guides/first-fa) 
-* **Explore more contracts**: Check out other [Move examples](https://github.com/cedra-labs/move-contract-examples) for inspiration
+* **Token Creation**: Ready to create your own trading pairs? Start with our [First FA Guide](/guides/first-fa) to mint custom tokens for your DEX
+* **Advanced Patterns**: Dive into our [Move examples repository](https://github.com/cedra-labs/move-contract-examples) for governance, staking, and other DeFi primitives to enhance your DEX

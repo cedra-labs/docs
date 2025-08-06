@@ -13,13 +13,9 @@ In this tutorial, you'll build and deploy your first trading pair using Cedra's 
 
 ## What is a Trading Pair?
 
-A trading pair is a smart contract that:
-- Holds reserves of two tokens (e.g., ETH/USDC)
-- Enables swapping between these tokens
-- Issues LP tokens to liquidity providers
-- Maintains the constant product formula (x*y=k)
+A trading pair isn't just a container for tokens - it's a sophisticated financial instrument that manages reserves, tracks ownership, and enables atomic operations. Each field in the `TradingPair` struct serves a critical purpose in maintaining the integrity and functionality of the liquidity pool.
 
-```move
+```rust
 struct TradingPair has key {
     reserve_x: Object<FungibleStore>,    // Token A reserves
     reserve_y: Object<FungibleStore>,    // Token B reserves
@@ -30,6 +26,12 @@ struct TradingPair has key {
     reserve_y_ref: ExtendRef             // For managing reserve Y
 }
 ```
+
+:::info Architecture Decision
+The use of separate `ExtendRef` objects for each reserve might seem redundant, but it follows the principle of least privilege. Each reference grants specific permissions, making the contract's intentions explicit and auditable.
+:::
+
+The separation of reserves into distinct FungibleStore objects prevents any possibility of token mixing or confusion - a critical safety feature when handling user funds. The mint and burn references provide controlled access to LP token supply, ensuring that tokens can only be created when liquidity is added and destroyed when it's removed.
 
 :::tip View Source
 See the complete struct definition: [`TradingPair`](https://github.com/cedra-labs/move-contract-examples/blob/main/dex/sources/2-swap.move#L20-L28)
@@ -45,7 +47,7 @@ Each component serves a specific purpose:
 ### Step 1: Creating a Trading Pair
 
 
-```move
+```rust
 public fun create_pair(
     lp_creator: &signer, 
     x_metadata: Object<Metadata>, 
@@ -93,7 +95,7 @@ You can see real example below:
 
 When adding liquidity, you must maintain the current pool ratio to ensure fair pricing. The `add_liquidity` function handles this automatically.
 
-```move
+```rust
 public entry fun add_liquidity(
     user: &signer,
     lp_metadata: Object<Metadata>,
@@ -112,7 +114,7 @@ Parameters explained:
 
 
 For the first liquidity provider:
-```move
+```rust
 if (reserve_x == 0 && reserve_y == 0) {
     // Use exact amounts provided
     (amount_x_desired, amount_y_desired)
@@ -131,7 +133,7 @@ To execute swap you should:
 2. Calculates output using AMM formula
 3. Checks output meets minimum requirement
 
-```move
+```rust
 public entry fun swap_exact_input(
     user: &signer,
     lp_metadata: Object<Metadata>,
@@ -152,7 +154,7 @@ See the swap implementation: [`swap_exact_input`](https://github.com/cedra-labs/
 
 The swap module provides several view functions for monitoring that we can use:
 
-```move
+```rust
 // Get current reserves
 let (reserve_x, reserve_y) = swap::reserves(lp_metadata);
 

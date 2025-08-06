@@ -38,7 +38,7 @@ Slippage = (Expected Output - Actual Output) / Expected Output
 
 ## Understanding the Slippage Module
 
-```move
+```rust
 const MAX_SLIPPAGE_BPS: u64 = 500;      // 5% maximum slippage
 const MAX_PRICE_IMPACT_BPS: u64 = 300;  // 3% maximum price impact
 ```
@@ -47,17 +47,24 @@ These constants protect users from:
 - **Large price movements**: 3% max impact prevents manipulation
 - **Sandwich attacks**: 5% max slippage limits MEV profitability
 
-What is Basis Points?
+## Working with Basis Points
 
-- 1 basis point (bps) = 0.01%
-- 100 bps = 1%
-- 10,000 bps = 100%
+Financial systems avoid floating-point arithmetic due to precision errors that can compound over millions of transactions. Instead, we use basis points - a standard unit in finance that represents one hundredth of a percent. This approach gives us the precision needed for accurate calculations while using only integer math, making our contracts both efficient and deterministic.
 
-Using basis points avoids floating-point math while maintaining precision.
+```rust
+const MAX_SLIPPAGE_BPS: u64 = 500;      // 5% maximum slippage
+const MAX_PRICE_IMPACT_BPS: u64 = 300;  // 3% maximum price impact
+```
 
-#### Calculating Price Impact
+Understanding basis points is crucial for DEX development. When a user sets 1% slippage tolerance, we represent this as 100 basis points. This granularity allows users to fine-tune their risk tolerance - someone might choose 50 basis points (0.5%) for stable pairs but 300 basis points (3%) for volatile tokens. The conversion is straightforward: multiply percentages by 100 to get basis points, or divide basis points by 100 to get percentages.
 
-```move
+:::warning Production Consideration
+In production, consider making these limits configurable per pool. Stable pairs might use 10 bps limits while volatile pairs might need 1000 bps to function effectively.
+:::
+
+### Calculating Price Impact
+
+```rust
 public fun calculate_price_impact(
     amount_in: u64,
     reserve_in: u64,
@@ -93,7 +100,7 @@ if (execution_price > spot_price) {
 
 #### Real-World Calculation Example
 
-```move
+```rust
 // Pool: 1,000 ETH / 2,000,000 USDC
 let reserve_eth = 1_000_000_000;    // 1,000 ETH (6 decimals)
 let reserve_usdc = 2_000_000_000_000; // 2,000,000 USDC (6 decimals)
@@ -117,7 +124,7 @@ let impact = calculate_price_impact(usdc_needed, reserve_usdc, reserve_eth);
 
 The slippage validation ensures users receive at least their minimum acceptable output, protecting against price movements between quote and execution. This calculation measures the percentage difference between what the user expected and what they actually received. If the difference exceeds the user's tolerance, the transaction reverts - preventing losses from front-running or sudden market movements.
 
-```move
+```rust
 public fun validate_slippage(
     expected_output: u64,
     actual_output: u64,
@@ -129,7 +136,7 @@ This function ensures the actual output meets user expectations within tolerance
 
 ### Slippage Calculation Logic
 
-```move
+```rust
 let slippage = if (expected_output > actual_output) {
     // Calculate percentage difference
     ((expected_output - actual_output) as u128) * 10000u128 / (expected_output as u128)
@@ -147,7 +154,7 @@ See validation logic: [`validate_slippage`](https://github.com/cedra-labs/move-c
 
 #### Practical Example
 
-```move
+```rust
 // User expects 1,980 USDC for 1 ETH
 let expected = 1_980_000_000;  // 1,980 USDC
 let actual = 1_950_000_000;    // 1,950 USDC (pool changed)
@@ -165,7 +172,7 @@ validate_slippage(expected, actual, 200); // 200 bps = 2%
 
 The safe swap function combines all our protection mechanisms into a single, user-friendly entry point. It performs comprehensive checks before executing any trade: first validating that the price impact won't exceed safe limits, then ensuring the output meets the user's minimum requirements, and finally executing the swap only if all protections pass.
 
-```move
+```rust
 public entry fun safe_swap(
     user: &signer,
     lp_metadata: Object<Metadata>,

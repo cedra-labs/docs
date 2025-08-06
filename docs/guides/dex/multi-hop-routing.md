@@ -11,28 +11,30 @@ Not all token pairs have direct liquidity pools. Multi-hop routing enables trade
 
 ---
 
-## Why Multi-hop Routing?
+## The Liquidity Network Challenge
 
-In a DEX with N tokens, there could be N*(N-1)/2 possible pairs:
-- 10 tokens = 45 possible pairs
-- 100 tokens = 4,950 possible pairs
-- 1000 tokens = 499,500 possible pairs
+Imagine a DEX as a city where tokens are neighborhoods and liquidity pools are roads connecting them. In a perfect world, every neighborhood would have a direct road to every other neighborhood. But in reality, building and maintaining all these roads (liquidity pools) is impossibly expensive. With just 100 tokens, you'd need 4,950 separate pools to connect everything directly.
 
-Most pairs won't have direct liquidity, making multi-hop essential.
-```
-Available pools:
-- ETH/USDC (deep liquidity)
-- USDC/DAI (stable pair)
-- ETH/WBTC (correlated assets)
-```
+Multi-hop routing solves this by finding paths through intermediate destinations. Just as you might drive through downtown to get from the suburbs to the airport, tokens can route through major pairs like ETH/USDC to reach their destination. This creates a hub-and-spoke model where major tokens act as liquidity highways, dramatically reducing the infrastructure needed while maintaining global connectivity.
 
-User wants: DAI → WBTC
-Solution: DAI → USDC → ETH → WBTC
+#### Reality in our DEX:
+
+ETH/USDC: $10M liquidity (major highway)
+USDC/DAI: $5M liquidity (stablecoin corridor)
+ETH/WBTC: $3M liquidity (crypto blue chips)
+SMALL/ETH: $50k liquidity (community token)
+
+* **User wants**: DAI → SMALL (no direct pool exists)
+* **Solution**: DAI → USDC → ETH → SMALL (three hops through liquid paths)
+
+:::note Did You Know?
+The constant product formula was first implemented by Uniswap V1 in 2018. Despite its simplicity, it remains the foundation for most DEXs today, processing billions in daily volume.
+:::
 
 ### Understanding the Multihop Module
 It ebales token swaps through intermediate pools when direct pairs don't exist or have insufficient liquidity. By chaining multiple swaps in a single atomic transaction, users can trade between any tokens in the ecosystem while maintaining security guarantees - if any swap in the chain fails, the entire transaction reverts, protecting users from partial execution risks
 
-```move
+```rust
 public entry fun swap_exact_input_multihop(
     user: &signer,
     xy_lp_metadata: Object<Metadata>,  // First pool (X→Y)
@@ -59,7 +61,7 @@ Complete multi-hop implementation: [`swap_exact_input_multihop`](https://github.
 
 Let's dive deep into Step-by-Step Breakdown
 
-```move
+```rust
 // Step 1: Get first pool reserves
 let (reserve_x1, reserve_y1) = swap::reserves(xy_lp_metadata);
 
@@ -113,24 +115,25 @@ All swaps execute in a single transaction:
 
 ---
 
-### Example 1: Stablecoin Arbitrage Route
-Example below demonstrates how multi-hop routing can reduce trading costs by finding more efficient paths. When swapping between stablecoins, routing through intermediate pairs with lower fees often results in better execution than direct swaps. Here we save 0.2% in fees by using two 0.05% fee pools instead of one 0.3% fee pool - a significant saving for large trades.
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-```move
-// Pools: USDC/USDT (0.05% fee), USDT/DAI (0.05% fee)
-// More efficient than direct USDC/DAI (0.3% fee)
+## Real-World Routing Strategies
 
-fun efficient_stable_swap(
-    user: &signer,
-    amount_usdc: u64
-) {
-    // Route: USDC → USDT → DAI
-    // Total fees: 0.1% vs 0.3% direct
-    
+<Tabs>
+  <TabItem value="stable" label="Stablecoin Arbitrage" default>
+
+This strategy exploits fee differences between pools. When stablecoin pools have different fee tiers, routing through lower-fee pools can save significant costs, especially for large trades. The 0.2% saved might seem small, but on a $1M trade, that's $2,000 in savings.
+
+```rust
+// Route through low-fee stable pools
+fun efficient_stable_swap(user: &signer, amount_usdc: u64) {
+    // USDC → USDT → DAI through 0.05% pools
+    // Saves 0.2% vs direct 0.3% pool
     multihop::swap_exact_input_multihop(
         user,
-        usdc_usdt_pool,
-        usdt_dai_pool,
+        usdc_usdt_pool,  // 0.05% fee tier
+        usdt_dai_pool,   // 0.05% fee tier
         usdc_metadata,
         usdt_metadata,
         dai_metadata,
@@ -139,40 +142,20 @@ fun efficient_stable_swap(
     );
 }
 ```
+</TabItem>
+  <TabItem value="cross" label="Cross-Market Swap">
+  Many tokens only have liquidity against ETH or USDC, creating isolated markets. This example shows how multi-hop routing breaks down these barriers, enabling any-to-any token swaps through bridge tokens.
 
-### Example 2: Cross-Market Token Swap
-
-Many smaller or newer tokens only have liquidity against major pairs like ETH or USDC. This example shows how to access these isolated markets through multi-hop routing. By using ETH as a bridge token, users can swap between USDC and any small-cap token even without a direct USDC/SMALL pool, dramatically expanding the accessible token ecosystem.
-
-```move
-// Scenario: Small cap token only paired with ETH
-// User wants to swap USDC for SMALL token
-
-fun swap_usdc_to_small_token(
-    user: &signer,
-    usdc_amount: u64
-) {
-    // Route: USDC → ETH → SMALL
-    
-    // First, calculate expected ETH from USDC
+```rust
+// Access isolated markets through ETH bridge
+fun swap_usdc_to_small_token(user: &signer, usdc_amount: u64) {
+    // Calculate path: USDC → ETH → SMALL
     let (usdc_reserves, eth_reserves) = swap::reserves(usdc_eth_pool);
     let eth_amount = math_amm::get_amount_out(
-        usdc_amount,
-        usdc_reserves,
-        eth_reserves
+        usdc_amount, usdc_reserves, eth_reserves
     );
     
-    // Then, calculate expected SMALL from ETH
-    let (eth_reserves2, small_reserves) = swap::reserves(eth_small_pool);
-    let small_amount = math_amm::get_amount_out(
-        eth_amount,
-        eth_reserves2,
-        small_reserves
-    );
-    
-    // Apply 2% slippage for safety
-    let min_small = (small_amount * 98) / 100;
-    
+    // Route through ETH to reach small cap token
     multihop::swap_exact_input_multihop(
         user,
         usdc_eth_pool,
@@ -181,10 +164,14 @@ fun swap_usdc_to_small_token(
         eth_metadata,
         small_metadata,
         usdc_amount,
-        min_small
+        calculate_min_output(eth_amount, 200) // 2% slippage
     );
 }
 ```
+</TabItem>
+</Tabs>
+
+---
 
 ### When to Use Multi-hop
 
