@@ -19,6 +19,10 @@ We recommend using your operating system's package manager for the easiest insta
 
 ### Option 1 - Install via APT repository (Ubuntu/Debian - recommended)
 
+:::tip Ubuntu Version
+We recommend using Ubuntu 22.04 or later for the best compatibility.
+:::
+
 For Ubuntu/Debian users, install via the official PPA:
 
 ```bash
@@ -83,6 +87,15 @@ Use pre-built binaries if:
 
    * **macOS / Linux**: `/usr/local/bin` or `$HOME/.local/bin`
    * **Windows**: `C:\Windows\System32` or any folder listed in *Environment Variables → Path*
+
+:::warning macOS Security
+On macOS, you may need to approve the CLI in System Settings:
+1. When you first run `cedra`, macOS may block it as an unidentified developer
+2. Go to **System Settings → Privacy & Security**
+3. Find the blocked app notification and click **"Open Anyway"**
+4. Alternatively, you can run: `xattr -d com.apple.quarantine /path/to/cedra`
+:::
+
 5. Check current CLI version:
 
 ```bash
@@ -95,8 +108,8 @@ If you prefer compiling yourself or contributing to Cedra:
 
 ```bash
 git clone https://github.com/cedra-labs/cedra-network
-cd cedra-network/devtools/cedra-cargo-cli
-cargo build --release
+cd cedra-network
+cargo build --release -p cedra
 ```
 
 The compiled binary will be at `target/release/cedra` (or `.exe` on Windows). Add it to your **PATH** and run `cedra --version` to confirm.
