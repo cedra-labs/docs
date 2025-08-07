@@ -16,6 +16,7 @@ Cedra is the first community-owned blockchain built on the Move language that le
 
 ### 🔍 Explore the Network
 
+- **🔎 Block Explorer:** [View live blocks on Cedrascan](https://cedrascan.com)
 - **👥 Check Validators:** [View current validator set](https://testnet.cedra.dev/v1/accounts/0x1/resource/0x1::stake::ValidatorSet)
 - **🪙 Cedra Coin Info:** [Default coin information](https://testnet.cedra.dev/v1/accounts/0x1/resource/0x1::coin::CoinInfo%3C0x1::cedra_coin::CedraCoin%3E)
 
