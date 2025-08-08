@@ -63,10 +63,10 @@ Declares the contract and pulls in Move-standard helpers
 
 ```rust
 module FeeSplitter::FeeSplitter {
-    use aptos_framework::fungible_asset::Metadata;
-    use aptos_framework::primary_fungible_store;
-    use aptos_framework::object::Object;
-    use aptos_std::math64;
+    use cedra_framework::fungible_asset::Metadata;
+    use cedra_framework::primary_fungible_store;
+    use cedra_framework::object::Object;
+    use cedra_std::math64;
     use std::{vector, error, signer};
 ```
 
@@ -75,7 +75,7 @@ module FeeSplitter::FeeSplitter {
 * `fungible_asset::Metadata` - type handle that identifies any fungible token (CEDRA, USDC …).
 * `primary_fungible_store` - framework vault that debits/credits balances between accounts.
 * `object::Object` - wrapper for referencing on-chain objects such as metadata handles.
-* `aptos_std::math64` - overflow-safe 64-bit multiply-then-divide helper used for proportional maths.
+* `cedra_std::math64` - overflow-safe 64-bit multiply-then-divide helper used for proportional maths.
 * `std::{vector, error, signer}` - core utilities for dynamic arrays, structured aborts, and signer introspection.
 
 ### 3.2 Constants & errors
@@ -258,7 +258,7 @@ Aggregate shares must not exceed **10 000 bp (100 %)**.
 // -----------------------------------------------------------------------------
 // Fee Splitter client wrapper
 class FeeSplitterClient {
-  private aptos: Aptos;
+  private cedra: Cedra;
   private moduleAddress: string;
   private moduleName: string;
 
@@ -266,14 +266,14 @@ class FeeSplitterClient {
     if (moduleAddress === "_") {
       console.warn("⚠️  MODULE_ADDRESS not set - deploy the contract then update this constant.");
     }
-    this.aptos = new Aptos(new AptosConfig({ network }));
+    this.cedra = new Cedra(new CedraConfig({ network }));
     this.moduleAddress = moduleAddress;
     this.moduleName = MODULE_NAME;
   }
 
   /* ---------------- faucet helpers ---------------- */
   async fundAccount(addr: AccountAddress, amount: number = ONE_CEDRA) {
-    await this.aptos.faucet.fundAccount({ accountAddress: addr, amount });
+    await this.cedra.faucet.fundAccount({ accountAddress: addr, amount });
   }
 
   /* ---------------- metadata helpers -------------- */
@@ -286,31 +286,31 @@ class FeeSplitterClient {
     const addresses = recips.map(r => r.address.toString());
     const shares    = recips.map(r => r.share.toString());
 
-    const txn = await this.aptos.transaction.build.simple({
+    const txn = await this.cedra.transaction.build.simple({
       sender: creator.accountAddress,
       data: {
         function: `${this.moduleAddress}::${this.moduleName}::create_splitter`,
         functionArguments: [addresses, shares],
       },
     });
-    const res = await this.aptos.signAndSubmitTransaction({ signer: creator, transaction: txn });
-    await this.aptos.waitForTransaction({ transactionHash: res.hash });
+    const res = await this.cedra.signAndSubmitTransaction({ signer: creator, transaction: txn });
+    await this.cedra.waitForTransaction({ transactionHash: res.hash });
   }
 
   async distributeFees(sender: Account, splitterOwner: AccountAddress, amount: number) {
-    const txn = await this.aptos.transaction.build.simple({
+    const txn = await this.cedra.transaction.build.simple({
       sender: sender.accountAddress,
       data: {
         function: `${this.moduleAddress}::${this.moduleName}::distribute_fees`,
         functionArguments: [splitterOwner.toString(), this.getCEDRAMetadata(), amount.toString()],
       },
     });
-    const res = await this.aptos.signAndSubmitTransaction({ signer: sender, transaction: txn });
-    await this.aptos.waitForTransaction({ transactionHash: res.hash });
+    const res = await this.cedra.signAndSubmitTransaction({ signer: sender, transaction: txn });
+    await this.cedra.waitForTransaction({ transactionHash: res.hash });
   }
 
   async getSplitterInfo(splitterAddr: AccountAddress): Promise<SplitterInfo | null> {
-    const result = await this.aptos.view({
+    const result = await this.cedra.view({
       payload: {
         function: `${this.moduleAddress}::${this.moduleName}::get_splitter_info`,
         functionArguments: [splitterAddr.toString()],
