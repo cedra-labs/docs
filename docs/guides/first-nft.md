@@ -38,15 +38,15 @@ Below is the **module declaration** and its set of `use` statements. The module 
 
 ```rust
 module CedraNFT::CedraCollection {
-    use aptos_framework::object::{Self, Object};
-    use aptos_token_objects::collection;
-    use aptos_token_objects::token;
+    use cedra_framework::object::{Self, Object};
+    use cedra_token_objects::collection;
+    use cedra_token_objects::token;
     use std::string::{Self, String};
     use std::option;
 }
 ```
 
-* **aptos\_framework::object** – low‑level helpers for creating, transferring, or dereferencing `Object<T>`.
+* **cedra\_framework::object** – low‑level helpers for creating, transferring, or dereferencing `Object<T>`.
 * **collection / token** – the Digital Asset primitives.
 * **std::string / std::option** – UTF‑8 and optional value utilities.
 
@@ -239,10 +239,10 @@ Here’s a step‑by‑step TypeScript example that exercises the entire contrac
 import {
   Aptos, AptosConfig, Account, Network,
   PrivateKey, PrivateKeyVariants
-} from "@aptos-labs/ts-sdk";
+} from "@cedra-labs/ts-sdk";
 
 const config = new AptosConfig({ network: Network.DEVNET });
-const aptos = new Aptos(config);
+const cedra = new Cedra(config);
 
 // Replace with real keys in practice (use env vars!)
 const deployerKey = PrivateKey.formatPrivateKey(
@@ -255,7 +255,7 @@ const bob     = Account.generate();
 const MODULE = `${creator.accountAddress}::CedraCollectionV2`;
 
 // 1. Mint NFT to Alice
-await aptos.view({
+await cedra.view({
   account: creator,
   function: `${MODULE}::mint_nft`,
   arguments: [
@@ -268,7 +268,7 @@ await aptos.view({
 
 // 2. Alice transfers to Bob
 const tokenHandle = "0x...object-id...";
-await aptos.view({
+await cedra.view({
   account: alice,
   function: `${MODULE}::transfer_nft`,
   arguments: [ tokenHandle, bob.accountAddress ],
@@ -283,7 +283,7 @@ Remember to replace the placeholder keys and addresses with real values! For pro
 
 ## 6. Next steps
 
-* Add royalties (`aptos_token_objects::royalty`) in `create_collection`.
+* Add royalties (`cedra_token_objects::royalty`) in `create_collection`.
 * Provide `burn_nft` via `token::burn` + `object::destroy`.
 * Implement `mutate_uri` with a `MutatorRef` for mutable metadata.
 * Check other examples in [Real World Guides](/real-world-guides) page.
