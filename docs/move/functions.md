@@ -201,7 +201,7 @@ Our [Fungible Asset Guide](/guides/first-fa) uses generics extensively. The enti
 transfer<USDC>(from, recipient, 1000);
 
 // Or explicitly specify
-transfer<0x1::aptos_coin::AptosCoin>(from, recipient, 1000);
+transfer<0x1::cedra_coin::CedraCoin>(from, recipient, 1000);
 ```
 
 ### Type Constraints
