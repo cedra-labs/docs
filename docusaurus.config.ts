@@ -48,7 +48,7 @@ export default {
         },
         {
           label: 'Code Examples', 
-          href: 'https://github.com/cedra-labs/cedra-network',
+          href: 'https://github.com/cedra-labs/move-contract-examples',
           position: 'right'
         },
       ],

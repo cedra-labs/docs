@@ -289,3 +289,57 @@ article {
 .DocSearch-Button:hover {
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
 }
+
+/* Hide the original edit button in the footer */
+.theme-doc-footer-edit-meta-row .theme-edit-this-page {
+  display: none;
+}
+
+/* TOC Edit Button Styling */
+.toc-edit-button {
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--ifm-toc-border-color);
+}
+
+.edit-page-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6366f1;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid transparent;
+}
+
+.edit-page-link:hover {
+  color: #4f46e5;
+  background-color: rgba(99, 102, 241, 0.05);
+  border-color: rgba(99, 102, 241, 0.2);
+  text-decoration: none;
+}
+
+.edit-page-link svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.edit-page-link .external-link-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-left: 0.25rem;
+}
+
+[data-theme='dark'] .edit-page-link {
+  color: #818cf8;
+}
+
+[data-theme='dark'] .edit-page-link:hover {
+  color: #a5b4fc;
+  background-color: rgba(129, 140, 248, 0.1);
+  border-color: rgba(129, 140, 248, 0.3);
+}
