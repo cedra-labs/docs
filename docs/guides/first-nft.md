@@ -7,7 +7,7 @@ Before starting this guide, make sure you have:
 - ✅ [Obtained test tokens from the faucet](/getting-started/faucet) - Needed for deployment gas
 :::
 
-**What is an NFT?** A *Non‑Fungible Token* is a unique, indivisible on‑chain object whose immutable identity and metadata distinguish it from all other tokens. Think digital collectibles, tickets, or game items - as opposed to interchangeable fungible coins.**What is an NFT?** A *Non‑Fungible Token* is a unique, indivisible on‑chain object whose immutable identity and metadata distinguish it from all other tokens. Think digital collectibles, tickets, or game items - as opposed to interchangeable fungible coins.
+**What is an NFT?** A *Non‑Fungible Token* is a unique, indivisible on‑chain object whose immutable identity and metadata distinguish it from all other tokens. Think digital collectibles, tickets, or game items - as opposed to interchangeable fungible coins.
 
 > **Goal**: Understand *exactly* how this NFT contract works on‑chain and how to call it from a TypeScript client.
 
