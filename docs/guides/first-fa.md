@@ -132,7 +132,7 @@ No special capabilities needed - any holder may transfer.
 
 ```bash
 cedra move compile
-cedra move publish --profile devnet
+cedra move publish
 ```
 
 
@@ -149,7 +149,7 @@ We’ll validate the module end‑to‑end:
 ```ts
 import { Account, Cedra, CedraConfig, Network } from "@cedra-labs/ts-sdk";
 
-const config = new CedraConfig({ network: Network.DEVNET });
+const config = new CedraConfig({ network: Network.TESTNET });
 const cedra  = new Cedra(config);
 
 const MODULE_ADDRESS = "0x..."; // from publish output
