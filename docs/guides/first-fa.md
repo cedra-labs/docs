@@ -131,8 +131,8 @@ No special capabilities needed - any holder may transfer.
 3. **Save** the printed Metadata object address (admin + capability store).
 
 ```bash
-cedra move compile
-cedra move publish
+cedra move compile --named-addresses CedraFungible=default
+cedra move publish --named-addresses CedraFungible=default
 ```
 
 
