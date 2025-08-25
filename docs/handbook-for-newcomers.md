@@ -76,7 +76,7 @@ Popular wallets include **Nightly** and **Pontem**.
 Once you install the Cedra CLI, the general flow for deploying a contract is:
 
 1. **Create a new account**
-2. **Fund it on Devnet** using the faucet
+2. **Fund it on Testnet** using the faucet
 3. **Write your asset code** using Move
 4. **Compile** it with the CLI
 5. **Publish** the module to the blockchain

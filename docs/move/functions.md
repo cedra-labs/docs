@@ -351,7 +351,7 @@ public fun safe_withdraw(user: &signer, amount: u64) acquires Vault {
     vault.last_withdrawal = timestamp::now_seconds();
     
     // 3. Interactions (external calls)
-    coin::transfer<AptosCoin>(user, amount);
+    coin::transfer<CedraCoin>(user, amount);
 }
 ```
 

@@ -237,11 +237,11 @@ Here’s a step‑by‑step TypeScript example that exercises the entire contrac
 
 ```ts
 import {
-  Aptos, AptosConfig, Account, Network,
+  Cedra, CedraConfig, Account, Network,
   PrivateKey, PrivateKeyVariants
 } from "@cedra-labs/ts-sdk";
 
-const config = new AptosConfig({ network: Network.TESTNET });
+const config = new CedraConfig({ network: Network.TESTNET });
 const cedra = new Cedra(config);
 
 // Replace with real keys in practice (use env vars!)

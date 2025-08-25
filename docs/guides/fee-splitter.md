@@ -325,7 +325,7 @@ class FeeSplitterClient {
 // HAPPY-PATH DEMO - fund ➜ create ➜ distribute ➜ query
 const runHappyPath = async () => {
   console.log("🚀 Fee Splitter happy-path demo");
-  const client = new FeeSplitterClient(Network.DEVNET, MODULE_ADDRESS);
+  const client = new FeeSplitterClient(Network.TESTNET, MODULE_ADDRESS);
 
   // 1️⃣ Generate & fund actors
   const creator    = Account.generate();
