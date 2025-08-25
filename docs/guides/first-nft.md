@@ -241,7 +241,7 @@ import {
   PrivateKey, PrivateKeyVariants
 } from "@cedra-labs/ts-sdk";
 
-const config = new AptosConfig({ network: Network.DEVNET });
+const config = new AptosConfig({ network: Network.TESTNET });
 const cedra = new Cedra(config);
 
 // Replace with real keys in practice (use env vars!)
