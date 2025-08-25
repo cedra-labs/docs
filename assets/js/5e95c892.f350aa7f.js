@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkcedra_docs=self.webpackChunkcedra_docs||[]).push([[647],{8122:(e,s,r)=>{r.r(s),r.d(s,{default:()=>l});r(6540);var c=r(4164),a=r(9144),d=r(204),u=r(2831),n=r(7912),t=r(4848);function l(e){return(0,t.jsx)(a.e3,{className:(0,c.A)(d.G.wrapper.docsPages),children:(0,t.jsx)(n.A,{children:(0,u.v)(e.route.routes)})})}}}]);
