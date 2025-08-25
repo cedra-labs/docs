@@ -22,7 +22,7 @@ Cedra is the first community-owned blockchain built on the Move language that le
 
 ### 📚 Ready to Build?
 
-If you want to dive deeper, check our [**full node documentation**](/full-node) and learn how to get test tokens from our [**faucet**](/getting-started/faucet).
+If you want to dive deeper, check our [**full node documentation**](nodes/full-node) and learn how to get test tokens from our [**faucet**](/getting-started/faucet).
 
 :::
 
