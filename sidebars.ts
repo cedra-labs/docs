@@ -35,11 +35,6 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
           id: 'architecture',
           label: 'Architecture Overview'
         },
-        {
-          type: 'doc',
-          id: 'full-node',
-          label: 'Run a Full Node'
-        }
       ]
     },
     {
@@ -198,6 +193,45 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
           type: 'doc',
           id: 'move/errors',
           label: 'Error Handling and Assertions'
+        }
+      ]
+    },
+    {
+      type: 'category',
+      label: '🖥️ Nodes',
+      className: 'sidebar-nodes',
+      collapsed: true,
+      link: {
+        type: 'doc',
+        id: 'nodes/index',
+      },
+      items: [
+        {
+          type: 'doc',
+          id: 'nodes/requirements',
+          label: 'System Requirements'
+        },
+        {
+          type: 'category',
+          label: 'Run a Validator',
+          className: 'sidebar-badge-important',
+          items: [
+            {
+              type: 'doc',
+              id: 'nodes/validator-setup',
+              label: 'Validator Setup'
+            },
+            {
+              type: 'doc',
+              id: 'nodes/stake-pool-management',
+              label: 'Stake Pool Management'
+            }
+          ]
+        },
+        {
+          type: 'doc',
+          id: 'nodes/full-node',
+          label: 'Run a Full Node'
         }
       ]
     },
