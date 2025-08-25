@@ -80,7 +80,7 @@ Each integer type serves specific purposes:
 
 **u32** (0 to ~4.3 billion): Good for timestamps in seconds (works until year 2106), large counters, or database-style IDs. However, `u64` is usually preferred for future-proofing.
 
-**u64** (0 to ~18.4 quintillion): The workhorse of Move. This is the default type for integer literals and perfect for token amounts, timestamps in milliseconds, and any value that might grow large. Most Aptos framework functions expect `u64`.
+**u64** (0 to ~18.4 quintillion): The workhorse of Move. This is the default type for integer literals and perfect for token amounts, timestamps in milliseconds, and any value that might grow large. Most Cedra framework functions expect `u64`.
 
 **u128** (0 to ~340 undecillion): Essential for intermediate calculations to prevent overflow. When multiplying large `u64` values (like calculating rewards or interest), use `u128` for the intermediate result, then convert back to `u64`.
 
