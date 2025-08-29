@@ -196,45 +196,51 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
         }
       ]
     },
-    {
-      type: 'category',
-      label: '🖥️ Nodes',
-      className: 'sidebar-nodes',
-      collapsed: true,
-      link: {
-        type: 'doc',
-        id: 'nodes/index',
-      },
-      items: [
-        {
-          type: 'doc',
-          id: 'nodes/requirements',
-          label: 'System Requirements'
-        },
-        {
-          type: 'category',
-          label: 'Run a Validator',
-          className: 'sidebar-badge-important',
-          items: [
-            {
-              type: 'doc',
-              id: 'nodes/validator-setup',
-              label: 'Validator Setup'
-            },
-            {
-              type: 'doc',
-              id: 'nodes/stake-pool-management',
-              label: 'Stake Pool Management'
-            }
-          ]
-        },
-        {
-          type: 'doc',
-          id: 'nodes/full-node',
-          label: 'Run a Full Node'
-        }
-      ]
-    },
+    // {
+    //   type: 'category',
+    //   label: '🖥️ Nodes',
+    //   className: 'sidebar-nodes',
+    //   collapsed: true,
+    //   link: {
+    //     type: 'doc',
+    //     id: 'nodes/index',
+    //   },
+    //   items: [
+    //     {
+    //       type: 'doc',
+    //       id: 'nodes/requirements',
+    //       label: 'System Requirements'
+    //     },
+    //     {
+    //       type: 'category',
+    //       label: 'Run a Validator',
+    //       className: 'sidebar-badge-important',
+    //       items: [
+    //         {
+    //           type: 'doc',
+    //           id: 'nodes/validator-setup',
+    //           label: 'Validator Setup'
+    //         },
+    //         {
+    //           type: 'doc',
+    //           id: 'nodes/stake-pool-management',
+    //           label: 'Direct Staking'
+    //         },
+    //         {
+    //           type: 'doc',
+    //           id: 'nodes/delegation-pool-setup',
+    //           label: 'Delegation Staking',
+    //           className: 'sidebar-badge-new'
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       type: 'doc',
+    //       id: 'nodes/full-node',
+    //       label: 'Run a Full Node'
+    //     }
+    //   ]
+    // },
     {
       type: 'category',
       label: '🛠️ Developer Tools',
