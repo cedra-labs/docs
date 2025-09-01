@@ -1,4 +1,4 @@
-# Node Requirements
+<!-- # Node Requirements
 
 To ensure your Cedra validator and validator fullnode (VFN) operate smoothly, both nodes must meet the specifications outlined in this guide. We strongly recommend running validators and VFNs on separate, well-provisioned machines to maintain security and performance isolation.
 
@@ -118,4 +118,4 @@ graph LR
 
 :::note Required
 Enable NTP (Network Time Protocol) synchronization to maintain accurate system time. Nodes with incorrect time will lag behind the network and validators may fail to propose blocks.
-:::
+::: -->
