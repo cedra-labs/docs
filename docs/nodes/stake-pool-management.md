@@ -1,4 +1,4 @@
-<!-- # Running Your Validator and Joining the Network
+# Running Your Validator and Joining the Network
 
 This guide continues from your validator setup journey, walking you through the final steps to activate your validator on the Cedra testnet. By completing these steps, you'll create a stake pool, configure your validator's network identity, and join the active validator set to begin earning rewards.
 
@@ -311,4 +311,4 @@ Monitor your validator's performance and maintain high uptime to maximize reward
 - Backing up your validator keys securely
 - Engaging with the validator community for best practices
 
-Welcome to the Cedra validator ecosystem! 🎉 -->
+Welcome to the Cedra validator ecosystem! 🎉

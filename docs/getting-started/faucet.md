@@ -35,7 +35,7 @@ curl --location --request POST \
 
 Replace:
 
-* `<AMOUNT>` - Number of CEDRA you want (e.g., `10`) on Octas.
+* `<AMOUNT>` - Number of CEDRA you want (e.g., `10`) on Octas. **Maximum: 100 CEDRA per call.**
 * `<AUTH_KEY>` - your authentication key.
 
 **Example:**
