@@ -208,6 +208,12 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
       items: [
         {
           type: 'doc',
+          id: 'nodes/cedra-node',
+          label: 'Install Cedra Node',
+          className: 'sidebar-badge-important'
+        },
+        {
+          type: 'doc',
           id: 'nodes/requirements',
           label: 'System Requirements'
         },
