@@ -1,4 +1,8 @@
-<!-- # Validator Setup and Configuration
+# Validator Setup and Configuration
+
+:::important Validator Application Required
+To become a validator on the Cedra network, you must submit an application for review. Please fill out the [Validator Application Form](https://tally.so/r/mDRz5b) and our team will review your submission. This helps ensure network security and validator quality.
+:::
 
 This guide walks you through the complete journey of setting up a Cedra validator node for testnet participation. By following these steps, you'll transform your machine into a validator that helps secure the network and earn staking rewards.
 
@@ -198,4 +202,4 @@ Congratulations! You've successfully set up your validator node's foundation. Yo
 
 Your validator is configured but not yet active on the network. To complete your journey and start earning rewards, proceed to:
 
-- **[Stake Pool Management](./stake-pool-management)** - Initialize your stake pool, delegate tokens, and officially join the validator set to begin securing the network -->
+- **[Stake Pool Management](./stake-pool-management)** - Initialize your stake pool, delegate tokens, and officially join the validator set to begin securing the network
