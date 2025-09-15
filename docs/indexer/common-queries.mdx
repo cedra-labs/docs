@@ -959,16 +959,6 @@ where: {
 6. **Batch like a boss** - One request with 5 queries beats 5 separate requests every time
 7. **distinct = danger** - On large tables, `distinct` queries crawl. Have a backup plan
 
-## ⚠️ Common Gotchas
-
-**Save yourself some debugging time:**
-
-- **"Field not found" errors?** The `events` table doesn't have timestamps. Use `token_activities_v2` instead.
-- **Queries timing out?** You're probably aggregating too much data. Add filters or use smaller time ranges.
-- **Getting empty results?** Remember: amounts are strings! Use `amount: { _gt: "0" }` not `amount: { _gt: 0 }`
-- **Timestamps look weird?** They're in UTC. Your timezone conversion is probably the issue.
-- **Can't filter nested objects?** Most nested fields don't exist. Use direct fields from the main table.
-
 ## 📚 Keep Exploring
 
 **Ready to dive deeper?** Here's where to go next:
