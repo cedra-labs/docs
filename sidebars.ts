@@ -198,6 +198,38 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
     },
     {
       type: 'category',
+      label: '🔍 Indexer',
+      className: 'sidebar-indexer',
+      collapsed: true,
+      link: {
+        type: 'doc',
+        id: 'indexer/index',
+      },
+      items: [
+        {
+          type: 'doc',
+          id: 'indexer/common-queries',
+          label: 'Common Queries'
+        },
+        {
+          type: 'doc',
+          id: 'indexer/sdk',
+          label: 'SDK Guide'
+        },
+        {
+          type: 'doc',
+          id: 'indexer/local-setup',
+          label: 'Local Setup'
+        },
+        {
+          type: 'doc',
+          id: 'indexer/transaction-stream',
+          label: 'Transaction Stream'
+        }
+      ]
+    },
+    {
+      type: 'category',
       label: '🖥️ Nodes',
       className: 'sidebar-nodes',
       collapsed: true,

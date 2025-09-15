@@ -1,0 +1,393 @@
+# 🚀 Cedra Indexer
+<div className="hero-section">
+  <h2>Query Blockchain Data in Milliseconds</h2>
+  <p>The Cedra Indexer transforms raw blockchain data into lightning-fast, queryable insights. Access transactions, NFTs, balances, and more through our powerful GraphQL API.</p>
+</div>
+
+:::tip 🎯 Quick Start
+Jump straight into the action! Try live queries in our **[GraphQL Playground →](https://cloud.hasura.io/public/graphiql?endpoint=https://graphql.cedra.dev/v1/graphql)**
+:::
+
+
+---
+import { CardList } from '@site/src/components/CardList';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## ⚡ Choose Your Integration Path
+
+<Tabs>
+  <TabItem value="api" label="🔍 Indexer API" default>
+    <div className="feature-card">
+      <h3>Perfect for Most Applications</h3>
+      <p>
+        The Cedra Indexer API provides instant access to pre-indexed blockchain data through a powerful GraphQL interface. 
+        Query real-time balances, track NFT ownership across collections, analyze complete transaction history, and perform 
+        complex cross-table joins - all with millisecond response times. Whether you're building a DeFi dashboard, NFT marketplace, 
+        or analytics platform, our API eliminates the need to run your own infrastructure while giving you the flexibility 
+        to fetch exactly the data you need.
+      </p>
+      <div className="code-preview">
+        ```graphql
+        query QuickExample {
+          current_fungible_asset_balances(
+            where: { owner_address: { _eq: "0x1" }}
+          ) {
+            asset_type
+            amount
+          }
+        }
+        ```
+      </div>
+      <p className="cta-text">
+        Start querying immediately with our GraphQL Playground - no setup required.
+      </p>
+    </div>
+  </TabItem>
+  
+  <TabItem value="sdk" label="🛠️ Indexer SDK">
+    <div className="feature-card">
+      <h3>Build Custom Indexers</h3>
+      <p>
+        Take full control of your data pipeline with the Cedra Indexer SDK. Design custom processors that understand 
+        your smart contract's unique events and data structures, transforming raw blockchain data into precisely the 
+        format your application needs. Define your own schemas, implement complex business logic, and store processed 
+        data in your preferred database—whether that's PostgreSQL, MongoDB, or a specialized time-series database. 
+        Perfect for protocols with complex on-chain mechanics or applications requiring specialized data transformations 
+        that go beyond standard indexing.
+      </p>
+      <p className="coming-soon">📘 <a href="/docs/indexer/sdk">Learn about the SDK →</a></p>
+    </div>
+  </TabItem>
+  
+  <TabItem value="stream" label="📡 Transaction Stream">
+    <div className="feature-card">
+      <h3>Raw Data Streaming</h3>
+      <p>
+        Connect directly to Cedra nodes and consume a real-time stream of transactions as they're processed on-chain. 
+        This low-level integration gives you complete control over your data pipeline, enabling you to build 
+        high-performance infrastructure tailored to your exact requirements. Process millions of transactions, 
+        implement custom analytics, trigger real-time alerts, or feed data into your existing data warehouse. 
+        Ideal for enterprises, data providers, and applications that need immediate access to raw blockchain data 
+        with zero intermediary processing or filtering.
+      </p>
+      <p className="coming-soon">📘 <a href="/docs/indexer/transaction-stream">Explore streaming →</a></p>
+    </div>
+  </TabItem>
+</Tabs>
+
+---
+
+## 📚 Explore the Documentation
+
+<CardList>
+  <CardList.Card 
+    title="🎯 Common Queries" 
+    description="Copy-paste ready GraphQL queries for everyday use cases"
+    to="/indexer/common-queries"
+  />
+  <CardList.Card 
+    title="🛠️ SDK Guide" 
+    description="Build custom indexers for your smart contracts"
+    to="/indexer/sdk"
+  />
+  <CardList.Card 
+    title="🏗️ Local Setup" 
+    description="Run your own indexer infrastructure"
+    to="/indexer/local-setup"
+  />
+</CardList>
+---
+
+## 🎪 What Can You Build?
+
+<div className="use-cases-grid">
+  <div className="use-case-card">
+    <div className="icon">💱</div>
+    <h4>DeFi Dashboards</h4>
+    <p>Track pools, positions, and yields</p>
+  </div>
+  
+  <div className="use-case-card">
+    <div className="icon">🖼️</div>
+    <h4>NFT Marketplaces</h4>
+    <p>Collections, listings, and activity</p>
+  </div>
+  
+  <div className="use-case-card">
+    <div className="icon">📊</div>
+    <h4>Analytics Platforms</h4>
+    <p>On-chain metrics and insights</p>
+  </div>
+  
+  <div className="use-case-card">
+    <div className="icon">👛</div>
+    <h4>Wallet Interfaces</h4>
+    <p>Balances, history, and portfolios</p>
+  </div>
+  
+  <div className="use-case-card">
+    <div className="icon">🎮</div>
+    <h4>Gaming Backends</h4>
+    <p>Player assets and leaderboards</p>
+  </div>
+  
+  <div className="use-case-card">
+    <div className="icon">🔔</div>
+    <h4>Alert Systems</h4>
+    <p>Monitor events and triggers</p>
+  </div>
+</div>
+
+---
+
+## 🌟 Why Cedra Indexer?
+
+<div className="benefits-container">
+  <div className="benefit-row">
+    <div className="benefit-item">
+      <div className="benefit-icon">⚡</div>
+      <div className="benefit-content">
+        <h4>Lightning Fast</h4>
+        <p>Millisecond queries vs. seconds with RPC calls</p>
+      </div>
+    </div>
+    
+    <div className="benefit-item">
+      <div className="benefit-icon">🔍</div>
+      <div className="benefit-content">
+        <h4>Rich Queries</h4>
+        <p>Filter, sort, aggregate, and join data effortlessly</p>
+      </div>
+    </div>
+  </div>
+  
+  <div className="benefit-row">
+    <div className="benefit-item">
+      <div className="benefit-icon">📜</div>
+      <div className="benefit-content">
+        <h4>Full History</h4>
+        <p>Access complete transaction history, not just current state</p>
+      </div>
+    </div>
+    
+    <div className="benefit-item">
+      <div className="benefit-icon">🚀</div>
+      <div className="benefit-content">
+        <h4>Developer Friendly</h4>
+        <p>GraphQL API with auto-complete and introspection</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+---
+
+
+:::info 🌐 Network Endpoints
+- **Testnet**: `https://cloud.hasura.io/public/graphiql?endpoint=https://graphql.cedra.dev/v1/graphql`
+:::
+
+<style>{`
+.hero-section {
+  text-align: center;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+}
+
+.hero-section h2 {
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+  color: var(--ifm-color-emphasis-700);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  padding: 1.5rem;
+  background: var(--ifm-background-surface-color);
+  border-radius: 8px;
+}
+
+.feature-card h3 {
+  margin-top: 0;
+  color: var(--ifm-color-primary);
+}
+
+.code-preview {
+  margin-top: 1rem;
+}
+
+.use-cases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.use-case-card {
+  text-align: center;
+  padding: 1.5rem;
+  background: var(--ifm-background-surface-color);
+  border-radius: 12px;
+  transition: transform 0.2s;
+}
+
+.use-case-card:hover {
+  transform: translateY(-4px);
+}
+
+.use-case-card .icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.use-case-card h4 {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.use-case-card p {
+  margin: 0;
+  color: var(--ifm-color-emphasis-600);
+  font-size: 0.9rem;
+}
+
+.benefits-container {
+  margin: 2rem 0;
+}
+
+.benefit-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.benefit-item {
+  display: flex;
+  gap: 1rem;
+}
+
+.benefit-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.benefit-content h4 {
+  margin: 0 0 0.25rem 0;
+  color: var(--ifm-color-primary);
+}
+
+.benefit-content p {
+  margin: 0;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.quick-start-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.step {
+  display: flex;
+  gap: 1rem;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.step-content h4 {
+  margin: 0 0 0.5rem 0;
+}
+
+.step-content p {
+  margin: 0 0 0.5rem 0;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.playground-button, .docs-link {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: var(--ifm-color-primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.playground-button:hover, .docs-link:hover {
+  background: var(--ifm-color-primary-dark);
+  color: white;
+  text-decoration: none;
+}
+
+.example-query {
+  margin-top: 1rem;
+}
+
+.community-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.community-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--ifm-font-color-base);
+  transition: all 0.2s;
+}
+
+.community-card:hover {
+  border-color: var(--ifm-color-primary);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.community-card .icon {
+  font-size: 1.5rem;
+}
+
+.community-card.discord:hover { border-color: #5865F2; }
+.community-card.github:hover { border-color: #333; }
+.community-card.twitter:hover { border-color: #1DA1F2; }
+.community-card.support:hover { border-color: #667eea; }
+
+@media (max-width: 768px) {
+  .benefit-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .quick-start-steps {
+    grid-template-columns: 1fr;
+  }
+}
+`}</style>

@@ -1,0 +1,985 @@
+# Common Queries
+
+Find the right GraphQL queries for what you're building. Each section includes complete queries organized by common development scenarios.
+
+:::tip 🚀 Quick Start
+Test these queries directly in the [GraphQL Playground](https://cloud.hasura.io/public/graphiql?endpoint=https://graphql.cedra.dev/v1/graphql)
+:::
+
+## 👛 Building a Wallet?
+
+Essential queries for wallet applications, portfolio trackers, and account management tools.
+
+<details>
+<summary><b>Get Account Balances</b></summary>
+
+Retrieve all fungible asset balances for an address. This query displays a user's complete portfolio including tokens and coins.
+
+```graphql
+query GetAccountBalances($address: String!) {
+  current_fungible_asset_balances_new(
+    where: {
+      owner_address: { _eq: $address }
+      amount: { _gt: "0" }  # Filter out zero balances
+    }
+    order_by: { amount: desc }  # Largest balances first
+  ) {
+    storage_id              # Storage identifier
+    owner_address           # The wallet address
+    asset_type             # Type of the asset
+    amount                 # Raw amount (remember to handle decimals)
+    last_transaction_timestamp  # When balance last changed
+    last_transaction_version    # Last transaction that modified balance
+    token_standard         # Token standard used
+  }
+}
+```
+
+**Variables:**
+```json
+{
+  "address": "0x1"
+}
+```
+
+**Sample Response:**
+```json
+{
+  "data": {
+    "current_fungible_asset_balances_new": [
+      {
+        "storage_id": "0x123abc",
+        "owner_address": "0x1",
+        "asset_type": "0x1::cedra_coin::CedraCoin",
+        "amount": "1000000000",
+        "last_transaction_timestamp": "2024-01-15T10:30:00",
+        "last_transaction_version": "123456789",
+        "token_standard": "v1"
+      }
+    ]
+  }
+}
+```
+
+**Usage Tips:**
+- The `asset_type` field identifies the specific token or coin
+- Remember to handle decimal places based on the asset type
+- Use `token_standard` to determine how to process the asset
+
+</details>
+
+<details>
+<summary><b>Get Account Transactions</b></summary>
+
+Fetch transaction history with summary statistics for an account. Essential for activity tracking and analytics.
+
+```graphql
+query GetAccountTransactions($address: String!, $limit: Int!) {
+  account_transactions(
+    where: {account_address: {_eq: $address}}
+    order_by: {transaction_version: desc}
+    limit: $limit
+  ) {
+    transaction_version
+    account_address
+  }
+  account_transactions_aggregate(where: {account_address: {_eq: $address}}) {
+    aggregate {
+      count(columns: account_address)
+      max {
+        transaction_version
+      }
+    }
+  }
+}
+```
+
+**Variables:**
+```json
+{
+  "address": "0x1",
+  "limit": 20
+}
+```
+
+**Sample Response:**
+```json
+{
+  "data": {
+    "account_transactions": [
+      {
+        "transaction_version": "999999999",
+        "account_address": "0x1"
+      },
+      {
+        "transaction_version": "999999998",
+        "account_address": "0x1"
+      }
+    ],
+    "account_transactions_aggregate": {
+      "aggregate": {
+        "count": 1542,
+        "max": {
+          "transaction_version": "999999999"
+        }
+      }
+    }
+  }
+}
+```
+
+**Usage Tips:**
+- Use the aggregate count to show total transaction history
+- Implement cursor-based pagination using transaction_version for better performance
+- Consider caching aggregate data as it changes less frequently
+
+</details>
+
+<details>
+<summary><b>Get Fungible Asset Activities</b></summary>
+
+Track fungible asset activities for an address, including transfers, mints, and burns.
+
+```graphql
+query GetFungibleAssetActivities($address: String!, $limit: Int!) {
+  fungible_asset_activities(
+    where: {
+      _or: [
+        { owner_address: { _eq: $address }}
+      ]
+    }
+    order_by: { transaction_timestamp: desc }
+    limit: $limit
+  ) {
+    transaction_version      # Unique transaction identifier
+    event_index             # Event index in the transaction
+    owner_address           # Address involved in activity
+    asset_type             # Type of fungible asset
+    amount                 # Amount transferred
+    type                   # Activity type (e.g., deposit, withdraw)
+    is_frozen              # Whether the asset is frozen
+    transaction_timestamp  # When the activity occurred
+  }
+}
+```
+
+**Variables:**
+```json
+{
+  "address": "0x1",
+  "limit": 20
+}
+```
+
+**Sample Response:**
+```json
+{
+  "data": {
+    "fungible_asset_activities": [
+      {
+        "transaction_version": "999999999",
+        "event_index": "0",
+        "owner_address": "0x1",
+        "asset_type": "0x1::cedra_coin::CedraCoin",
+        "amount": "1000000",
+        "type": "0x1::fungible_asset::DepositEvent",
+        "is_frozen": false,
+        "transaction_timestamp": "2024-01-15T10:30:00"
+      }
+    ]
+  }
+}
+```
+
+**Usage Tips:**
+- Use `type` field to identify deposit, withdraw, mint, or burn events
+- The `asset_type` field supports all fungible assets, not just coins
+- Check `is_frozen` to determine if the asset can be transferred
+- Filter results by `asset_type` to track specific tokens
+
+</details>
+
+
+## 🏪 Building an NFT Platform?
+
+Queries for NFT marketplaces, galleries, and collection explorers.
+
+<details>
+<summary><b>Display User's NFT Collection</b></summary>
+
+Get all NFTs owned by an address.
+
+```graphql
+query GetUserNFTs($owner: String!) {
+  current_token_ownerships_v2(
+    where: {
+      owner_address: { _eq: $owner }
+      amount: { _gt: "0" }  # Only owned NFTs
+    }
+    order_by: { last_transaction_timestamp: desc }
+  ) {
+    token_data_id              # Unique NFT identifier
+    amount                     # Number owned (for editions)
+    property_version_v1        # Property version
+    storage_id                 # Storage identifier
+    table_type_v1             # Table type
+    is_fungible_v2            # Whether token is fungible
+    is_soulbound_v2           # Whether token is soulbound
+    last_transaction_timestamp # When last changed
+    last_transaction_version   # Last transaction version
+  }
+}
+```
+
+**Variables:**
+```json
+{
+  "owner": "0x1"
+}
+```
+
+**Sample Response:**
+```json
+{
+  "data": {
+    "current_token_ownerships_v2": [
+      {
+        "token_data_id": "0x123abc456def",
+        "amount": "1",
+        "property_version_v1": "0",
+        "storage_id": "0xstorage123",
+        "table_type_v1": null,
+        "is_fungible_v2": false,
+        "is_soulbound_v2": false,
+        "last_transaction_timestamp": "2024-01-15T10:30:00",
+        "last_transaction_version": "999999999"
+      }
+    ]
+  }
+}
+```
+
+**Usage Tips:**
+- The `token_data_id` uniquely identifies each NFT
+- Use `is_fungible_v2` to distinguish between NFTs and fungible tokens
+- `is_soulbound_v2` indicates if the NFT can be transferred
+
+</details>
+
+<details>
+<summary><b>Get Collection Details</b></summary>
+
+Retrieve collection metadata and statistics.
+
+```graphql
+query GetCollectionInfo($collection_id: String!) {
+  current_collections_v2(
+    where: { collection_id: { _eq: $collection_id }}
+  ) {
+    collection_id           # Unique collection identifier
+    collection_name         # Collection name
+    creator_address        # Collection creator
+    description           # Collection description
+    uri                  # Collection metadata URI
+    current_supply       # Currently minted
+    max_supply          # Maximum possible supply
+    total_minted_v2     # Total ever minted
+    mutable_description # Can description be changed
+    mutable_uri        # Can URI be changed
+    token_standard     # Token standard used
+    last_transaction_timestamp
+    last_transaction_version
+  }
+}
+```
+
+**Variables:**
+```json
+{
+  "collection_id": "0xcollection123"
+}
+```
+
+**Sample Response:**
+```json
+{
+  "data": {
+    "current_collections_v2": [
+      {
+        "collection_id": "0xcollection123",
+        "collection_name": "Cedra Punks",
+        "creator_address": "0xcreator",
+        "description": "A collection of unique Cedra Punks",
+        "uri": "https://metadata.cedrapunks.com/collection",
+        "current_supply": "5000",
+        "max_supply": "10000",
+        "total_minted_v2": "5000",
+        "mutable_description": false,
+        "mutable_uri": false,
+        "token_standard": "v2",
+        "last_transaction_timestamp": "2024-01-15T10:30:00",
+        "last_transaction_version": "999999999"
+      }
+    ]
+  }
+}
+```
+
+**Usage Tips:**
+- Use `collection_id` as the unique identifier for collections
+- Check `mutable_description` and `mutable_uri` to see if metadata can change
+- `current_supply` vs `total_minted_v2`: current is active NFTs, total includes burned
+
+</details>
+
+<details>
+<summary><b>Verify NFT Ownership</b></summary>
+
+Check if an address owns a specific NFT.
+
+```graphql
+query CheckNFTOwnership($owner: String!, $token_id: String!) {
+  current_token_ownerships_v2(
+    where: {
+      owner_address: { _eq: $owner }
+      token_data_id: { _eq: $token_id }
+      amount: { _gt: "0" }
+    }
+  ) {
+    amount                        # How many they own
+    last_transaction_timestamp    # When acquired
+    last_transaction_version      # Transaction that gave ownership
+  }
+}
+```
+
+**Variables:**
+```json
+{
+  "owner": "0x1",
+  "token_id": "0xtoken123"
+}
+```
+
+**Sample Response:**
+```json
+{
+  "data": {
+    "current_token_ownerships_v2": [
+      {
+        "amount": "1",
+        "last_transaction_timestamp": "2024-01-15T10:30:00",
+        "last_transaction_version": "999999999"
+      }
+    ]
+  }
+}
+```
+
+**Usage Tips:**
+- An empty result means the address doesn't own the NFT
+- The `amount` field shows how many editions they own (usually 1 for NFTs)
+- Use `last_transaction_version` to track when ownership was acquired
+
+</details>
+
+<details>
+<summary><b>Track NFT Activity</b></summary>
+
+Get transfer history and activity for NFTs.
+
+```graphql
+query GetNFTActivity($token_id: String!, $limit: Int!) {
+  token_activities_v2(
+    where: { token_data_id: { _eq: $token_id }}
+    order_by: { transaction_timestamp: desc }
+    limit: $limit
+  ) {
+    transaction_version     # Transaction ID
+    event_index            # Event index in transaction
+    from_address          # Previous owner
+    to_address           # New owner
+    token_amount         # Amount transferred
+    type                # Activity type
+    transaction_timestamp # When it happened
+    entry_function_id_str # Function that triggered it
+    property_version_v1  # Property version
+    is_fungible_v2      # Is token fungible
+    token_standard      # Token standard
+  }
+}
+```
+
+**Variables:**
+```json
+{
+  "token_id": "0xtoken123",
+  "limit": 10
+}
+```
+
+**Sample Response:**
+```json
+{
+  "data": {
+    "token_activities_v2": [
+      {
+        "transaction_version": "999999999",
+        "event_index": "0",
+        "from_address": "0xseller",
+        "to_address": "0xbuyer",
+        "token_amount": "1",
+        "type": "0x3::token::TransferEvent",
+        "transaction_timestamp": "2024-01-15T10:30:00",
+        "entry_function_id_str": "0x3::token_transfers::transfer",
+        "property_version_v1": "0",
+        "is_fungible_v2": false,
+        "token_standard": "v2"
+      }
+    ]
+  }
+}
+```
+
+**Usage Tips:**
+- Track NFT provenance through `from_address` and `to_address`
+- Use `type` to identify mints, transfers, and burns
+- `entry_function_id_str` shows which smart contract function was called
+
+</details>
+
+<details>
+<summary><b>Get NFT Token Data</b></summary>
+
+Retrieve detailed metadata for a specific NFT.
+
+```graphql
+query GetNFTTokenData($token_id: String!) {
+  current_token_datas_v2(
+    where: { token_data_id: { _eq: $token_id }}
+  ) {
+    token_data_id           # Unique token identifier
+    collection_id          # Collection this NFT belongs to
+    token_name            # Name of the NFT
+    description           # NFT description
+    token_uri            # Metadata URI
+    maximum              # Maximum supply
+    supply               # Current supply
+    token_properties     # On-chain properties
+    token_standard       # Token standard (v1 or v2)
+    is_fungible_v2       # Whether token is fungible
+    largest_property_version_v1
+    last_transaction_timestamp
+    last_transaction_version
+  }
+}
+```
+
+**Variables:**
+```json
+{
+  "token_id": "0xtoken123"
+}
+```
+
+**Sample Response:**
+```json
+{
+  "data": {
+    "current_token_datas_v2": [
+      {
+        "token_data_id": "0xtoken123",
+        "collection_id": "0xcollection123",
+        "token_name": "Cedra Punk #42",
+        "description": "A unique Cedra Punk NFT",
+        "token_uri": "https://metadata.cedrapunks.com/42",
+        "maximum": "1",
+        "supply": "1",
+        "token_properties": {},
+        "token_standard": "v2",
+        "is_fungible_v2": false,
+        "largest_property_version_v1": "0",
+        "last_transaction_timestamp": "2024-01-15T10:30:00",
+        "last_transaction_version": "999999999"
+      }
+    ]
+  }
+}
+```
+
+**Usage Tips:**
+- Use `token_uri` to fetch off-chain metadata (images, attributes)
+- `maximum` vs `supply`: maximum is the cap, supply is current circulation
+- `token_properties` contains on-chain attributes
+
+</details>
+
+## 📊 Building Analytics?
+
+Aggregation queries for dashboards and data analysis tools.
+
+<details>
+<summary><b>Transaction Volume Metrics</b></summary>
+
+Calculate transaction and event counts over time periods.
+
+```graphql
+query GetVolumeMetrics($start_time: timestamp!, $end_time: timestamp!) {
+  # NFT activity volume
+  token_activities_v2_aggregate(
+    where: {
+      transaction_timestamp: {
+        _gte: $start_time
+        _lte: $end_time
+      }
+    }
+  ) {
+    aggregate {
+      count             # Total NFT activities
+    }
+  }
+
+  # Fungible asset activity
+  fungible_asset_activities_aggregate(
+    where: {
+      transaction_timestamp: {
+        _gte: $start_time
+        _lte: $end_time
+      }
+    }
+  ) {
+    aggregate {
+      count            # Total token transfers
+    }
+  }
+}
+```
+
+**Variables for last month:**
+```json
+{
+  "start_time": "2024-12-15T00:00:00",
+  "end_time": "2025-01-15T23:59:59"
+}
+```
+
+**Usage Tips:**
+- Calculate date ranges in your application code
+- Use ISO 8601 format for timestamps
+- All timestamps are in UTC
+
+</details>
+
+<details>
+<summary><b>Active Addresses Count</b></summary>
+
+Get unique addresses that had activity in a time period.
+
+```graphql
+query GetActiveAddresses($start_time: timestamp!, $end_time: timestamp!) {
+  # Get unique addresses from token activities
+  token_activities_v2(
+    where: {
+      transaction_timestamp: {
+        _gte: $start_time
+        _lte: $end_time
+      }
+    }
+    distinct_on: from_address
+    order_by: { from_address: asc }
+    limit: 1000
+  ) {
+    from_address
+  }
+
+  # Count total activities
+  token_activities_v2_aggregate(
+    where: {
+      transaction_timestamp: {
+        _gte: $start_time
+        _lte: $end_time
+      }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+```
+
+**Variables:**
+```json
+{
+  "start_time": "2024-12-15T00:00:00",
+  "end_time": "2025-01-15T23:59:59"
+}
+```
+
+**Usage Tips:**
+- The distinct_on gives you unique addresses (up to 1000)
+- Use the aggregate count to see total event volume
+- For true unique count, process the results in your application
+
+</details>
+
+<details>
+<summary><b>Transaction Analytics</b></summary>
+
+Analyze blockchain transaction patterns and activity.
+
+```graphql
+query GetTransactionAnalytics($start_time: timestamp!, $end_time: timestamp!) {
+  # Token activity statistics
+  token_activities_v2_aggregate(
+    where: {
+      transaction_timestamp: {
+        _gte: $start_time
+        _lte: $end_time
+      }
+    }
+  ) {
+    aggregate {
+      count                    # Total activities
+      max {
+        transaction_version    # Latest transaction
+      }
+      min {
+        transaction_version    # Earliest transaction
+      }
+    }
+  }
+
+  # Most active token types
+  token_activities_v2(
+    where: {
+      transaction_timestamp: {
+        _gte: $start_time
+        _lte: $end_time
+      }
+    }
+    distinct_on: type
+    limit: 10
+  ) {
+    type
+  }
+}
+```
+
+**Variables:**
+```json
+{
+  "start_time": "2024-12-15T00:00:00",
+  "end_time": "2025-01-15T23:59:59"
+}
+```
+
+**Usage Tips:**
+- Transaction version range shows blockchain activity span
+- Event types help identify most common operations
+- Use for monitoring blockchain health and activity patterns
+
+</details>
+
+<details>
+<summary><b>Token Distribution</b></summary>
+
+Get top holders and analyze token distribution.
+
+```graphql
+query GetTokenDistribution($asset_type: String!, $limit: Int!) {
+  # Top holders
+  current_fungible_asset_balances_new(
+    where: {
+      asset_type: { _eq: $asset_type }
+      amount: { _gt: "0" }
+    }
+    order_by: { amount: desc }
+    limit: $limit
+  ) {
+    owner_address
+    amount
+  }
+
+  # Total supply and holder count
+  current_fungible_asset_balances_new_aggregate(
+    where: {
+      asset_type: { _eq: $asset_type }
+    }
+  ) {
+    aggregate {
+      sum {
+        amount      # Total supply
+      }
+      count        # Number of holders
+    }
+  }
+}
+```
+
+**Variables:**
+```json
+{
+  "asset_type": "0x1::cedra_coin::CedraCoin",
+  "limit": 100
+}
+```
+
+</details>
+
+<details>
+<summary><b>Recent Activity Timeline</b></summary>
+
+Get recent blockchain activity for timeline visualization.
+
+```graphql
+query GetRecentActivity($start_time: timestamp!, $limit: Int!) {
+  # Recent token activities
+  token_activities_v2(
+    where: {
+      transaction_timestamp: { _gte: $start_time }
+    }
+    order_by: { transaction_timestamp: desc }
+    limit: $limit
+  ) {
+    transaction_timestamp
+    transaction_version
+    type
+    from_address
+    to_address
+    token_amount
+  }
+
+  # Activity summary
+  token_activities_v2_aggregate(
+    where: {
+      transaction_timestamp: { _gte: $start_time }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+```
+
+**Variables for last 7 days:**
+```json
+{
+  "start_time": "2025-01-08T00:00:00",
+  "limit": 100
+}
+```
+
+**Usage Tips:**
+- Group by day/hour in your application for timeline charts
+- Use type field to categorize different activities
+- Adjust limit based on your UI needs
+
+</details>
+
+## 🔧 Query Patterns
+
+Common patterns that apply across all use cases.
+
+<details>
+<summary><b>Pagination</b></summary>
+
+Handle large result sets with offset-based pagination.
+
+```graphql
+query PaginatedQuery($limit: Int!, $offset: Int!) {
+  account_transactions(
+    limit: $limit        # Results per page
+    offset: $offset      # Skip N results
+    order_by: { transaction_version: desc }
+  ) {
+    transaction_version
+    # ... other fields
+  }
+}
+```
+
+**Pagination Examples:**
+- Page 1: `limit: 20, offset: 0`
+- Page 2: `limit: 20, offset: 20`
+- Page 3: `limit: 20, offset: 40`
+
+**Cursor-based pagination (more efficient):**
+```graphql
+query CursorPagination($cursor: bigint!, $limit: Int!) {
+  account_transactions(
+    where: { 
+      transaction_version: { _gt: $cursor }
+    }
+    order_by: { transaction_version: asc }
+    limit: $limit
+  ) {
+    transaction_version
+    # ... other fields
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><b>Batch Multiple Queries</b></summary>
+
+Combine multiple queries in a single request.
+
+```graphql
+query BatchedQueries($address: String!) {
+  # Alias each query
+  balances: current_fungible_asset_balances(
+    where: { owner_address: { _eq: $address }}
+  ) {
+    asset_type
+    amount
+  }
+  
+  nfts: current_token_ownerships_v2(
+    where: { owner_address: { _eq: $address }}
+    limit: 10
+  ) {
+    token_data_id
+    amount
+  }
+  
+  recent_txs: account_transactions(
+    where: { account_address: { _eq: $address }}
+    order_by: { transaction_version: desc }
+    limit: 5
+  ) {
+    transaction_version
+    success
+  }
+  
+  # Can also include aggregates
+  stats: account_transactions_aggregate(
+    where: { account_address: { _eq: $address }}
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+```
+
+**Benefits:**
+- Single network request
+- Atomic data fetching
+- Better performance
+
+</details>
+
+<details>
+<summary><b>Filtering Patterns</b></summary>
+
+Common filtering techniques for queries.
+
+```graphql
+# Combining conditions with AND
+where: {
+  _and: [
+    { amount: { _gt: "0" }},
+    { asset_type: { _eq: "0x1::cedra_coin::CedraCoin" }}
+  ]
+}
+
+# Combining conditions with OR
+where: {
+  _or: [
+    { owner_address: { _eq: "0x1" }},
+    { to_address: { _eq: "0x1" }}
+  ]
+}
+
+# Pattern matching with LIKE
+where: {
+  type: { _like: "%TransferEvent%" }
+}
+
+# Case-insensitive matching
+where: {
+  token_name: { _ilike: "%dragon%" }
+}
+
+# IN operator for multiple values
+where: {
+  asset_type: { 
+    _in: [
+      "0x1::cedra_coin::CedraCoin",
+      "0x1::usdc::USDC"
+    ]
+  }
+}
+
+# NOT IN operator
+where: {
+  status: { _nin: ["failed", "pending"] }
+}
+```
+
+</details>
+
+## 🔍 Query Operators
+
+**Your toolkit for filtering data like a pro.** These operators go in your `where` clauses to find exactly what you need. Mix and match them to build powerful filters.
+
+**Quick example:**
+```graphql
+where: {
+  amount: { _gt: "0" },              # Greater than 0
+  owner_address: { _eq: $address },  # Exact match
+  type: { _like: "%Transfer%" }      # Pattern match
+}
+```
+
+| Operator | Description | Example |
+|----------|-------------|---------|
+| `_eq` | Equal to | `{ amount: { _eq: "1000" }}` |
+| `_neq` | Not equal to | `{ success: { _neq: false }}` |
+| `_gt` | Greater than | `{ amount: { _gt: "0" }}` |
+| `_gte` | Greater than or equal | `{ version: { _gte: 1000 }}` |
+| `_lt` | Less than | `{ gas: { _lt: 1000 }}` |
+| `_lte` | Less than or equal | `{ number: { _lte: 100 }}` |
+| `_in` | In array | `{ type: { _in: ["0x1::coin"] }}` |
+| `_nin` | Not in array | `{ status: { _nin: ["failed"] }}` |
+| `_like` | Pattern match | `{ name: { _like: "%Token%" }}` |
+| `_ilike` | Case-insensitive match | `{ name: { _ilike: "%token%" }}` |
+
+## 💡 Pro Tips from the Trenches
+
+1. **Don't be greedy with fields** - Fetching `token_name` when you only need `token_id`? That's extra bytes you don't need
+2. **Start small, scale up** - Test with `limit: 10` before you go wild with `limit: 1000`
+3. **Indexes are your friend** - Filter on indexed columns like `owner_address` and `transaction_version` for speed
+4. **Aggregates can bite** - That innocent `count` on millions of rows? Yeah, it'll timeout. Consider caching
+5. **Static = cacheable** - NFT metadata rarely changes. Cache it and save your rate limits
+6. **Batch like a boss** - One request with 5 queries beats 5 separate requests every time
+7. **distinct = danger** - On large tables, `distinct` queries crawl. Have a backup plan
+
+## ⚠️ Common Gotchas
+
+**Save yourself some debugging time:**
+
+- **"Field not found" errors?** The `events` table doesn't have timestamps. Use `token_activities_v2` instead.
+- **Queries timing out?** You're probably aggregating too much data. Add filters or use smaller time ranges.
+- **Getting empty results?** Remember: amounts are strings! Use `amount: { _gt: "0" }` not `amount: { _gt: 0 }`
+- **Timestamps look weird?** They're in UTC. Your timezone conversion is probably the issue.
+- **Can't filter nested objects?** Most nested fields don't exist. Use direct fields from the main table.
+
+## 📚 Keep Exploring
+
+**Ready to dive deeper?** Here's where to go next:
+
+- 🎮 **[Interactive Playground](https://cloud.hasura.io/public/graphiql?endpoint=https://graphql.cedra.dev/v1/graphql)** - Test these queries live (no setup needed!)
+- 🚀 **[SDK Integration Guide](/indexer/sdk)** - Add these queries to your TypeScript/JavaScript app
+- 💻 **[Run Your Own Indexer](/indexer/local-setup)** - Set up a local instance for development
+- 📡 **[Real-time Updates](/indexer/transaction-stream)** - Stream blockchain data as it happens
+
+**Building something specific?**
+- 🎯 **[First NFT Collection](/guides/first-nft)** - Launch your NFT project
+- 💰 **[Create Fungible Assets](/guides/first-fa)** - Build your own token
+- 🔄 **[DEX Integration](/guides/dex)** - Add swap functionality
+- 🏗️ **[Move Smart Contracts](/move)** - Write on-chain logic
