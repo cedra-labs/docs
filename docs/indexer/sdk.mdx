@@ -1,3 +1,218 @@
+---
+title: SDK Guide
+---
+
 # 🛠️ SDK Guide
 
-Coming soon...
+Get a working indexer in 5 minutes using our example repository. This guide shows you how to index ALL events from Cedra blockchain into PostgreSQL, then query them via GraphQL.
+
+## Prerequisites
+
+<details>
+<summary>**📋 Required Tools** - Click to expand installation commands</summary>
+
+### **Rust & Cargo** (1.78+)
+```bash
+# Install Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source $HOME/.cargo/env
+
+# Verify
+cargo --version
+```
+
+### **PostgreSQL** (14+)
+```bash
+# macOS
+brew install postgresql
+brew services start postgresql
+
+# Ubuntu/Debian
+sudo apt install postgresql postgresql-contrib
+sudo systemctl start postgresql
+
+# Verify
+psql --version
+```
+
+</details>
+
+## Understanding the Structure
+
+📂 **[Cedra Indexer Processors Repository](https://github.com/cedra-labs/cedra-indexer-processors-v2)**
+
+This repository contains pre-built processors and examples for indexing Cedra blockchain data.
+The example provides a complete indexer. Here's what each file does:
+
+### **📄 Processor Configuration** - Setting Up Your Indexer
+
+Configure your processor to connect to Cedra's data stream:
+
+```yaml
+processor_config:
+  type: "events_processor"  # Choose processor type
+  channel_size: 1000
+
+transaction_stream_config:
+  indexer_grpc_data_service_address: "GRPC_ADDRESS"
+
+db_config:
+  postgres_connection_string: "postgresql://localhost:5432/cedra_indexer"
+```
+
+**Why use it:** Pre-built processors handle all complexity - connection management, error handling, progress tracking, and recovery.
+
+### **📄 Available Processor Types**
+
+Choose from pre-built processors:
+
+- **`events_processor`** - Indexes all blockchain events
+- **`coin_processor`** - Tracks fungible token balances
+- **`nft_processor`** - Indexes NFT collections and ownership
+- **`cns_processor`** - Processes Cedra Name Service data
+
+Each processor automatically creates optimized database schemas and handles all data extraction.
+
+### **📄 Database Setup**
+
+Processors automatically handle everything:
+
+- ✅ **Automatic table creation** - No manual SQL needed
+- ✅ **Optimized indexes** - Created automatically for performance
+- ✅ **Migration management** - Processors handle schema updates
+- ✅ **Progress tracking** - Built-in checkpoint system
+
+Just create your database and the processor does the rest:
+
+```bash
+# Create database
+createdb cedra_indexer
+```
+
+### **📄 Running the Processor**
+
+```bash
+# Clone the repository
+git clone https://github.com/cedra-labs/cedra-indexer-processors-v2
+cd cedra-indexer-processors-v2/processor
+
+# Build and run
+cargo run --release -- -c config.yaml
+```
+
+
+### **📄 Key Features**
+
+All processors include:
+- **Automatic checkpointing** - Resume from where you left off
+- **Parallel processing** - Handle thousands of transactions per second
+- **Error recovery** - Automatic retries and failure handling
+- **Progress tracking** - Monitor indexing status in real-time
+
+## Set Up Database
+
+Create your PostgreSQL database:
+
+```bash
+# Create database
+createdb cedra_indexer
+
+# Verify it exists
+psql -l | grep cedra_indexer
+```
+
+That's it! The processor will automatically:
+- Create all necessary tables (events, processor_status, ledger_infos)
+- Set up optimized indexes
+- Handle migrations and schema updates
+
+:::tip Database GUI
+To explore your indexed data, consider installing [DBeaver](https://dbeaver.io/) or [pgAdmin](https://www.pgadmin.org/). Connect using: `postgresql://localhost/cedra_indexer`
+:::
+
+## Configure & Run
+
+First, create your configuration file from the template:
+
+```bash
+# Copy the example configuration
+cp example-config.yaml config.yaml
+```
+
+Now edit `config.yaml` to point to your database. Open it in your editor and change:
+
+```yaml
+# FROM this (example default):
+postgres_config:
+  connection_string: postgresql://postgres:@localhost:5432/example
+
+# TO this (your actual database):
+postgres_config:
+  connection_string: postgresql://localhost:5432/cedra_indexer
+```
+
+The configuration tells your indexer:
+- **Where to get data**: `indexer_grpc_data_service_address` points to grpc service
+- **Where to start**: `starting_version: 0` means begin from genesis (first block)
+- **Where to store**: `connection_string` points to your PostgreSQL database
+
+Build your indexer in release mode (optimized for speed):
+
+```bash
+# Compile with optimizations
+cargo build --release
+```
+
+This might take a few minutes the first time as it downloads and compiles dependencies.
+
+Finally, run your indexer:
+
+```bash
+# Start indexing! The -- separates cargo args from your program args
+cargo run --release -- -c config.yaml
+```
+
+
+## 💡 Customizing the Example
+
+### Filter Specific Events
+Edit `src/main.rs` to index only what you need:
+
+```rust
+// Only process your contract's events
+let filtered_events: Vec<_> = raw_events
+    .iter()
+    .filter(|e| e.type_str.contains("0xYOUR_ADDRESS::your_module"))
+    .cloned()
+    .collect();
+```
+
+### Add Custom Processing
+Transform data before storing:
+
+```rust
+// Extract specific fields from event data
+for event in &mut events {
+    if let Some(amount) = event.data.get("amount") {
+        // Process amount, calculate metrics, etc.
+        info!("Processing amount: {}", amount);
+    }
+}
+```
+
+### Start From Specific Version
+Don't need historical data? Start from recent blocks:
+
+```yaml
+transaction_stream_config:
+  starting_version: 5000000  # Start from block 5M
+```
+
+## Next Steps
+
+Your indexer is running! Here's what to explore next:
+
+### 📚 **Learn More**
+- **[How Indexing Works](/indexer/how-it-works)** - Understand the complete data pipeline
+- **[Common Queries](/indexer/common-queries)** - GraphQL query patterns
+- **[Processors](/indexer/processors)** - Build specialized indexers

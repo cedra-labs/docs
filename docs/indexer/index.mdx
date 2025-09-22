@@ -56,7 +56,7 @@ import TabItem from '@theme/TabItem';
         Perfect for protocols with complex on-chain mechanics or applications requiring specialized data transformations 
         that go beyond standard indexing.
       </p>
-      <p className="coming-soon">📘 <a href="/docs/indexer/sdk">Learn about the SDK →</a></p>
+      <p className="coming-soon">📘 <a href="/indexer/sdk">Learn about the SDK →</a></p>
     </div>
   </TabItem>
   
@@ -71,7 +71,7 @@ import TabItem from '@theme/TabItem';
         Ideal for enterprises, data providers, and applications that need immediate access to raw blockchain data 
         with zero intermediary processing or filtering.
       </p>
-      <p className="coming-soon">📘 <a href="/docs/indexer/transaction-stream">Explore streaming →</a></p>
+      <p className="coming-soon">📘 <a href="/indexer/processors">Explore processors →</a></p>
     </div>
   </TabItem>
 </Tabs>
@@ -81,20 +81,25 @@ import TabItem from '@theme/TabItem';
 ## 📚 Explore the Documentation
 
 <CardList>
-  <CardList.Card 
-    title="🎯 Common Queries" 
+  <CardList.Card
+    title="🔄 How It Works"
+    description="Understand the complete journey from blockchain to queryable data"
+    to="/indexer/how-it-works"
+  />
+  <CardList.Card
+    title="🎯 Common Queries"
     description="Copy-paste ready GraphQL queries for everyday use cases"
     to="/indexer/common-queries"
   />
-  <CardList.Card 
-    title="🛠️ SDK Guide" 
+  <CardList.Card
+    title="🛠️ SDK Guide"
     description="Build custom indexers for your smart contracts"
     to="/indexer/sdk"
   />
-  <CardList.Card 
-    title="🏗️ Local Setup" 
-    description="Run your own indexer infrastructure"
-    to="/indexer/local-setup"
+  <CardList.Card
+    title="⚙️ Processors"
+    description="Pre-built processors for common use cases"
+    to="/indexer/processors"
   />
 </CardList>
 ---

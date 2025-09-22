@@ -208,6 +208,11 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
       items: [
         {
           type: 'doc',
+          id: 'indexer/how-it-works',
+          label: 'How It Works'
+        },
+        {
+          type: 'doc',
           id: 'indexer/common-queries',
           label: 'Common Queries'
         },
@@ -218,13 +223,8 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
         },
         {
           type: 'doc',
-          id: 'indexer/local-setup',
-          label: 'Local Setup'
-        },
-        {
-          type: 'doc',
-          id: 'indexer/transaction-stream',
-          label: 'Transaction Stream'
+          id: 'indexer/processors',
+          label: 'Processors'
         }
       ]
     },
