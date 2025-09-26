@@ -1,0 +1,76 @@
+# Proofs and Verification
+
+:::tip Navigation
+**⬅️ Previous:** [States](/concepts/transactions/states)
+**📍 You are here:** Proofs and Verification
+**🏠 Overview:** [Blockchain Architecture](/concepts/blockchain)
+**📚 Start:** [Understanding Transactions](/concepts/transactions/understanding-transactions)
+:::
+
+Cedra employs sophisticated cryptographic proofs to ensure data integrity and enable trustless verification using Merkle Tree Structure. These proofs are essential for verifying the [state transitions](/concepts/transactions/states) created by transactions without trusting intermediaries.
+
+```mermaid
+graph BT
+    T1[Transaction 1] --> H1[Hash 1]
+    T2[Transaction 2] --> H2[Hash 2]
+    T3[Transaction 3] --> H3[Hash 3]
+    T4[Transaction 4] --> H4[Hash 4]
+
+    H1 --> I1[Internal Hash 1-2]
+    H2 --> I1
+    H3 --> I2[Internal Hash 3-4]
+    H4 --> I2
+
+    I1 --> Root[Root Hash - Version 4]
+    I2 --> Root
+```
+
+Each new transaction adds a leaf, and the root hash provides a succinct commitment to the entire transaction history.
+
+### Proof Types
+
+**Transaction Inclusion Proof**: Proves a specific transaction exists in the blockchain at a particular version.
+
+**State Proof**: Verifies the current value of any account or resource without trusting the data provider.
+
+**Event Proof**: Confirms that specific events were emitted during transaction execution.
+
+### Verification Process
+
+The verification process allows clients to independently verify blockchain data:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Fullnode
+    participant Proof System
+
+    Client->>Fullnode: Request data with proof
+    Fullnode->>Fullnode: Gather data
+    Fullnode->>Proof System: Generate proof
+    Proof System->>Fullnode: Merkle proof
+    Fullnode->>Client: Data + Proof
+    Client->>Client: Verify proof
+    Client->>Client: Trust data if valid
+```
+
+## Trust Model
+
+With cryptographic proofs, clients can:
+- Verify data without trusting the fullnode
+- Detect any tampering or omission
+- Ensure consistency across different data providers
+- Maintain security even with untrusted intermediaries
+
+This architecture ensures that every state change is authorized, verifiable, and permanent, providing the security and reliability essential for a production blockchain system.
+
+---
+
+## Learn More
+
+Complete your understanding of Cedra's transaction and blockchain systems:
+
+### Transaction System Deep Dives
+- **[Understanding Transactions](/concepts/transactions/understanding-transactions)** - Start here to understand transaction fundamentals
+- **[States and State Transitions](/concepts/transactions/states)** - How transactions modify blockchain state
+- **[Blockchain Architecture](/concepts/blockchain)** - Overall network design and consensus

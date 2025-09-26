@@ -41,13 +41,19 @@ export default {
       },
       items: [
         {
-          label: 'Feedback', 
+          type: 'docSidebar',
+          sidebarId: 'concepts',
+          label: 'Concepts',
+          position: 'left'
+        },
+        {
+          label: 'Feedback',
           to: 'https://tally.so/r/nWavBe',
           position: 'right',
           className: 'navbar__item--contrast'
         },
         {
-          label: 'Code Examples', 
+          label: 'Code Examples',
           href: 'https://github.com/cedra-labs/move-contract-examples',
           position: 'right'
         },
