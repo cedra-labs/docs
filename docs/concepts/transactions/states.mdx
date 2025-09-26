@@ -1,8 +1,13 @@
-# States
-// TODO: end here
-## The Ledger State
+# The Ledger State
 
-The Cedra blockchain's state represents the complete snapshot of all accounts, resources, and data at any given moment. This global state is the cumulative result of all transactions executed since genesis.
+:::tip Navigation
+**⬅️ Previous:** [Understanding Transactions](/concepts/transactions/understanding-transactions)
+**📍 You are here:** States
+**➡️ Next:** [Proofs and Verification](/concepts/transactions/proofs-and-verification)
+**🏠 Overview:** [Blockchain Architecture](/concepts/blockchain)
+:::
+
+The Cedra blockchain's state represents the complete snapshot of all accounts, resources, and data at any given moment. This global state is the cumulative result of all transactions executed since genesis. To understand how individual transactions create these state changes, see [Understanding Transactions](/concepts/transactions/understanding-transactions).
 
 ```mermaid
 graph TD
@@ -22,7 +27,7 @@ graph TD
     D --> G
 ```
 
-## State Components
+### State Components
 
 **Account State**: Each account maintains:
 - Authentication keys for transaction verification
@@ -51,8 +56,6 @@ graph LR
 
 The `Apply()` function is deterministic, implemented through the Move Virtual Machine. This ensures that all validators computing the same transaction reach identical results.
 
-### Example State Transition
-
 Consider Alice sending 10 CED to Bob:
 
 ```mermaid
@@ -74,8 +77,6 @@ graph TD
     TX --> A2
     TX --> B2
 ```
-
-## Transaction Output
 
 When a transaction executes, it generates comprehensive output that includes:
 
@@ -106,3 +107,13 @@ graph TD
 **Gas Consumption**: Detailed breakdown of computational resources used
 
 **Status**: Success indicator or abort code explaining failure
+
+---
+
+## Related Topics
+
+Continue your exploration of Cedra's transaction system:
+
+- **[Understanding Transactions](/concepts/transactions/understanding-transactions)** - Transaction anatomy and lifecycle
+- **[Proofs and Verification](/concepts/transactions/proofs-and-verification)** - How state changes are cryptographically proven
+- **[Blockchain Architecture](/concepts/blockchain)** - Network topology and consensus mechanisms

@@ -7,10 +7,10 @@ Cedra is a high-performance blockchain built on Move language technology, design
 
 Before diving deeper, let's establish the fundamental concepts:
 
-- **Transactions**: Atomic operations that change the blockchain state
+- **[Transactions](/concepts/transactions/understanding-transactions)**: Atomic operations that change the blockchain state
 - **Blocks**: Containers that group multiple transactions for processing
 - **Validators**: Network participants that execute transactions and reach consensus
-- **State**: The current snapshot of all accounts and resources on the blockchain
+- **[State](/concepts/transactions/states)**: The current snapshot of all accounts and resources on the blockchain
 - **Finality**: The point at which a transaction becomes irreversible
 
 ---
@@ -258,3 +258,14 @@ Key architectural decisions enable Cedra's performance:
 - Sophisticated state management enables efficient verification
 
 This design allows Cedra to process thousands of transactions per second while maintaining the security and decentralization essential to blockchain technology.
+
+---
+
+## Deep Dive Topics
+
+For detailed technical understanding of specific components:
+
+### Transaction System
+- **[Understanding Transactions](/concepts/transactions/understanding-transactions)** - Complete guide to transaction anatomy, types, and lifecycle
+- **[States and State Transitions](/concepts/transactions/states)** - How the blockchain state evolves through transactions
+- **[Proofs and Verification](/concepts/transactions/proofs-and-verification)** - Cryptographic proofs enabling trustless verification
