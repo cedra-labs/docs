@@ -1,8 +1,18 @@
-# Get Cedra Test Tokens via CLI & cURL
+# Get Cedra Test Tokens
 
-This short guide explains how to request Cedra testnet tokens (CEDRA) **from CLI** and **from the command line** using `curl`. These tokens are only for development and testing - **they have no real‑world value**, and it is **impossible to mint CedraCoin on the Cedra mainnet**.
+This guide explains how to request Cedra test tokens (CED) for development and testing. These tokens are only for development - **they have no real-world value**, and it is **impossible to mint CedraCoin on the Cedra mainnet**.
 
-## Prerequisites
+## Web Interface (Recommended)
+
+The easiest way to get test tokens is through our web faucet:
+
+🚰 **Devnet Faucet**: [https://devnet-faucet.cedra.dev/](https://devnet-faucet.cedra.dev/)
+
+🚰 **Testnet Faucet**: [https://faucet.cedra.dev/](https://faucet.cedra.dev/)
+
+Simply enter your wallet address and receive test tokens instantly!
+
+## Prerequisites for CLI/API Methods
 
 **Installed CEDRA CLI** you can use installation [guide](/getting-started/cli)
 **Cedra testnet account** (address & authentication key).
@@ -14,22 +24,31 @@ This short guide explains how to request Cedra testnet tokens (CEDRA) **from CLI
 
   Save the `account address` (0x…) and the `authentication key` (64‑char hex).
 
-## 1 · Fund via CLI faucet (1 CEDRA)
+## 1 · Fund via CLI faucet
 
-If you have the Cedra CLI installed, you can trigger the Cedra faucet directly without constructing a cURL request:
+If you have the Cedra CLI installed, you can trigger the faucet directly without constructing a cURL request:
 
 ```bash
 cedra account fund-with-faucet
 ```
 
-* Funds **1 CEDRA** to the specified account.
-* Helpful when scripting alongside other Cedra CLI commands.
+* Funds test CED to the specified account
+* Works with both testnet and devnet
+* Helpful when scripting alongside other Cedra CLI commands
 
-## 2 · Mint test tokens
+## 2 · Mint test tokens via API
 
+### Testnet Faucet API
 ```bash
 curl --location --request POST \
   "https://faucet-api.cedra.dev/mint?amount=<AMOUNT>&auth_key=<AUTH_KEY>" \
+  --data ''
+```
+
+### Devnet Faucet API
+```bash
+curl --location --request POST \
+  "https://devfaucet-api.cedra.dev/mint?amount=<AMOUNT>&auth_key=<AUTH_KEY>" \
   --data ''
 ```
 
