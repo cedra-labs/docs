@@ -296,6 +296,39 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
         }
       ]
     }
+  ],
+  concepts: [
+    {
+      type: 'doc',
+      id: 'concepts/index',
+      label: 'Overview'
+    },
+    {
+      type: 'doc',
+      id: 'concepts/blockchain',
+      label: 'Blockchain'
+    },
+    {
+      type: 'category',
+      label: 'Transactions',
+      items: [
+        {
+          type: 'doc',
+          id: 'concepts/transactions/understanding-transactions',
+          label: 'Understanding Transactions'
+        },
+        {
+          type: 'doc',
+          id: 'concepts/transactions/states',
+          label: 'States'
+        },
+        {
+          type: 'doc',
+          id: 'concepts/transactions/proofs-and-verification',
+          label: 'Proofs and Verification'
+        }
+      ]
+    }
   ]
 };
 

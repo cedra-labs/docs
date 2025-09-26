@@ -1,0 +1,108 @@
+# States
+// TODO: end here
+## The Ledger State
+
+The Cedra blockchain's state represents the complete snapshot of all accounts, resources, and data at any given moment. This global state is the cumulative result of all transactions executed since genesis.
+
+```mermaid
+graph TD
+    subgraph "Global State"
+        A[Account States]
+        B[Module Code]
+        C[Resource Data]
+        D[Event Streams]
+    end
+
+    E[Transaction N] --> F[State Transition]
+    F --> G[New Global State]
+
+    A --> G
+    B --> G
+    C --> G
+    D --> G
+```
+
+## State Components
+
+**Account State**: Each account maintains:
+- Authentication keys for transaction verification
+- Sequence number for ordering and replay protection
+- Resource data including token balances
+- Deployed module code (for developer accounts)
+
+**Resources**: Type-safe data structures stored under accounts. Resources follow Move's ownership model - they cannot be copied or dropped implicitly, only moved or explicitly destroyed.
+
+**Modules**: Deployed smart contract code that defines types, functions, and the rules for manipulating resources.
+
+**Events**: Immutable logs emitted during transaction execution, providing an audit trail and enabling off-chain services to monitor on-chain activity.
+
+## State Transitions
+
+State transitions follow a deterministic model where the same transaction applied to the same initial state always produces the same final state:
+
+```mermaid
+graph LR
+    S1[State at Version N] --> T[Transaction]
+    T --> A[Apply Function]
+    A --> S2[State at Version N+1]
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+```
+
+The `Apply()` function is deterministic, implemented through the Move Virtual Machine. This ensures that all validators computing the same transaction reach identical results.
+
+### Example State Transition
+
+Consider Alice sending 10 CED to Bob:
+
+```mermaid
+graph TD
+    subgraph "Initial State - Version 1000"
+        A1[Alice: 110 CED]
+        B1[Bob: 50 CED]
+    end
+
+    TX[Transaction: Transfer 10 CED]
+
+    subgraph "Final State - Version 1001"
+        A2[Alice: 100 CED]
+        B2[Bob: 60 CED]
+    end
+
+    A1 --> TX
+    B1 --> TX
+    TX --> A2
+    TX --> B2
+```
+
+## Transaction Output
+
+When a transaction executes, it generates comprehensive output that includes:
+
+```mermaid
+graph TD
+    A[Transaction Execution] --> B[Transaction Output]
+    B --> C[Write Set]
+    B --> D[Events]
+    B --> E[Gas Used]
+    B --> F[Execution Status]
+
+    C --> G[State Changes]
+    D --> H[Event Stream]
+    E --> I[Gas Accounting]
+    F --> J[Success/Abort Code]
+```
+
+**Write Set**: All modifications to the global state, including:
+- Account balance changes
+- Resource updates
+- New module deployments
+
+**Events**: Structured logs emitted during execution:
+- Deposit and withdrawal events
+- Custom module-defined events
+- System events
+
+**Gas Consumption**: Detailed breakdown of computational resources used
+
+**Status**: Success indicator or abort code explaining failure

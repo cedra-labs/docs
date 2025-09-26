@@ -1,0 +1,89 @@
+# Proofs and Verification
+
+## Cryptographic Proofs
+
+Cedra employs sophisticated cryptographic proofs to ensure data integrity and enable trustless verification:
+
+```mermaid
+graph TD
+    subgraph "Merkle Tree Structure"
+        R[Root Hash]
+        R --> I1[Internal Node]
+        R --> I2[Internal Node]
+        I1 --> L1[Transaction 1]
+        I1 --> L2[Transaction 2]
+        I2 --> L3[Transaction 3]
+        I2 --> L4[Transaction 4]
+    end
+
+    V[Verifier] --> P[Proof Path]
+    P --> R
+    L3 --> P
+```
+
+## Proof Types
+
+**Transaction Inclusion Proof**: Proves a specific transaction exists in the blockchain at a particular version.
+
+**State Proof**: Verifies the current value of any account or resource without trusting the data provider.
+
+**Event Proof**: Confirms that specific events were emitted during transaction execution.
+
+## Verification Process
+
+The verification process allows clients to independently verify blockchain data:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Fullnode
+    participant Proof System
+
+    Client->>Fullnode: Request data with proof
+    Fullnode->>Fullnode: Gather data
+    Fullnode->>Proof System: Generate proof
+    Proof System->>Fullnode: Merkle proof
+    Fullnode->>Client: Data + Proof
+    Client->>Client: Verify proof
+    Client->>Client: Trust data if valid
+```
+
+## Trust Model
+
+With cryptographic proofs, clients can:
+- Verify data without trusting the fullnode
+- Detect any tampering or omission
+- Ensure consistency across different data providers
+- Maintain security even with untrusted intermediaries
+
+## Merkle Accumulator
+
+The blockchain maintains an ever-growing Merkle tree where each leaf represents a transaction:
+
+```mermaid
+graph BT
+    T1[Transaction 1] --> H1[Hash 1]
+    T2[Transaction 2] --> H2[Hash 2]
+    T3[Transaction 3] --> H3[Hash 3]
+    T4[Transaction 4] --> H4[Hash 4]
+
+    H1 --> I1[Internal Hash 1-2]
+    H2 --> I1
+    H3 --> I2[Internal Hash 3-4]
+    H4 --> I2
+
+    I1 --> Root[Root Hash - Version 4]
+    I2 --> Root
+```
+
+Each new transaction adds a leaf, and the root hash provides a succinct commitment to the entire transaction history.
+
+## Summary
+
+Cedra's transaction and state system provides a robust foundation for blockchain operations:
+
+- **Transactions** are carefully structured with authentication, execution, and ordering components
+- **States** evolve deterministically through transaction application
+- **Cryptographic proofs** enable trustless verification of all blockchain data
+
+This architecture ensures that every state change is authorized, verifiable, and permanent, providing the security and reliability essential for a production blockchain system.
