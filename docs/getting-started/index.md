@@ -8,11 +8,14 @@ Cedra is the first community-owned blockchain built on the Move language that le
 
 
 
-:::tip 🎉 Testnet is Live!
+:::tip 🎉 Networks are Live!
 
-**Congratulations!** Cedra testnet is now live and available for testing and development.
+**Congratulations!** Cedra networks are now live and available for testing and development.
 
-**🚀 Testnet API Endpoint:** [https://testnet.cedra.dev/v1](https://testnet.cedra.dev/v1)
+### 🌐 Network Endpoints
+
+- **🚀 Testnet API:** [https://testnet.cedra.dev/v1](https://testnet.cedra.dev/v1)
+- **🔧 Devnet API:** [https://devnet.cedra.dev/v1](https://devnet.cedra.dev/v1)
 
 ### 🔍 Explore the Network
 

@@ -38,7 +38,9 @@ After installing, configure the CLI and create an initial account profile using 
 
   You will be prompted to enter:
 
-  1. **🌐 REST URL** – the endpoint of the Cedra fullnode to use. If you press Enter with no input, it defaults to Cedra Testnet's URL (e.g. `https://testnet.cedra.dev`).
+  1. **🌐 REST URL** – the endpoint of the Cedra fullnode to use. If you press Enter with no input, it defaults to Cedra Testnet's URL. Available networks:
+     - **Testnet**: `https://testnet.cedra.dev`
+     - **Devnet**: `https://devnet.cedra.dev`
   2. **🔑 Private Key** – a hex literal for your account's private key. If you leave this blank, the CLI will generate a new key pair for you automatically.
 
   For example, a new developer can accept all defaults to connect to Testnet and generate keys. The CLI then creates a fresh Cedra account on Testnet and funds it with test coins via the faucet. You'll see output similar to:
