@@ -145,6 +145,27 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
     },
     {
       type: 'category',
+      label: '⛽ Custom Gas Tokens',
+      className: 'sidebar-gas sidebar-badge-new',
+      link: {
+        type: 'doc',
+        id: 'gas-tokens/index',
+      },
+      items: [
+        {
+          type: 'doc',
+          id: 'gas-tokens/custom-gas-tokens',
+          label: 'Create Custom Gas Tokens'
+        },
+        {
+          type: 'doc',
+          id: 'gas-tokens/governance',
+          label: 'Gas Token Governance'
+        }
+      ]
+    },
+    {
+      type: 'category',
       label: '📚 Move Programming',
       className: 'sidebar-reference',
       collapsed: true,
