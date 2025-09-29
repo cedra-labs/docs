@@ -155,12 +155,12 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
         {
           type: 'doc',
           id: 'gas-tokens/custom-gas-tokens',
-          label: 'Create Custom Gas Tokens'
+          label: 'Create Stablecoin'
         },
         {
           type: 'doc',
           id: 'gas-tokens/governance',
-          label: 'Gas Token Governance'
+          label: 'Stablecoin Governance'
         }
       ]
     },
