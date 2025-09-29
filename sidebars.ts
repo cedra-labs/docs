@@ -301,7 +301,7 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
     },
     {
       type: 'category',
-      label: '🛠️ Developer Tools',
+      label: '🛠️ Dev Tools and SDKs',
       className: 'sidebar-tools',
       collapsed: true,
       items: [
@@ -309,6 +309,22 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
           type: 'doc',
           id: 'cli/usage',
           label: 'CLI Reference'
+        },
+        {
+          type: 'category',
+          label: 'SDKs',
+          items: [
+            {
+              type: 'doc',
+              id: 'sdks/rust-sdk',
+              label: 'Rust SDK'
+            },
+            {
+              type: 'doc',
+              id: 'sdks/typescript-sdk',
+              label: 'TypeScript SDK'
+            }
+          ]
         },
         {
           type: 'doc',
