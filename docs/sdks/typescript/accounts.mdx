@@ -1,0 +1,164 @@
+---
+title: Account Management
+sidebar_label: Accounts
+---
+
+# 🔑 Account Management
+
+Learn how Cedra accounts work and how to manage them effectively using the TypeScript SDK.
+
+:::tip Navigation
+**📍 You are here:** Account Management
+**⬅️ Previous:** [TypeScript SDK Overview](/sdks/typescript-sdk)
+**➡️ Next:** [Transaction Guide](/sdks/typescript/transactions)
+:::
+
+### What's in an Account?
+
+Every Cedra account on-chain contains:
+- **Sequence Number**: Current transaction count (like nonce in Ethereum)
+- **Authentication Key**: Used to verify transaction signatures
+- **Resources**: Data owned by the account (tokens, NFTs, etc.)
+- **Modules**: Smart contracts deployed by this account
+
+Unlike Ethereum where accounts exist as soon as you generate a keypair, Cedra uses a **lazy initialization** model:
+
+| Aspect | Ethereum (EVM) | Cedra |
+|--------|----------------|--------|
+| **Account Creation** | Exists immediately | Created on first transaction |
+| **Address Format** | 20 bytes (0x...) | 32 bytes (0x...) |
+| **Balance Before Funding** | Can be queried (returns 0) | Account doesn't exist |
+| **Gas Payment** | Only in ETH | Multiple tokens supported |
+| **State Storage** | Global state tree | Resources owned by account |
+
+**Off-chain vs On-chain**: When you generate an account, it only exists in your local environment. The account is created on-chain when it receives its first transaction or tokens.
+
+**Resources**: Unlike EVM's global state, Cedra accounts own their data as "resources". Think of resources as objects that belong to specific accounts - like having a personal vault instead of entries in a shared ledger.
+
+**Sequence Numbers**: Similar to Ethereum's nonce, but strictly sequential. Each transaction from an account must have the next sequence number.
+
+### 🆕 Creating Your First Account
+
+Generating a new account is straightforward. Remember, this only creates the account locally - it won't exist on-chain until it receives tokens or sends a transaction.
+
+```typescript
+import { Account } from "@cedra-labs/ts-sdk";
+
+// Generate a new Ed25519 account (Cedra's default signature scheme)
+const account = Account.generate();
+
+// The account now has:
+// - A unique address (32 bytes)
+// - A public/private keypair
+// - But does NOT exist on-chain yet
+
+console.log("Address:", account.accountAddress.toString());
+console.log("Public Key:", account.publicKey.toString());
+
+// Save the private key securely - you'll need it to import the account later
+const privateKeyHex = account.privateKey.toString();
+```
+
+:::warning Security First
+**Never expose private keys in production code!** Use environment variables or secure key management services. The private key is shown here for educational purposes only.
+:::
+
+### 📥 Importing Existing Accounts
+
+If you've previously created an account, you can import it using the private key:
+
+```typescript
+import { Account, Ed25519PrivateKey } from "@cedra-labs/ts-sdk";
+
+// Your saved private key (64 hex characters)
+const PRIVATE_KEY = process.env.CEDRA_PRIVATE_KEY;
+
+// Recreate the account from the private key
+const privateKey = new Ed25519PrivateKey(PRIVATE_KEY);
+const account = Account.fromPrivateKey({ privateKey });
+
+// The address and public key are derived from the private key
+console.log("Restored address:", account.accountAddress.toString());
+```
+
+### 💰 Checking Balances
+
+Here's how to check various token balances for an account:
+
+```typescript
+import { Cedra, CedraConfig, Network } from "@cedra-labs/ts-sdk";
+
+const client = new Cedra(new CedraConfig({ network: Network.TESTNET }));
+
+// Check if account exists on-chain first
+try {
+  // Get CED balance
+  const cedBalance = await client.getAccountCoinAmount({
+    accountAddress: account.accountAddress,
+    coinType: "0x1::cedra_coin::CedraCoin",
+  });
+
+  console.log(`CED Balance: ${cedBalance / 100_000_000} CED`);
+
+  // Check a custom token (if you have any)
+  const customBalance = await client.getAccountCoinAmount({
+    accountAddress: account.accountAddress,
+    coinType: "0x123::usdc::USDC", // Example custom token
+  });
+
+  // Get all token balances at once
+  const allCoins = await client.getAccountCoinsData({
+    accountAddress: account.accountAddress,
+  });
+
+  console.log("All tokens:");
+  allCoins.forEach(coin => {
+    console.log(`- ${coin.asset_type}: ${coin.amount}`);
+  });
+
+} catch (error) {
+  console.log("Account doesn't exist on-chain yet");
+}
+```
+
+:::tip CoinStore Resources
+Each token type requires a `CoinStore` resource in the account. This is automatically created when the account first receives that token type.
+:::
+
+
+### Querying Account Data
+
+```typescript
+// Get comprehensive account information
+const accountInfo = await client.getAccountInfo({
+  accountAddress: account.accountAddress,
+});
+
+console.log("Sequence Number:", accountInfo.sequence_number);
+console.log("Auth Key:", accountInfo.authentication_key);
+
+// Get all resources (tokens, NFTs, and other data)
+const resources = await client.getAccountResources({
+  accountAddress: account.accountAddress,
+});
+
+console.log(`Account owns ${resources.length} resource types`);
+
+// Check if account has deployed any smart contracts
+const modules = await client.getAccountModules({
+  accountAddress: account.accountAddress,
+});
+
+if (modules.length > 0) {
+  console.log("Deployed contracts:", modules.map(m => m.abi.name));
+}
+```
+
+Resources are the key difference from EVM: instead of a global state where contracts track balances, each Cedra account directly owns its resources. This makes the ownership model clearer and more secure.
+
+## 🚀 Next Steps
+
+Ready to use your accounts? Continue with:
+
+- **[Transaction Guide](/sdks/typescript/transactions)** - Learn to send transactions
+- **[Examples & Patterns](/sdks/typescript/examples)** - Real-world implementations

@@ -320,9 +320,29 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
               label: 'Rust SDK'
             },
             {
-              type: 'doc',
-              id: 'sdks/typescript-sdk',
-              label: 'TypeScript SDK'
+              type: 'category',
+              label: 'TypeScript SDK',
+              link: {
+                type: 'doc',
+                id: 'sdks/typescript-sdk',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'sdks/typescript/accounts',
+                  label: 'Account Management'
+                },
+                {
+                  type: 'doc',
+                  id: 'sdks/typescript/transactions',
+                  label: 'Transactions'
+                },
+                {
+                  type: 'doc',
+                  id: 'sdks/typescript/examples',
+                  label: 'Examples & Patterns'
+                }
+              ]
             }
           ]
         },
