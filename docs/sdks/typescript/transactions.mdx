@@ -1,0 +1,107 @@
+---
+title: Transaction Guide
+sidebar_label: Transactions
+---
+
+# 💸 Transaction Guide
+
+Learn how transactions work on Cedra and how to send them using the TypeScript SDK.
+
+:::tip Navigation
+**📍 You are here:** Transaction Guide
+**⬅️ Previous:** [Account Management](/sdks/typescript/accounts)
+**➡️ Next:** [Examples & Patterns](/sdks/typescript/examples)
+:::
+
+## 🎯 Understanding Transactions
+
+In Cedra, every action that changes the blockchain state happens through a transaction. Unlike Ethereum where you can send ETH directly to an address, Cedra requires all state changes to go through **entry functions** - think of them as public APIs exposed by smart contracts.
+
+When you want to transfer tokens, you don't just send them. Instead, you call a function like `0x1::cedra_account::transfer` with the recipient and amount as arguments. This approach provides better security and makes the blockchain more predictable, as every possible action is explicitly defined by a smart contract.
+
+The beauty of Cedra's transaction model is that complexity is hidden from you. The SDK automatically manages sequence numbers (similar to Ethereum's nonce but stricter), sets reasonable gas limits, and adds an expiration time to prevent old transactions from being replayed. You just specify what you want to do, and the SDK handles the rest.
+
+For a deep dive into how transactions move through the network, see [Transaction States](/concepts/transactions/states#state-transitions).
+
+## 💰 Sending Your First Transaction
+
+Here's the complete flow of sending tokens on Cedra. This is likely what you'll do with transactions:
+
+```typescript
+import { Cedra, CedraConfig, Network, Account } from "@cedra-labs/ts-sdk";
+
+const client = new Cedra(new CedraConfig({ network: Network.TESTNET }));
+
+// Build a transaction to send 0.01 CED
+const transaction = await client.transaction.build.simple({
+  sender: alice.accountAddress,
+  data: {
+    function: "0x1::cedra_account::transfer",
+    functionArguments: [bob.accountAddress, 1_000_000], // 0.01 CED in Octas
+  },
+});
+
+// Sign with your private key and send to the network
+const pending = await client.signAndSubmitTransaction({
+  signer: alice,
+  transaction,
+});
+
+// Wait for the blockchain to process it
+await client.waitForTransaction({ transactionHash: pending.hash });
+```
+
+That's it. The transaction is built, signed, submitted, and confirmed. The SDK handled all the complexity - fetching Alice's sequence number, estimating gas, setting an expiration time, and polling for confirmation.
+
+Notice the function path `0x1::cedra_account::transfer`. This follows the pattern `address::module::function`. The `0x1` address is where Cedra's core modules live, `cedra_account` is the module name, and `transfer` is the function. Every action on Cedra follows this pattern.
+
+## ⚡ Gas and Safety
+
+Gas in Cedra represents computational work, just like Ethereum. However, there's a crucial difference: you can pay gas in multiple tokens, not just the native token. Gas has two components: units (how much work) and price (cost per unit). The total cost is simply units times price, paid in Octas (Cedra's smallest unit, where 1 CED = 100,000,000 Octas).
+
+Most simple operations like transfers use 5-10 gas units. Complex DeFi operations might use hundreds or thousands. The network automatically sets a reasonable gas price, though you can override it if you need faster processing during congestion.
+
+```typescript
+// Simulate to check if transaction will succeed
+const [result] = await client.transaction.simulate.simple({
+  signerPublicKey: alice.publicKey,
+  transaction,
+});
+
+if (result.success) {
+  console.log("Safe to send!");
+} else {
+  console.log("Would fail:", result.vm_status);
+}
+```
+
+Think of simulation as your safety net. It catches errors before they cost you money, estimates fees accurately, and gives you confidence that your transaction will succeed. In production, always simulate first.
+
+## 📜 Working with Smart Contracts
+
+Every smart contract interaction on Cedra follows the same pattern as our transfer example. You specify a function to call and provide the necessary arguments. The complexity comes from knowing which function to call and what arguments it expects.
+
+For instance, calling a DEX to swap tokens looks similar to a transfer, just with different parameters:
+
+```typescript
+// Call a DEX swap function
+const transaction = await client.transaction.build.simple({
+  sender: account.accountAddress,
+  data: {
+    function: "0xDEX::swap::execute",
+    typeArguments: ["0x1::cedra_coin::CedraCoin", "0x1::usdc::USDC"],
+    functionArguments: [1_000_000, 500], // swap amounts
+  },
+});
+```
+
+The key insight is that whether you're transferring tokens, minting NFTs, or providing liquidity to a pool, it's all just calling entry functions with the right arguments. The SDK ensures type safety and validates your inputs before sending anything to the network.
+
+When working with a new smart contract, you'll need to know three things: the contract address, the function name, and what arguments it expects. This information usually comes from the contract's documentation or by examining its source code.
+
+## 🚀 Next Steps
+
+Ready to build more complex transactions? Continue with:
+
+- **[Examples & Patterns](/sdks/typescript/examples)** - Real-world implementations
+- **[Move Smart Contracts](/move)** - Build your own modules

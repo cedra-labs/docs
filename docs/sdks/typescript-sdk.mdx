@@ -3,24 +3,117 @@ title: TypeScript SDK
 sidebar_label: TypeScript SDK
 ---
 
-# TypeScript SDK
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-:::info Coming Soon
-The TypeScript SDK for Cedra is currently under development. This page will be updated with comprehensive documentation once the SDK is released.
-:::
+# 🚀 TypeScript SDK
 
-## Overview
+Build on Cedra with confidence using our TypeScript SDK. Designed for Web3 developers, the SDK provides an intuitive interface to interact with the Cedra blockchain. Whether you're building DeFi protocols, NFT marketplaces, or innovative dApps, our SDK makes blockchain development straightforward with full type safety and comprehensive documentation.
+SDK provides everything you need to interact with the Cedra blockchain.
 
-The Cedra TypeScript SDK will provide a complete TypeScript/JavaScript interface for building applications on Cedra, including:
+### Start Building in Minutes and Learn more
 
-- Full TypeScript type safety
-- Transaction building and submission
-- Smart contract interactions
-- Wallet integration
-- Event listening and subscriptions
-- DEX and DeFi protocol integrations
-- React hooks for frontend development
+```typescript
+import { Cedra, Account } from "@cedra-labs/ts-sdk";
 
-## Stay Updated
+// That's it! You're ready to build on Cedra
+const client = new Cedra();
+const account = Account.generate();
+```
+1. **[🎯 First Transaction](/getting-started/tx#creating-your-first-transaction)** - Send your first tokens in under 5 minutes
+2. **[📖 Key Concepts](#key-concepts)** - Understand accounts, transactions, and gas
+3. **[💼 Manage Accounts](/sdks/typescript/accounts)** - Create and manage wallets
+4. **[💸 Send Transactions](/sdks/typescript/transactions)** - Build and submit transactions
+5. **[🎮 Real Examples](/sdks/typescript/examples)** - Learn from production code
 
-Check back soon for updates, or follow our development progress on GitHub.
+Ready to dive deeper? Let's explore what makes Cedra special.
+
+### Client Initialization
+
+The `Cedra` client is your gateway to the blockchain:
+
+```typescript
+// Default testnet connection
+// Automatically connects to https://testnet.cedra.dev/v1
+const client = new Cedra();
+
+// Custom configuration with specific network
+// Network enum provides predefined configurations
+const client = new Cedra(new CedraConfig({
+  network: Network.TESTNET,
+  fullnode: "https://custom-node.com/v1",  // Optional: override default endpoint
+}));
+
+// Direct URL configuration for custom networks
+const client = new Cedra(new CedraConfig({
+  fullnode: "http://localhost:8080/v1",    // Local node or custom deployment
+}));
+```
+
+### Reading Blockchain Data
+
+The SDK provides several methods to query on-chain data without any gas costs. These read operations are essential for checking balances, verifying account states, and exploring deployed smart contracts.
+
+```typescript
+// Get account information including sequence number and authentication key
+// Useful for checking if an account exists on-chain
+const account = await client.getAccountInfo({
+  accountAddress: "0x1"
+});
+
+// Query all Move modules (smart contracts) deployed by an account
+// Returns module bytecode and ABI information
+const modules = await client.getAccountModules({
+  accountAddress: "0x1"
+});
+
+// Fetch transaction history for an account
+// Returns an array of committed transactions
+const txns = await client.getAccountTransactions({
+  accountAddress: "0x1"
+});
+```
+
+Each method returns typed responses, ensuring type safety throughout your application. The `getAccountInfo` method is particularly useful before sending transactions to verify account existence, while `getAccountModules` helps discover available smart contract functions.
+
+### Smart Contract Calls
+
+Cedra uses Move for smart contracts, offering two types of function calls: view functions for reading data and entry functions for state modifications. The SDK makes both operations type-safe and straightforward.
+
+```typescript
+// Call a view function to read on-chain state without gas costs
+// View functions are read-only and don't modify blockchain state
+const result = await client.view({
+  function: "0x1::coin::balance",           // Module::function format
+  type_arguments: ["0x1::cedra_coin::CedraCoin"], // Generic type parameters
+  arguments: [account.accountAddress],      // Function arguments
+});
+
+// Execute an entry function that modifies blockchain state
+// Requires signing and gas payment
+const txn = await client.transaction.build.simple({
+  sender: account.accountAddress,
+  data: {
+    function: "0x1::managed_coin::mint",     // Entry function to call
+    typeArguments: ["0x1::my_coin::MyCoin"], // Token type to mint
+    functionArguments: [recipient, amount],   // Mint recipient and amount
+  },
+});
+```
+
+View functions are perfect for querying balances, checking conditions, or retrieving configuration values. Entry functions handle all state-changing operations like transfers, minting, or updating smart contract data. The SDK automatically handles serialization and ensures type safety for all arguments.
+
+## 📚 Next Steps
+
+Ready to dive deeper? Explore these guides:
+
+- **[Account Management](/sdks/typescript/accounts)** - Create and manage Cedra accounts
+- **[Transaction Guide](/sdks/typescript/transactions)** - Build and submit transactions
+- **[Examples & Patterns](/sdks/typescript/examples)** - Real-world code examples
+
+## 🔗 Resources
+
+- **[Complete API Reference](https://github.com/cedra-labs/cedra-ts-sdk#api)** - Full SDK documentation
+- **[Example Projects](https://github.com/cedra-labs/cedra-ts-sdk/tree/main/examples)** - Sample implementations
+- **[Move Smart Contracts](/move)** - Learn about Cedra's smart contract language
+- **[Blockchain Concepts](/concepts)** - Understand Cedra's architecture

@@ -1,0 +1,73 @@
+---
+title: Examples & Patterns
+sidebar_label: Examples
+---
+
+# 🎮 Examples & Patterns
+
+Learn how to build real applications on Cedra through practical examples and proven patterns.
+
+:::tip Navigation
+**📍 You are here:** Examples & Patterns
+**⬅️ Previous:** [Transaction Guide](/sdks/typescript/transactions)
+**🏠 Back to:** [TypeScript SDK](/sdks/typescript-sdk)
+:::
+
+## 📚 Learn by Building
+
+The best way to master the Cedra TypeScript SDK is by building real projects. These guides walk you through complete implementations:
+
+### Getting Started
+- **[Your First Transaction](/getting-started/tx#creating-your-first-transaction)** - Step-by-step tutorial using TypeScript SDK to send your first CED tokens
+- **[Build a Counter Contract](/getting-started/counter)** - Create and interact with your first smart contract
+- **[Get Test Tokens](/getting-started/faucet)** - Fund your account for testing
+
+### Token Development
+- **[Fungible Asset Guide](/guides/first-fa)** - Create your own token with minting, burning, and transfer capabilities
+- **[NFT Contract Walkthrough](/guides/first-nft)** - Build a complete NFT collection with minting and marketplace features
+
+### DeFi Applications
+- **[Build a DEX](/guides/dex)** - Implement a decentralized exchange with liquidity pools and swapping
+- **[Fee Splitter Contract](/guides/fee-splitter)** - Automatically distribute payments among multiple recipients
+- **[Escrow System](/guides/escrow)** - Create secure, time-locked payments for marketplaces
+
+Each guide includes complete TypeScript code using the SDK, explanations of key concepts, and best practices.
+
+## 🔄 Common Patterns
+
+### Connection Management
+
+When building applications, you'll want to reuse the same client connection throughout your app. Instead of creating multiple instances, establish one connection and share it:
+
+```typescript
+// Initialize once in your app
+import { Cedra, CedraConfig, Network } from "@cedra-labs/ts-sdk";
+
+const config = new CedraConfig({ network: Network.TESTNET });
+export const client = new Cedra(config);
+```
+
+This pattern prevents connection overhead and ensures consistent configuration across your application. For production apps, consider implementing connection pooling and retry logic.
+
+### Error Handling
+
+Blockchain operations can fail for various reasons - insufficient funds, network issues, or smart contract errors. Good error handling is crucial for user experience.
+
+Instead of letting errors crash your app, anticipate common failures:
+- Check balances before transfers
+- Simulate transactions before submission
+- Provide clear error messages to users
+- Implement retry logic for network failures
+
+The SDK provides detailed error messages that help identify issues quickly. Always wrap blockchain operations in try-catch blocks and provide fallback behavior.
+
+### Gas Optimization
+
+Gas costs can vary significantly based on network congestion and transaction complexity. To optimize costs:
+
+1. **Simulate first** - Always simulate to estimate costs before submission
+2. **Batch operations** - Combine multiple operations when possible
+3. **Time your transactions** - Submit during low-congestion periods
+4. **Set appropriate limits** - Don't overpay with excessive gas limits
+
+Remember that simple transfers are cheap (5-10 gas units) while complex DeFi operations can use thousands.
