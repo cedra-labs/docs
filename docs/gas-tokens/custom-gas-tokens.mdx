@@ -1,12 +1,323 @@
-# Create Stablecoin
+// TODO: update CLI to 1.0.4
+# Create and Deploy Your Custom Gas Token
 
-:::info Coming Soon
-This feature is currently under development. Documentation will be available soon.
+This guide walks you through the complete journey of creating a custom token that can be used for gas payments on the Cedra network. By following these steps, you'll deploy a fungible asset, configure it for gas payments, and enable users to transact without needing CED tokens.
 
-Custom gas tokens will allow you to:
-- Pay transaction fees using your project's fungible asset
-- Simplify user onboarding by eliminating the need for native tokens
-- Create unique economic models for your application
-
-Stay tuned for the complete guide!
+:::info Prerequisites
+Before proceeding, ensure you have:
+- Completed the [Cedra CLI installation](/getting-started/cli)
+- Obtained test tokens from the [faucet](/getting-started/faucet)
+- Basic understanding of Move programming language
+- Rust toolchain installed on your system
 :::
+
+Your gas token journey begins with creating a Move module that defines your fungible asset. This module will specify your token's properties and initialize it on the blockchain.
+
+Create a new directory for your project, add the token module:
+
+```bash
+# Create project structure
+mkdir my-gas-token
+cd my-gas-token
+mkdir sources
+```
+
+Now create `sources/my_token.move`:
+
+```move
+module creator::usdt {
+    use cedra_framework::stablecoin;
+    use std::string;
+
+    // Initialize your token with the stablecoin framework
+    // This creates a fungible asset with standard functionality
+    fun init_module(signer: &signer) {
+        stablecoin::create(
+            signer,
+            b"USDT",                              // Token symbol
+            string::utf8(b"Tether USD"),          // Full name
+            6,                                     // Decimals (1 USDT = 1,000,000 units)
+            string::utf8(b"https://example.com/usdt.png"),  // Icon URL
+            string::utf8(b"https://tether.to")    // Project URL
+        );
+    }
+}
+```
+
+**What's happening:** This module creates a new fungible asset using Cedra's stablecoin framework:
+- **Token Symbol**: Short identifier (USDT) used in commands and displays
+- **Decimals**: Precision of 6 means 1 USDT = 1,000,000 smallest units
+- **Metadata**: Icon and project URLs for wallet and explorer displays
+- **Auto-initialization**: The `init_module` function runs automatically when deployed
+
+## Create Your Token Owner Profile
+
+Every token needs an owner account that controls its deployment and initial configuration. Let's create a dedicated profile for your token management.
+
+```bash
+# Create a new profile specifically for token ownership
+# This generates a new keypair and account on the selected network (use Devnet)
+cedra init --profile owner
+```
+
+**What's happening:** This command creates:
+- **New Keypair**: Unique cryptographic identity for your token owner
+- **Account Address**: On-chain address that will deploy and control the token
+- **Profile Configuration**: Saved in `~/.cedra/config.yaml` for future use
+- **Initial Funding**: Automatic faucet request for test tokens
+
+**Important:** Save the displayed account address - you'll need it for the next step.
+
+## Configure Your Move Project
+
+With your owner account created, it's time to set up the Move project configuration that links your module to your account.
+
+Create a `Move.toml` file in your project root:
+
+```toml
+[package]
+name = "MyGasToken"
+version = "0.0.1"
+
+[addresses]
+std = "0x1"
+cedra_framework = "0x1"
+creator = "YOUR_OWNER_ADDRESS"  # Replace with address from previous step
+
+[dependencies]
+CedraFramework = {
+    git = "https://github.com/cedra-labs/cedra-network",
+    subdir = "cedra-move/framework/cedra-framework",
+    rev = "devnet"  # Use "testnet" or "mainnet" as appropriate
+}
+```
+
+**What's happening:** This configuration file:
+- **Links your module** to your owner account address
+- **Imports Cedra Framework** for stablecoin and fungible asset functionality
+- **Specifies network version** to ensure compatibility
+- **Defines module namespace** under your creator address
+
+## Publish Your Token Module
+
+Now it's time to deploy your token to the blockchain. This step compiles your Move code and publishes it on-chain.
+
+```bash
+# Compile and publish your token module to the blockchain
+# This creates your token and makes it available for use
+cedra move publish --profile owner
+```
+
+**What's happening:** This publishes your token module:
+- **Compiles Move code** and checks for errors
+- **Deploys to blockchain** using your owner account
+- **Executes init_module** automatically on deployment
+- **Returns metadata address** for your token
+
+## Configure Gas Payment Authorization
+
+Your token exists on-chain, but it needs permission to be used for gas payments. This step grants the network admin the ability to process gas payments in your token.
+
+```bash
+# Grant the network admin permission to use your token for gas payments
+# Replace ADMIN_ADDRESS with the network-specific admin
+cedra move run \
+    --function-id 0x1::stablecoin::update_authorized_caller \
+    --args address:ADMIN_ADDRESS string:"USDT" \
+    --profile owner
+```
+
+**Example with devnet admin:**
+```bash
+cedra move run \
+    --function-id 0x1::stablecoin::update_authorized_caller \
+    --args address:3c9124028c90111d7cfd47a28fae30612e397d115c7b78f69713fb729347a77e string:"USDT" \
+    --profile owner
+```
+
+**What's happening:** This authorizes the network's gas payment system to:
+- **Deduct your token** from users' accounts for gas fees
+- **Process gas payments** during transaction execution
+- **Distribute fees** to validators in your token
+- **Handle refunds** for unused gas
+
+## Mint Your Initial Token Supply
+
+With permissions configured, you can now create your token's initial supply. This provides the tokens needed for testing and initial distribution.
+
+```bash
+# Mint tokens to a recipient address
+# Amount is in smallest units (with 6 decimals: 1000000 = 1 USDT)
+cedra move run \
+    --function-id 0x1::stablecoin::mint \
+    --args address:RECIPIENT_ADDRESS string:"USDT" u64:AMOUNT \
+    --profile owner
+```
+
+**Example minting 1000 USDT to your owner:**
+```bash
+cedra move run \
+    --function-id 0x1::stablecoin::mint \
+    --args address:35c82a4fbf233f793b49de20212872ada755073f2a5b74c00ab4661da1220685 string:"USDT" u64:1000000000 \
+    --profile owner
+```
+
+**What's happening:** This creates new tokens:
+- **Increases total supply** by the specified amount
+- **Credits recipient account** with newly minted tokens
+- **Updates on-chain state** immediately
+- **Emits mint event** for indexers and explorers
+
+## Grant Minting Permissions
+
+To enable flexible token management, you'll grant minting permissions to the network admin. This allows for future token distribution without requiring your owner key.
+
+```bash
+# Add the network admin as an authorized minter
+# This enables administrative minting for liquidity and operations
+cedra move run \
+    --function-id 0x1::stablecoin::add_minter \
+    --args address:ADMIN_ADDRESS string:"USDT" \
+    --profile owner
+```
+
+**Example with testnet admin:**
+```bash
+cedra move run \
+    --function-id 0x1::stablecoin::add_minter \
+    --args address:3c9124028c90111d7cfd47a28fae30612e397d115c7b78f69713fb729347a77e string:"USDT" \
+    --profile owner
+```
+
+**What's happening:** This permission allows the admin to:
+- **Mint additional tokens** for operational needs
+- **Provide liquidity** to users who need tokens for gas
+- **Handle edge cases** without requiring owner intervention
+- **Support network growth** as usage increases
+
+## Create Primary Storage for Gas Operations
+
+Your token needs a primary storage mechanism for efficient gas payment processing. This step initializes the storage structure required for gas operations.
+
+```bash
+# Transfer tokens to create the primary fungible store
+# Use the metadata address from Step 4 (publishing)
+cedra move run \
+    --function-id 0x1::primary_fungible_store::transfer \
+    --type-args 0x1::fungible_asset::Metadata \
+    --args address:METADATA_ADDRESS address:ADMIN_ADDRESS u64:1000 \
+    --profile owner
+```
+
+**Example with actual addresses:**
+```bash
+cedra move run \
+    --function-id 0x1::primary_fungible_store::transfer \
+    --type-args 0x1::fungible_asset::Metadata \
+    --args address:0x4f6911e06c920e8bfd5d8412ab4b076d3bdde51239aac4c5acba369241e1fdb4 \
+           address:3c9124028c90111d7cfd47a28fae30612e397d115c7b78f69713fb729347a77e \
+           u64:1000 \
+    --profile owner
+```
+
+**Alternative method if transfer fails:**
+```bash
+# Use admin minting as a fallback to create the storage
+# This requires the admin profile instead of owner
+cedra move run \
+    --function-id 0x1::stablecoin::mint \
+    --args address:35c82a4fbf233f793b49de20212872ada755073f2a5b74c00ab4661da1220685 string:"USDT" u64:1000 \
+    --profile admin
+```
+
+**What's happening:** This step:
+- **Creates primary store** structure for your token
+- **Initializes storage** for the admin account
+- **Enables gas processing** without individual approvals
+- **Prepares for whitelisting** in the next steps
+
+## Verify Your Token Deployment
+
+Before proceeding to whitelisting, let's verify your token is correctly deployed and balances are as expected.
+Query the indexer to see all token balances for an address:
+
+```graphql
+query CheckTokenBalance {
+  current_fungible_asset_balances_new(
+    where: {
+      owner_address: {_eq: "0x35c82a4fbf233f793b49de20212872ada755073f2a5b74c00ab4661da1220685"}
+    }
+  ) {
+    amount_v2
+    asset_type_v2
+    owner_address
+    metadata {
+      asset_type
+      decimals
+      creator_address
+      name
+      symbol
+      token_standard
+    }
+  }
+}
+```
+
+or check balance using CLI
+
+```bash
+# View token balance for any address
+# Replace addresses with your actual values
+cedra move view \
+    --function-id 0x1::stablecoin::balance \
+    --args address:TOKEN_ADDRESS address:USER_ADDRESS string:"USDT"
+```
+
+**What's happening:** These verification methods:
+- **Confirm token exists** on the blockchain
+- **Show current balances** after minting
+- **Verify metadata** is correctly configured
+- **Ensure ready** for whitelisting
+
+## Whitelist Your Token for Gas Payments
+
+Finally, your token needs to be added to the network's whitelist of approved gas payment tokens. The process varies by network.
+
+### For Testnet and Devnet
+
+The admin can directly whitelist your token:
+
+```bash
+# Admin adds your token to the gas payment whitelist
+# Replace CREATOR_ADDRESS with your owner address from Step 2
+cedra move run \
+    --function-id 0x1::whitelist::add_asset \
+    --args address:CREATOR_ADDRESS string:"usdt" string:"USDT" \
+    --profile admin
+```
+
+**Example with actual addresses:**
+```bash
+cedra move run \
+    --function-id 0x1::whitelist::add_asset \
+    --args address:35c82a4fbf233f793b49de20212872ada755073f2a5b74c00ab4661da1220685 \
+           string:"usdt" string:"USDT" \
+    --profile admin
+```
+
+**What's happening:** Whitelisting your token:
+- **Approves for gas payments** across the network
+- **Sets conversion rates** for gas calculations
+- **Enables user selection** in transactions
+- **Activates immediately** after transaction confirms
+
+#### For Mainnet
+
+Mainnet requires a governance proposal. Documentation for the governance process is coming soon.
+
+### Next Steps
+
+Your custom gas token opens new possibilities:
+- **Onboard users** without requiring CED tokens
+- **Integrate with wallets** that support custom gas
+- **Monitor usage** through the indexer
