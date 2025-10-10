@@ -1,4 +1,3 @@
-// TODO: update CLI to 1.0.4
 # Create and Deploy Your Custom Gas Token
 
 This guide walks you through the complete journey of creating a custom token that can be used for gas payments on the Cedra network. By following these steps, you'll deploy a fungible asset, configure it for gas payments, and enable users to transact without needing CED tokens.
@@ -114,6 +113,8 @@ cedra move publish --profile owner
 - **Executes init_module** automatically on deployment
 - **Returns metadata address** for your token
 
+**Important:** Save the transaction hash from the output - you'll need it to find your metadata address for the primary storage step.
+
 ## Configure Gas Payment Authorization
 
 Your token exists on-chain, but it needs permission to be used for gas payments. This step grants the network admin the ability to process gas payments in your token.
@@ -198,10 +199,32 @@ cedra move run \
 ## Create Primary Storage for Gas Operations
 
 Your token needs a primary storage mechanism for efficient gas payment processing. This step initializes the storage structure required for gas operations.
+You need to find your token's metadata address from your token publishing transaction:
+
+1. **Get your transaction hash** from when you published your token module (the `cedra move publish` command earlier)
+2. **Navigate to Cedrascan**:
+   - For devnet: https://cedrascan.com/?network=devnet
+   - For testnet: https://cedrascan.com/?network=testnet
+3. **Search for your transaction** by entering the transaction hash in the search box
+4. **Click on the "Changes" tab** in the transaction details page
+5. **Look for the write_resource entry** with type `0x1::fungible_asset::Metadata`
+6. **Copy the address** shown in that entry - this is your metadata address
+
+**Example:**
+If your publish transaction hash was `0xc366f36fbcaaf0004885ae15867d1d8d42778ee324066e11317d2f9564f54cb6`:
+- Go to: https://cedrascan.com/txn/0xc366f36fbcaaf0004885ae15867d1d8d42778ee324066e11317d2f9564f54cb6/changes?network=devnet
+- In the Changes tab, find the entry with:
+  - Type: `write_resource`
+  - Resource: `0x1::fungible_asset::Metadata`
+- The address field (e.g., `0xba98883c13dfb8f208440f1ad20be4d82cabc5f716ea0f80748e095e3c5a3296`) is your metadata address
+
+### Running the Transfer Command
+
+Now use the metadata address you found above in the transfer command:
 
 ```bash
 # Transfer tokens to create the primary fungible store
-# Use the metadata address from Step 4 (publishing)
+# Use the metadata address you found from Cedrascan
 cedra move run \
     --function-id 0x1::primary_fungible_store::transfer \
     --type-args 0x1::fungible_asset::Metadata \
@@ -214,20 +237,10 @@ cedra move run \
 cedra move run \
     --function-id 0x1::primary_fungible_store::transfer \
     --type-args 0x1::fungible_asset::Metadata \
-    --args address:0x4f6911e06c920e8bfd5d8412ab4b076d3bdde51239aac4c5acba369241e1fdb4 \
+    --args address:0xba98883c13dfb8f208440f1ad20be4d82cabc5f716ea0f80748e095e3c5a3296 \
            address:3c9124028c90111d7cfd47a28fae30612e397d115c7b78f69713fb729347a77e \
            u64:1000 \
     --profile owner
-```
-
-**Alternative method if transfer fails:**
-```bash
-# Use admin minting as a fallback to create the storage
-# This requires the admin profile instead of owner
-cedra move run \
-    --function-id 0x1::stablecoin::mint \
-    --args address:35c82a4fbf233f793b49de20212872ada755073f2a5b74c00ab4661da1220685 string:"USDT" u64:1000 \
-    --profile admin
 ```
 
 **What's happening:** This step:
@@ -236,11 +249,19 @@ cedra move run \
 - **Enables gas processing** without individual approvals
 - **Prepares for whitelisting** in the next steps
 
+**Note:** The metadata address uniquely identifies your token on the blockchain and is created when you publish your token module.
+
 ## Verify Your Token Deployment
 
 Before proceeding to whitelisting, let's verify your token is correctly deployed and balances are as expected.
-Query the indexer to see all token balances for an address:
 
+You can query the indexer to see all token balances for an address using Hasura GraphiQL:
+
+**Indexer Endpoints:**
+- **Devnet**: https://cloud.hasura.io/public/graphiql?endpoint=https://graphql-devnet.cedra.dev/v1/graphql
+- **Testnet**: https://cloud.hasura.io/public/graphiql?endpoint=https://graphql.cedra.dev/v1/graphql
+
+**Query to run:**
 ```graphql
 query CheckTokenBalance {
   current_fungible_asset_balances_new(
@@ -263,6 +284,8 @@ query CheckTokenBalance {
 }
 ```
 
+Replace the `owner_address` value with your actual address to check your token balance.
+
 or check balance using CLI
 
 ```bash
@@ -283,37 +306,11 @@ cedra move view \
 
 Finally, your token needs to be added to the network's whitelist of approved gas payment tokens. The process varies by network.
 
-### For Testnet and Devnet
-
-The admin can directly whitelist your token:
-
-```bash
-# Admin adds your token to the gas payment whitelist
-# Replace CREATOR_ADDRESS with your owner address from Step 2
-cedra move run \
-    --function-id 0x1::whitelist::add_asset \
-    --args address:CREATOR_ADDRESS string:"usdt" string:"USDT" \
-    --profile admin
-```
-
-**Example with actual addresses:**
-```bash
-cedra move run \
-    --function-id 0x1::whitelist::add_asset \
-    --args address:35c82a4fbf233f793b49de20212872ada755073f2a5b74c00ab4661da1220685 \
-           string:"usdt" string:"USDT" \
-    --profile admin
-```
-
-**What's happening:** Whitelisting your token:
-- **Approves for gas payments** across the network
-- **Sets conversion rates** for gas calculations
-- **Enables user selection** in transactions
-- **Activates immediately** after transaction confirms
-
-#### For Mainnet
-
+:::note
 Mainnet requires a governance proposal. Documentation for the governance process is coming soon.
+:::
+
+For **Testnet** and **Devnet** admin can directly whitelist your token
 
 ### Next Steps
 
