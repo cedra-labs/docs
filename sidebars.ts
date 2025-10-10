@@ -146,7 +146,7 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
     {
       type: 'category',
       label: '⛽ Custom Gas Tokens',
-      className: 'sidebar-gas sidebar-badge-new',
+      className: 'sidebar-gas sidebar-badge-hot',
       link: {
         type: 'doc',
         id: 'gas-tokens/index',
@@ -155,12 +155,12 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
         {
           type: 'doc',
           id: 'gas-tokens/custom-gas-tokens',
-          label: 'Create Stablecoin'
+          label: '📝 Create Gas Token'
         },
         {
           type: 'doc',
           id: 'gas-tokens/governance',
-          label: 'Stablecoin Governance'
+          label: '🗳️ Governance Process'
         }
       ]
     },

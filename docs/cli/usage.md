@@ -116,24 +116,77 @@ You can check its on-chain data using CLI queries. The `cedra account list` comm
 
 ### 💸 Transferring Tokens Between Accounts
 
-Cedra CLI can act as a basic wallet to send the native coins from one account to another. The `cedra account transfer` command facilitates this.
+Cedra CLI can act as a basic wallet to send the native coins from one account to another. The `cedra account transfer` command facilitates this, with support for custom gas payments.
 
-* **📤 Send a Transfer:** To send funds from your current profile's account to another account, run:
+* **📤 Send a Transfer with Native Gas:** To send funds using CED for gas fees:
 
   ```bash
   cedra account transfer --account <RECIPIENT> --amount <NUMBER>
   ```
 
-  This would transfer NUMBER coins from the default profile's account to the account associated with the "secondary" profile. The CLI will output a JSON result of the transaction, including the gas used, balance changes for both sender and receiver, and a success indicator:
+* **💰 Send a Transfer with Custom Gas:** To send funds using a whitelisted token for gas fees:
+
+  ```bash
+  cedra account transfer \
+      --account <RECIPIENT> \
+      --amount <NUMBER> \
+      --fa-address <TOKEN_ADDRESS> \
+      --max-gas <GAS_LIMIT>
+  ```
+
+  Example using USDT for gas:
+  ```bash
+  cedra account transfer \
+      --account 0x35c82a4fbf233f793b49de20212872ada755073f2a5b74c00ab4661da1220686 \
+      --amount 10 \
+      --fa-address 0x35c82a4fbf233f793b49de20212872ada755073f2a5b74c00ab4661da1220685::usdt::USDT \
+      --max-gas 5000
+  ```
+
+  The CLI will output a JSON result of the transaction, including the gas used (in the custom token), balance changes, and success indicator:
 
   ```json
   {
     "Result": {
       ...
+      "gas_used": 3421,
+      "gas_token": "USDT",
       "vm_status": "Executed successfully"
     }
   }
   ```
+
+:::tip Custom Gas Benefits
+Using custom gas tokens eliminates the need for users to hold CED tokens. This is especially useful for:
+- New users who receive stablecoins directly
+- DeFi protocols that want to subsidize gas for their users
+- Gaming projects where players only need the game token
+:::
+
+### ⛽ Custom Gas Payment Parameters
+
+The new `--fa-address` parameter enables gas payment with whitelisted tokens:
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `--fa-address` | Fungible asset address for gas payment | `0x1::usdt::USDT` |
+| `--max-gas` | Maximum gas units to spend | `5000` |
+
+**Supported Tokens:** Only whitelisted tokens can be used for gas. Check available tokens:
+
+```bash
+# View whitelisted gas tokens
+cedra move view \
+    --function-id 0x1::whitelist::get_whitelisted_tokens
+```
+
+**Error Handling:** Common issues when using custom gas:
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `ETOKEN_NOT_WHITELISTED` | Token not approved for gas | Use a whitelisted token |
+| `EINSUFFICIENT_GAS_BALANCE` | Not enough tokens for gas | Top up your token balance |
+| `EINVALID_TOKEN_ADDRESS` | Incorrect token format | Check the token address format |
 
 ## 3. Key Management (Generate & Recover Keys)
 
@@ -259,17 +312,35 @@ After simulation, when you confirm, the CLI submits the transaction to the netwo
 
 Suppose you published the `message::set_message`. To call this function on Testnet via CLI:
 
+**Using Native CED for gas:**
 ```bash
 cedra move run --function-id <your_address>::message::set_message --args string:"Hello!"
+```
+
+**Using Custom Token for gas:**
+```bash
+cedra move run \
+    --function-id <your_address>::message::set_message \
+    --args string:"Hello!" \
+    --fa-address 0x1::usdt::USDT \
+    --max-gas 10000
 ```
 
 The CLI will:
 
 1. 🔍 Simulate the call on the Testnet node (by default).
-2. 📊 Show you the result (e.g., success and gas cost).
+2. 📊 Show you the result (e.g., success and gas cost in the specified token).
 3. ❓ Prompt for confirmation. If you continue, it will send the transaction for execution.
 
-After execution, you'll get a JSON result similar to other transactions (`gas_used`, `success`, etc.). You can then query the account's resources to see the effect (e.g., the `MessageHolder` resource now stored under that account).
+After execution, you'll get a JSON result similar to other transactions (`gas_used`, `gas_token`, `success`, etc.). You can then query the account's resources to see the effect (e.g., the `MessageHolder` resource now stored under that account).
+
+:::info Custom Gas in Move Calls
+Any Move function call can use custom gas tokens. This includes:
+- Contract deployments (`cedra move publish`)
+- Function executions (`cedra move run`)
+- View functions with state changes
+- Governance operations
+:::
 
 :::tip Best Practice
 **When to Use Simulation:** Always! It's good practice to let the CLI simulate transactions first – this way you avoid wasting gas on mistakes. The simulation results give you a chance to inspect what will happen. For complex or state-changing operations, consider using `--local` simulation to test different scenarios offline. Use `--benchmark` and `--profile-gas` during development to improve your code (for example, to ensure your transaction stays within desired gas limits or to identify which parts of your code are costly).

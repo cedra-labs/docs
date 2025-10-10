@@ -152,6 +152,8 @@ async function main() {
 
   // ... previous code ...
   console.log("\n=== Building Transaction ===");
+
+  // Option 1: Traditional transaction with native CED for gas
   const transaction = await client.transaction.build.simple({
     sender: alice.accountAddress,
     data: {
@@ -162,7 +164,7 @@ async function main() {
       ],
     },
   });
-  
+
   console.log("✅ Transaction built");
   console.log("Transaction details:");
   console.log(`  - Function: 0x1::cedra_account::transfer`);
@@ -171,6 +173,29 @@ async function main() {
   console.log(`  - Amount: 1000 sub-units`);
 }
 ```
+
+:::tip Custom Gas Payments
+Cedra now supports paying transaction fees with custom tokens! If Alice had USDT instead of CED, she could use it for gas:
+
+```typescript
+// Option 2: Transaction with custom gas token (e.g., USDT)
+const transactionWithCustomGas = await client.transaction.build.simple({
+  sender: alice.accountAddress,
+  data: {
+    function: "0x1::cedra_account::transfer",
+    functionArguments: [bob.accountAddress, 1000],
+  },
+  options: {
+    gasToken: {
+      address: "0x1::usdt::USDT", // Use USDT for gas
+      maxGasAmount: 5000n, // Max 0.005 USDT for gas
+    }
+  }
+});
+```
+
+Learn more about [Custom Gas Tokens](/gas-tokens).
+:::
 
 ### Step 4: Simulate the Transaction
 

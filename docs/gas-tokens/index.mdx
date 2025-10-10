@@ -1,36 +1,57 @@
 # ⛽ Custom Gas Tokens
 
-:::info Coming Soon
-This revolutionary feature is currently under development and will be available soon.
-:::
+Custom Gas Tokens transform how users interact with the Cedra blockchain by enabling transaction fee payments in any whitelisted token. This groundbreaking feature eliminates the barrier of needing native CED tokens, opening the network to mainstream adoption.
 
-## Overview
-
-Custom Gas Tokens represent a paradigm shift in blockchain economics, allowing projects to create their own gas fee ecosystems. Instead of requiring users to hold native CED tokens for transaction fees, projects can enable gas payments using their own fungible assets.
-
-## How It Works
-
-1. **Token Creation**: Deploy a fungible asset following Cedra standards
-2. **Governance Proposal**: Submit your token for community approval
-3. **Voting Period**: Validators and delegators vote on the proposal
-4. **Activation**: Approved tokens become available for gas payments
-5. **Usage**: Users can select your token for transaction fees
-
-## Documentation Structure
+Custom gas tokens are fungible assets deployed on Cedra that have been approved for transaction fee payments. Instead of requiring users to hold CED tokens for gas, they can use familiar stablecoins like USDT or USDC, or even project-specific tokens.
 
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
   <div className="border rounded-lg p-4">
-    <h3>📝 Create Stablecoin</h3>
-    <p>Learn how to create and deploy your own stablecoin as gas token</p>
-    <a href="/gas-tokens/custom-gas-tokens">Coming Soon →</a>
+    <h3>📝 Create Your Gas Token</h3>
+    <p>Step-by-step guide to deploy and configure your token for gas payments</p>
+    <a href="/gas-tokens/custom-gas-tokens">Start Building →</a>
   </div>
 
   <div className="border rounded-lg p-4">
-    <h3>🗳️ Stablecoin Governance</h3>
-    <p>Understand the governance process for stablecoin approval</p>
+    <h3>🗳️ Governance Process</h3>
+    <p>Learn about the approval process for mainnet deployment</p>
     <a href="/gas-tokens/governance">Coming Soon →</a>
   </div>
 </div>
+
+### For Users
+- **Zero CED Required**: Execute transactions without ever holding native tokens
+- **Simplified Experience**: Use the same token for both payments and fees
+- **Familiar Assets**: Pay with stablecoins you already know and trust
+
+### For Projects
+- **Enhanced Token Utility**: Your token becomes the complete payment solution
+- **Frictionless Onboarding**: Remove the biggest barrier for new users
+- **Economic Flexibility**: Design custom fee models and incentive structures
+
+The custom gas token system integrates seamlessly into Cedra's transaction flow:
+
+```mermaid
+graph LR
+    A[User with USDT] -->|Initiates Transaction| B[Cedra Network]
+    B -->|Checks Whitelist| C{Token Approved?}
+    C -->|Yes| D[Calculate Gas in USDT]
+    D --> E[Execute Transaction]
+    E --> F[Distribute Fees to Validators]
+    C -->|No| G[Transaction Rejected]
+
+    style A fill:#e8f5e9
+    style E fill:#c8e6c9
+    style F fill:#a5d6a7
+    style G fill:#ffcdd2
+```
+
+1. **Token Deployment**: Projects create fungible assets using Cedra's stablecoin framework
+2. **Permission Configuration**: Token creators authorize the network to use their token for gas
+3. **Whitelisting**: Tokens are added to the approved list (via admin on testnet, governance on mainnet)
+4. **User Selection**: When sending transactions, users specify which whitelisted token to use for gas
+5. **Automatic Processing**: The network calculates the required amount and processes the payment
+Ready to enable gas payments with your token? Follow our comprehensive guide:
+
 
 <style>{`
 .grid {
