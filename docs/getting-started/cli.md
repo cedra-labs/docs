@@ -69,20 +69,20 @@ Use pre-built binaries if:
 - You need a specific version not available in package managers
 :::
 
-1. Visit the latest **Cedra CLI v1.0.3** release page: [https://github.com/cedra-labs/cedra-network/releases/tag/cedra-cli-v1.0.3](https://github.com/cedra-labs/cedra-network/releases/tag/cedra-cli-v1.0.3).
+1. Visit the latest **Cedra CLI v1.0.4** release page: [https://github.com/cedra-labs/cedra-network/releases/tag/cedra-cli-v1.0.4](https://github.com/cedra-labs/cedra-network/releases/tag/cedra-cli-v1.0.4).
 
-   For older versions, see [v1.0.1 release](https://github.com/cedra-labs/cedra-network/releases/tag/cedra-cli-v1.0.1).
+   For older versions, see [v1.0.3 release](https://github.com/cedra-labs/cedra-network/releases/tag/cedra-cli-v1.0.3).
 2. In the **Assets** section, choose the file that matches your platform:
 
 | OS           | Architecture          | File name                                 |
 | ------------ | --------------------- | ----------------------------------------- |
-| Linux        | x86\_64               | `cedra-cli-1.0.3-Linux-x86_64.zip`        |
-| Linux        | aarch64               | `cedra-cli-1.0.3-Linux-aarch64.zip`       |
-| macOS        | x86\_64               | `cedra-cli-1.0.3-macOS-x86_64.zip`        |
-| macOS        | arm64 (Apple Silicon) | `cedra-cli-1.0.3-macOS-arm64.zip`         |
-| Ubuntu 22.04 | x86\_64               | `cedra-cli-1.0.3-Ubuntu-22.04-x86_64.zip` |
-| Ubuntu 24.04 | x86\_64               | `cedra-cli-1.0.3-Ubuntu-24.04-x86_64.zip` |
-| Windows      | x86\_64               | `cedra-cli-1.0.3-Windows-x86_64.zip`      |
+| Linux        | x86\_64               | `cedra-cli-1.0.4-Linux-x86_64.zip`        |
+| Linux        | aarch64               | `cedra-cli-1.0.4-Linux-aarch64.zip`       |
+| macOS        | x86\_64               | `cedra-cli-1.0.4-macOS-x86_64.zip`        |
+| macOS        | arm64 (Apple Silicon) | `cedra-cli-1.0.4-macOS-arm64.zip`         |
+| Ubuntu 22.04 | x86\_64               | `cedra-cli-1.0.4-Ubuntu-22.04-x86_64.zip` |
+| Ubuntu 24.04 | x86\_64               | `cedra-cli-1.0.4-Ubuntu-24.04-x86_64.zip` |
+| Windows      | x86\_64               | `cedra-cli-1.0.4-Windows-x86_64.zip`      |
 
 3. Extract the archive.
 4. Move the `cedra` (or `cedra.exe` on Windows) executable to a folder that is in your **PATH**:
