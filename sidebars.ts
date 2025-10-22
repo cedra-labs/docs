@@ -315,9 +315,24 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
           label: 'SDKs',
           items: [
             {
-              type: 'doc',
-              id: 'sdks/rust-sdk',
-              label: 'Rust SDK'
+              type: 'category',
+              label: 'Rust SDK',
+              link: {
+                type: 'doc',
+                id: 'sdks/rust-sdk',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'sdks/rust/accounts',
+                  label: 'Account Management'
+                },
+                {
+                  type: 'doc',
+                  id: 'sdks/rust/transactions',
+                  label: 'Transactions'
+                }
+              ]
             },
             {
               type: 'category',

@@ -3,23 +3,100 @@ title: Rust SDK
 sidebar_label: Rust SDK
 ---
 
-# Rust SDK
+# 🚀 Rust SDK
 
-:::info Coming Soon
-The Rust SDK for Cedra is currently under development. This page will be updated with comprehensive documentation once the SDK is released.
+Build high-performance blockchain applications with Cedra's native Rust SDK. Designed for system-level integrations, the SDK provides zero-cost abstractions and compile-time safety for production blockchain development. Whether you're building trading bots, validator tools, or infrastructure services, Rust gives you the performance and reliability you need.
+
+
+#### Start Building in Minutes
+
+```rust
+use cedra_sdk::{Client, LocalAccount};
+
+// That's it! You're ready to build on Cedra
+let client = Client::new("https://testnet.cedra.dev");
+let account = LocalAccount::generate(&mut rand::rngs::OsRng);
+```
+
+Ready to dive deeper? Let's explore what makes the Rust SDK powerful.
+
+## 📦 Installation
+
+Add the Cedra SDK to your Rust project by updating your `Cargo.toml`:
+
+```toml title="Cargo.toml"
+[dependencies]
+cedra-sdk = { git = "https://github.com/cedra-labs/cedra-network", branch = "main" }
+
+[patch.crates-io]
+# Required cryptographic dependencies
+merlin = { git = "https://github.com/cedra-labs/merlin" }
+x25519-dalek = { git = "https://github.com/cedra-labs/x25519-dalek", branch = "zeroize_v1" }
+```
+
+Create a `.cargo/config.toml` file in your project root:
+
+```toml title=".cargo/config.toml"
+[build]
+rustflags = ["--cfg", "tokio_unstable"]
+```
+
+:::tip Production Deployment
+For production applications, pin to specific commit hashes to ensure reproducible builds:
+```toml
+cedra-sdk = { git = "https://github.com/cedra-labs/cedra-network", rev = "abc123..." }
+```
 :::
 
-## Overview
+## 🎯 Your First Transaction
 
-The Cedra Rust SDK will provide a native Rust interface for interacting with the Cedra blockchain, including:
+Here's the complete flow of sending tokens on Cedra. This example demonstrates the core SDK capabilities:
 
-- Transaction building and signing
-- Smart contract deployment and interaction
-- Account management
-- Token operations
-- DEX integration
-- And much more
+```rust title="src/main.rs"
+use cedra_sdk::{
+    coin_client::CoinClient,
+    rest_client::Client,
+    types::LocalAccount,
+};
 
-## Stay Updated
+#[tokio::main]
+async fn main() -> Result<()> {
+    // Connect to Cedra testnet
+    let client = Client::new("https://testnet.cedra.dev");
+    let coin_client = CoinClient::new(&client);
 
-Check back soon for updates, or follow our development progress on GitHub.
+    // Generate two accounts locally
+    let mut alice = LocalAccount::generate(&mut rand::rngs::OsRng);
+    let bob = LocalAccount::generate(&mut rand::rngs::OsRng);
+
+    // Transfer 0.01 CED (1,000,000 Octas)
+    let txn_hash = coin_client
+        .transfer(&mut alice, bob.address(), 1_000_000, None)
+        .await?;
+
+    println!("Transfer complete: 0x{}", txn_hash);
+    Ok(())
+}
+```
+
+That's it! The SDK handles all the complexity - sequence numbers, gas estimation, signing, and confirmation. Notice how Rust's type system ensures you can't make mistakes like sending to an invalid address or using the wrong amount format.
+
+While our TypeScript SDK is perfect for web applications, the Rust SDK is your choice when performance and reliability are non-negotiable.
+
+## 🚀 Next Steps
+
+Now that you've set up the SDK and sent your first transaction, here's your path to mastering Cedra development with Rust:
+
+### Core SDK Features
+- **[Account Management](/sdks/rust/accounts)** - Generate wallets, manage keys, and work with account resources
+- **[Transaction Guide](/sdks/rust/transactions)** - Build complex transactions, handle gas estimation, and understand the transaction lifecycle
+
+### Build Real Applications
+- **[First Fungible Asset](/guides/first-fa)** - Create your own token with Move
+- **[NFT Contract Guide](/guides/first-nft)** - Build a complete NFT collection
+- **[Build a DEX](/guides/dex)** - Learn DeFi development on Cedra
+
+### Expand Your Knowledge
+- **[Move Programming](/move)** - Master smart contract development
+- **[CLI Reference](/cli/usage)** - Deploy and test your contracts
+- **[TypeScript SDK](/sdks/typescript-sdk)** - Build web frontends for your dApps

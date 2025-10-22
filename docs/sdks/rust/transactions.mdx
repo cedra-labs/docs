@@ -1,0 +1,212 @@
+---
+title: Transaction Guide
+sidebar_label: Transactions
+---
+
+# 💸 Transaction Guide
+
+In Cedra, every action that changes the blockchain state happens through a transaction. Unlike Ethereum where you can send ETH directly to an address, Cedra requires all state changes to go through **entry functions** - think of them as public APIs exposed by smart contracts.
+
+Every transaction in Cedra contains:
+- **Sender**: Who's initiating the transaction
+- **Sequence Number**: Prevents replay attacks (must be exact)
+- **Payload**: What function to call with what arguments
+- **Gas Configuration**: How much you're willing to pay
+- **Expiration**: When the transaction becomes invalid
+
+## 💰 Sending Your First Transaction
+
+Here's the complete flow of sending tokens on Cedra. This is the most common transaction you'll perform:
+
+```rust
+use cedra_sdk::{
+    coin_client::CoinClient,
+    rest_client::Client,
+    types::LocalAccount,
+};
+
+// Connect to the network
+let client = Client::new("https://testnet.cedra.dev");
+let coin_client = CoinClient::new(&client);
+
+// Load your account (must have CED for gas)
+let mut alice = load_account()?;
+let bob_address = "0x123..."; // Recipient
+
+// Transfer 0.01 CED (1,000,000 Octas)
+let txn_hash = coin_client
+    .transfer(&mut alice, bob_address, 1_000_000, None)
+    .await?;
+
+// Wait for confirmation
+client.wait_for_transaction(&txn_hash).await?;
+
+println!("Sent 0.01 CED to Bob");
+println!("Transaction: 0x{}", txn_hash);
+```
+
+That's it. The SDK handled fetching Alice's sequence number, estimating gas, setting expiration, signing, and waiting for confirmation. The `transfer` function is a convenience wrapper around the more general transaction building process.
+
+Notice we specify the amount in **Octas** (Cedra's smallest unit). Just like Wei in Ethereum, 1 CED = 100,000,000 Octas. Always use the smallest unit to avoid floating-point precision issues.
+
+## ⚡ Gas and Safety
+
+Gas in Cedra represents computational work, just like Ethereum. However, there are crucial differences:
+
+- **Multi-token payment**: You can pay gas in multiple tokens, not just CED
+- **Predictable costs**: Entry functions have consistent gas usage
+- **Safety margin**: The SDK automatically adds a 20% buffer to gas estimates
+- **Refunds**: Unused gas is automatically refunded
+
+Most simple operations use 5-10 gas units. Complex DeFi operations might use hundreds or thousands. The network sets a base gas price, which you can override for faster processing:
+
+```rust
+use cedra_sdk::transaction_builder::TransactionBuilder;
+
+// Check if transaction will succeed before sending
+let simulation = client
+    .simulate_transaction(&alice, &raw_transaction)
+    .await?;
+
+if simulation.success {
+    println!("Transaction will succeed");
+    println!("Estimated gas: {} units", simulation.gas_used);
+} else {
+    println!("Transaction would fail: {:?}", simulation.vm_status);
+    // Don't send it!
+}
+
+// Build transaction with custom gas settings
+let txn = TransactionBuilder::new()
+    .sender(alice.address())
+    .sequence_number(alice.sequence_number())
+    .max_gas_amount(simulation.gas_used * 120 / 100) // 20% buffer
+    .gas_unit_price(100) // Higher = faster confirmation
+    .expiration_timestamp_secs(current_time() + 600)
+    .payload(payload)
+    .build();
+```
+
+Always simulate transactions in production. It's free, prevents costly failures, and gives you accurate gas estimates. Think of simulation as your test run before the real thing.
+
+## 📜 Working with Smart Contracts
+
+Every smart contract interaction follows the same pattern as transfers. You specify which function to call and provide the necessary arguments. The complexity comes from knowing what functions are available and what they expect.
+
+For example, interacting with a DeFi protocol:
+
+```rust
+use cedra_sdk::types::transaction::{EntryFunction, TransactionPayload};
+use move_core_types::identifier::Identifier;
+
+// Build an entry function call
+let payload = TransactionPayload::EntryFunction(
+    EntryFunction::new(
+        ModuleId::new(
+            dex_address,                    // Contract address
+            Identifier::new("swap")?,       // Module name
+        ),
+        Identifier::new("swap_exact_input")?, // Function name
+        vec![                               // Type arguments
+            TypeTag::from_str("0x1::cedra_coin::CedraCoin")?,
+            TypeTag::from_str("0x1::usdc::USDC")?,
+        ],
+        vec![                               // Function arguments
+            bcs::to_bytes(&1_000_000)?,    // Amount in
+            bcs::to_bytes(&950_000)?,      // Min amount out
+        ],
+    )
+);
+
+// Sign and submit
+let raw_txn = TransactionBuilder::new()
+    .sender(account.address())
+    .sequence_number(account.sequence_number())
+    .payload(payload)
+    .max_gas_amount(100_000)
+    .gas_unit_price(100)
+    .expiration_timestamp_secs(current_time() + 600)
+    .build();
+
+let signed = account.sign_transaction(raw_txn);
+let result = client.submit_transaction(&signed).await?;
+```
+
+The key insight: whether you're transferring tokens, minting NFTs, or providing liquidity, it's all just calling entry functions. The SDK ensures type safety and validates your inputs before sending anything to the network.
+
+## 🔄 Transaction Lifecycle
+
+Understanding what happens after you submit a transaction helps you build better error handling:
+
+1. **Building**: Construct the transaction with all parameters
+2. **Signing**: Use your private key to authorize it
+3. **Submission**: Send to a Cedra node
+4. **Validation**: Node checks signature and sequence number
+5. **Execution**: Smart contract runs, state changes applied
+6. **Confirmation**: Transaction included in a block
+
+```rust
+// Complete transaction flow with error handling
+async fn send_transaction_safely(
+    client: &Client,
+    sender: &mut LocalAccount,
+    payload: TransactionPayload,
+) -> Result<HashValue> {
+    // 1. Build
+    let raw_txn = TransactionBuilder::new()
+        .sender(sender.address())
+        .sequence_number(sender.sequence_number())
+        .payload(payload)
+        .max_gas_amount(100_000)
+        .gas_unit_price(100)
+        .expiration_timestamp_secs(current_time() + 600)
+        .build();
+
+    // 2. Simulate first
+    let simulation = client.simulate_transaction(sender, &raw_txn).await?;
+    if !simulation.success {
+        return Err(anyhow!("Simulation failed: {:?}", simulation.vm_status));
+    }
+
+    // 3. Sign
+    let signed = sender.sign_transaction(raw_txn);
+
+    // 4. Submit
+    let pending = client.submit_transaction(&signed).await?;
+
+    // 5. Wait with timeout
+    let result = tokio::time::timeout(
+        Duration::from_secs(30),
+        client.wait_for_transaction(&pending.hash)
+    ).await??;
+
+    // 6. Verify success
+    if !result.success {
+        return Err(anyhow!("Transaction failed on-chain"));
+    }
+
+    Ok(pending.hash)
+}
+```
+## 🚀 Next Steps
+
+Master transaction development and explore advanced Cedra features:
+
+### Build on Your Knowledge
+- **[Account Management](/sdks/rust/accounts)** - Understand account structure and management
+- **[Rust SDK Overview](/sdks/rust-sdk)** - Review the complete SDK capabilities
+
+### Smart Contract Development
+- **[Move Introduction](/move/introduction)** - Learn to write entry functions
+- **[Move Functions](/move/functions)** - Build transaction handlers
+- **[Error Handling](/move/errors)** - Handle transaction failures gracefully
+
+### Real-World Applications
+- **[Build a Fee Splitter](/guides/fee-splitter)** - Complex transaction routing
+- **[Escrow Contract Guide](/guides/escrow)** - Multi-party transaction patterns
+- **[DEX Integration](/guides/dex/client-integration)** - Advanced DeFi transactions
+
+### Development Tools
+- **[CLI Transaction Commands](/cli/usage)** - Submit transactions via CLI
+- **[TypeScript SDK](/sdks/typescript-sdk)** - Build web interfaces for your transactions
+- **[Indexer SDK](/indexer/sdk)** - Query transaction history and state
