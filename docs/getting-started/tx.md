@@ -163,6 +163,10 @@ async function main() {
         1000, // Transfer 1000 sub-units
       ],
     },
+    options: {
+      maxGasAmount: 5000,
+      faAddress: parseTypeTag("0x1::CedraCoin::cedra"),
+    },
   });
 
   console.log("✅ Transaction built");
@@ -186,11 +190,9 @@ const transactionWithCustomGas = await client.transaction.build.simple({
     functionArguments: [bob.accountAddress, 1000],
   },
   options: {
-    gasToken: {
-      address: "0x1::usdt::USDT", // Use USDT for gas
-      maxGasAmount: 5000n, // Max 0.005 USDT for gas
-    }
-  }
+    maxGasAmount: 5000,
+    faAddress: parseTypeTag("0x1::CedraCoin::cedra"),
+  },
 });
 ```
 

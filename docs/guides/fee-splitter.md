@@ -292,6 +292,10 @@ class FeeSplitterClient {
         function: `${this.moduleAddress}::${this.moduleName}::create_splitter`,
         functionArguments: [addresses, shares],
       },
+      options: {
+        maxGasAmount: 5000,
+        faAddress: parseTypeTag("0x1::CedraCoin::cedra"),
+      },
     });
     const res = await this.cedra.signAndSubmitTransaction({ signer: creator, transaction: txn });
     await this.cedra.waitForTransaction({ transactionHash: res.hash });
@@ -303,6 +307,10 @@ class FeeSplitterClient {
       data: {
         function: `${this.moduleAddress}::${this.moduleName}::distribute_fees`,
         functionArguments: [splitterOwner.toString(), this.getCEDRAMetadata(), amount.toString()],
+      },
+      options: {
+        maxGasAmount: 5000,
+        faAddress: parseTypeTag("0x1::CedraCoin::cedra"),
       },
     });
     const res = await this.cedra.signAndSubmitTransaction({ signer: sender, transaction: txn });

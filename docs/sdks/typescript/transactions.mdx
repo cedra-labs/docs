@@ -39,6 +39,10 @@ const transaction = await client.transaction.build.simple({
     function: "0x1::cedra_account::transfer",
     functionArguments: [bob.accountAddress, 1_000_000], // 0.01 CED in Octas
   },
+  options: {
+    maxGasAmount: 5000,
+    faAddress: parseTypeTag("0x1::CedraCoin::cedra"),
+  },
 });
 
 // Sign with your private key and send to the network
@@ -91,6 +95,10 @@ const transaction = await client.transaction.build.simple({
     function: "0xDEX::swap::execute",
     typeArguments: ["0x1::cedra_coin::CedraCoin", "0x1::usdc::USDC"],
     functionArguments: [1_000_000, 500], // swap amounts
+  },
+  options: {
+    maxGasAmount: 5000,
+    faAddress: parseTypeTag("0x1::CedraCoin::cedra"),
   },
 });
 ```

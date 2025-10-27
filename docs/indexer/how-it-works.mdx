@@ -55,7 +55,11 @@ Event {
         from: "0xabc...",
         to: "0xdef...",
         amount: 1000000
-    }
+    },
+    options: {
+      maxGasAmount: 5000,
+      faAddress: parseTypeTag("0x1::CedraCoin::cedra"),
+    },
 }
 ```
 
@@ -77,7 +81,11 @@ WriteSet {
     data: {
         coin: { value: 5000000 },
         frozen: false
-    }
+    },
+    options: {
+      maxGasAmount: 5000,
+      faAddress: parseTypeTag("0x1::CedraCoin::cedra"),
+    },
 }
 ```
 

@@ -148,6 +148,10 @@ export async function mintTestTokens(
       typeArguments: [],
       functionArguments: [amount],
     },
+    options: {
+      maxGasAmount: 5000,
+      faAddress: parseTypeTag("0x1::CedraCoin::cedra"),
+    },
   });
 
   const pendingTxn = await cedra.signAndSubmitTransaction({
@@ -180,6 +184,10 @@ export async function createTradingPair(
       function: `${MODULES.swap}::create_pair_entry`,
       typeArguments: [],
       functionArguments: [tokenX, tokenY],
+    },
+    options: {
+      maxGasAmount: 5000,
+      faAddress: parseTypeTag("0x1::CedraCoin::cedra"),
     },
   });
 
@@ -260,6 +268,10 @@ export async function addLiquidity(
         actualMinX, actualMinY
       ],
     },
+    options: {
+      maxGasAmount: 5000,
+      faAddress: parseTypeTag("0x1::CedraCoin::cedra"),
+    },
   });
 
   const pendingTxn = await cedra.signAndSubmitTransaction({
@@ -311,6 +323,10 @@ export async function executeSwap(
       function: `${MODULES.swap}::swap_exact_input`,
       typeArguments: [],
       functionArguments: [lpToken, tokenIn, tokenOut, amountIn, minAmountOut],
+    },
+    options: {
+      maxGasAmount: 5000,
+      faAddress: parseTypeTag("0x1::CedraCoin::cedra"),
     },
   });
 
