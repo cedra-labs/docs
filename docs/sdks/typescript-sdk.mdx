@@ -98,6 +98,10 @@ const txn = await client.transaction.build.simple({
     typeArguments: ["0x1::my_coin::MyCoin"], // Token type to mint
     functionArguments: [recipient, amount],   // Mint recipient and amount
   },
+  options: {
+    maxGasAmount: 5000,
+    faAddress: parseTypeTag("0x1::CedraCoin::cedra"),
+  },
 });
 ```
 
