@@ -1,0 +1,184 @@
+---
+title: Account Management
+sidebar_label: Accounts
+---
+
+# 🔑 Account Management
+
+Learn how Cedra accounts work and how to manage them effectively using the Rust SDK.
+
+:::tip Navigation
+**📍 You are here:** Account Management
+**⬅️ Previous:** [Rust SDK Overview](/sdks/rust-sdk)
+**➡️ Next:** [Transaction Guide](/sdks/rust/transactions)
+:::
+
+### What's in an Account?
+
+Every Cedra account on-chain contains:
+- **Sequence Number**: Current transaction count (prevents replay attacks)
+- **Authentication Key**: Used to verify transaction signatures
+- **Resources**: Data owned by the account (tokens, NFTs, etc.)
+- **Modules**: Smart contracts deployed by this account
+
+### 🆕 Creating Your First Account
+
+Generating a new account is straightforward. Remember, this only creates the account locally - it won't exist on-chain until it receives tokens or sends a transaction.
+
+```rust
+use anyhow::Result;
+use cedra_sdk::types::LocalAccount;
+use rand::rngs::OsRng;
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    // Generate a new ED25519 account (Cedra's signature scheme)
+    let account = LocalAccount::generate(&mut OsRng);
+
+    // The account now has:
+    // - A unique address (32 bytes)
+    // - A public/private keypair
+    // - But does NOT exist on-chain yet
+
+    println!("Address: 0x{}", account.address());
+    println!(
+        "Public Key: 0x{}",
+        hex::encode(account.public_key().to_bytes())
+    );
+
+    // Save the private key securely - you'll need it to import the account later
+    let private_key_bytes = account.private_key().to_bytes();
+    Ok(())
+}
+```
+
+The `OsRng` uses your operating system's secure random number generator, ensuring cryptographically secure key generation. The generated account is completely offline - no network calls are made.
+
+
+Unlike Ethereum where accounts exist as soon as you generate a keypair, Cedra uses a **lazy initialization** model:
+
+| Aspect | Ethereum (EVM) | Cedra |
+|--------|----------------|--------|
+| **Account Creation** | Exists immediately | Created on first transaction |
+| **Address Format** | 20 bytes (0x...) | 32 bytes (0x...) |
+| **Balance Before Funding** | Can be queried (returns 0) | Account doesn't exist |
+| **Key Algorithm** | ECDSA (secp256k1) | ED25519 |
+| **State Storage** | Global state tree | Resources owned by account |
+
+**Off-chain vs On-chain**: When you generate an account, it only exists in your local environment. The account is created on-chain when it receives its first transaction or tokens.
+
+**Resources**: Unlike EVM's global state, Cedra accounts own their data as "resources". Think of resources as objects that belong to specific accounts - like having a personal vault instead of entries in a shared ledger.
+
+**ED25519 Cryptography**: Cedra uses ED25519 for faster signature verification and smaller key sizes compared to Ethereum's ECDSA. This means better performance and lower transaction costs.
+
+### 📥 Importing Existing Accounts
+
+If you've previously created an account, you can reconstruct it from the private key:
+
+```rust
+use anyhow::Result;
+use cedra_sdk::types::LocalAccount;
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    // Your saved private key (hex string, 64 chars)
+    let private_key_hex = std::env::var("CEDRA_PRIVATE_KEY")?;
+
+    // Recreate the account directly from the private key hex string
+    let account = LocalAccount::from_private_key(&private_key_hex, 0)?;
+
+    println!("Restored address: 0x{}", account.address());
+    Ok(())
+}
+```
+
+The second parameter (`0`) is the initial sequence number. For imported accounts, you typically start with 0, but if the account has already sent transactions, you'll need to fetch the current sequence number from the blockchain.
+
+### 💰 Checking Balances
+
+Before checking balances, remember that the account must exist on-chain. Here's how to safely check balances and handle non-existent accounts:
+
+```rust
+#[tokio::main]
+async fn main() -> Result<()> {
+    let rest_client = Client::new(NODE_URL.clone());
+    let faucet_client = FaucetClient::new(FAUCET_URL.clone(), NODE_URL.clone());
+
+    let coin_client = CoinClient::new(&rest_client);
+    let bob = LocalAccount::generate(&mut rand::rngs::OsRng);
+
+    faucet_client
+        .create_account(bob.address())
+        .await
+        .context("Failed to fund Bob's account")?;
+    println!(
+        "Bob: {:?}",
+        coin_client
+            .get_account_balance(&bob.address())
+            .await
+            .context("Failed to get Bob's account balance")?
+    );
+    Ok(())
+}
+```
+
+Each token type on Cedra requires a `CoinStore` resource in the account. This resource is automatically created when the account first receives that token type. The native token (CED) uses the type `0x1::cedra_coin::CedraCoin`.
+
+### 🔍 Querying Account Data
+
+Get comprehensive information about an account's state:
+
+```rust
+use anyhow::Result;
+use cedra_sdk::{
+    rest_client::Client,
+    types::LocalAccount,
+};
+use std::{str::FromStr, sync::LazyLock};
+use url::Url;
+
+static NODE_URL: LazyLock<Url> = LazyLock::new(|| {
+    Url::from_str(
+        std::env::var("CEDRA_NODE_URL")
+            .as_ref()
+            .map(|s| s.as_str())
+            .unwrap_or("https://testnet.cedra.dev"),
+    )
+    .unwrap()
+});
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    let rest_client = Client::new(NODE_URL.clone());
+
+    let bob = LocalAccount::generate(&mut rand::rngs::OsRng);
+
+    let account_info = rest_client.get_account(bob.address()).await?;
+    println!("Account_info: {:?}", account_info);
+
+    // // Get all resources owned by the account
+    let resources = rest_client.get_account_resources(bob.address()).await?;
+    println!("Account owns {:?} resource types", resources);
+
+    Ok(())
+}
+```
+
+The sequence number is crucial for transaction ordering - it must match exactly when submitting transactions. The authentication key can change if the account rotates its keys, but the address remains constant.
+## 🚀 Next Steps
+
+Now that you understand account management, expand your Cedra development skills:
+
+### Continue Your Journey
+- **[Transaction Guide](/sdks/rust/transactions)** - Learn to build, sign, and submit transactions
+- **[Rust SDK Overview](/sdks/rust-sdk)** - Review SDK installation and setup
+
+### Practical Applications
+- **[Your First Transaction](/getting-started/tx)** - Send tokens between accounts
+- **[Counter Contract Tutorial](/getting-started/counter)** - Deploy your first smart contract
+- **[Fungible Asset Guide](/guides/first-fa)** - Create tokens with custom logic
+
+### Deep Dive Topics
+- **[Move Resource Model](/move/resource)** - Understand how accounts own resources
+- **[CLI Account Commands](/cli/usage)** - Manage accounts from the command line
+- **[Faucet Guide](/getting-started/faucet)** - Fund your testnet accounts
