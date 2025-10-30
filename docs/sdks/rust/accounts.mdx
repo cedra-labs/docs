@@ -26,22 +26,30 @@ Every Cedra account on-chain contains:
 Generating a new account is straightforward. Remember, this only creates the account locally - it won't exist on-chain until it receives tokens or sends a transaction.
 
 ```rust
+use anyhow::Result;
 use cedra_sdk::types::LocalAccount;
 use rand::rngs::OsRng;
 
-// Generate a new ED25519 account (Cedra's signature scheme)
-let account = LocalAccount::generate(&mut OsRng);
+#[tokio::main]
+async fn main() -> Result<()> {
+    // Generate a new ED25519 account (Cedra's signature scheme)
+    let account = LocalAccount::generate(&mut OsRng);
 
-// The account now has:
-// - A unique address (32 bytes)
-// - A public/private keypair
-// - But does NOT exist on-chain yet
+    // The account now has:
+    // - A unique address (32 bytes)
+    // - A public/private keypair
+    // - But does NOT exist on-chain yet
 
-println!("Address: 0x{}", account.address());
-println!("Public Key: 0x{}", hex::encode(account.public_key().to_bytes()));
+    println!("Address: 0x{}", account.address());
+    println!(
+        "Public Key: 0x{}",
+        hex::encode(account.public_key().to_bytes())
+    );
 
-// Save the private key securely - you'll need it to import the account later
-let private_key_bytes = account.private_key().to_bytes();
+    // Save the private key securely - you'll need it to import the account later
+    let private_key_bytes = account.private_key().to_bytes();
+    Ok(())
+}
 ```
 
 The `OsRng` uses your operating system's secure random number generator, ensuring cryptographically secure key generation. The generated account is completely offline - no network calls are made.
@@ -68,21 +76,20 @@ Unlike Ethereum where accounts exist as soon as you generate a keypair, Cedra us
 If you've previously created an account, you can reconstruct it from the private key:
 
 ```rust
+use anyhow::Result;
 use cedra_sdk::types::LocalAccount;
-use cedra_sdk::crypto::ed25519::Ed25519PrivateKey;
 
-// Your saved private key (64 hex characters)
-let private_key_hex = std::env::var("CEDRA_PRIVATE_KEY")?;
+#[tokio::main]
+async fn main() -> Result<()> {
+    // Your saved private key (hex string, 64 chars)
+    let private_key_hex = std::env::var("CEDRA_PRIVATE_KEY")?;
 
-// Remove 0x prefix if present and decode
-let key_bytes = hex::decode(private_key_hex.trim_start_matches("0x"))?;
+    // Recreate the account directly from the private key hex string
+    let account = LocalAccount::from_private_key(&private_key_hex, 0)?;
 
-// Recreate the account from the private key
-let private_key = Ed25519PrivateKey::try_from(&key_bytes[..])?;
-let account = LocalAccount::from_private_key(private_key, 0)?;
-
-// The address and public key are deterministically derived
-println!("Restored address: 0x{}", account.address());
+    println!("Restored address: 0x{}", account.address());
+    Ok(())
+}
 ```
 
 The second parameter (`0`) is the initial sequence number. For imported accounts, you typically start with 0, but if the account has already sent transactions, you'll need to fetch the current sequence number from the blockchain.
@@ -92,24 +99,26 @@ The second parameter (`0`) is the initial sequence number. For imported accounts
 Before checking balances, remember that the account must exist on-chain. Here's how to safely check balances and handle non-existent accounts:
 
 ```rust
-use cedra_sdk::rest_client::Client;
+#[tokio::main]
+async fn main() -> Result<()> {
+    let rest_client = Client::new(NODE_URL.clone());
+    let faucet_client = FaucetClient::new(FAUCET_URL.clone(), NODE_URL.clone());
 
-let client = Client::new("https://testnet.cedra.dev");
+    let coin_client = CoinClient::new(&rest_client);
+    let bob = LocalAccount::generate(&mut rand::rngs::OsRng);
 
-// Check if account exists and get balance
-match client.get_account_balance(account.address()).await {
-    Ok(balance) => {
-        // Convert from Octas to CED (1 CED = 100,000,000 Octas)
-        let ced_amount = balance as f64 / 100_000_000.0;
-        println!("Balance: {} CED", ced_amount);
-    }
-    Err(e) if e.to_string().contains("Account not found") => {
-        println!("Account doesn't exist on-chain yet");
-        println!("Send tokens to {} to create it", account.address());
-    }
-    Err(e) => {
-        println!("Error checking balance: {}", e);
-    }
+    faucet_client
+        .create_account(bob.address())
+        .await
+        .context("Failed to fund Bob's account")?;
+    println!(
+        "Bob: {:?}",
+        coin_client
+            .get_account_balance(&bob.address())
+            .await
+            .context("Failed to get Bob's account balance")?
+    );
+    Ok(())
 }
 ```
 
@@ -120,24 +129,38 @@ Each token type on Cedra requires a `CoinStore` resource in the account. This re
 Get comprehensive information about an account's state:
 
 ```rust
-// Get account information including sequence number
-let account_info = client.get_account_info(address).await?;
-println!("Sequence Number: {}", account_info.sequence_number);
-println!("Auth Key: 0x{}", account_info.authentication_key);
+use anyhow::Result;
+use cedra_sdk::{
+    rest_client::Client,
+    types::LocalAccount,
+};
+use std::{str::FromStr, sync::LazyLock};
+use url::Url;
 
-// Get all resources owned by the account
-let resources = client.get_account_resources(address).await?;
-println!("Account owns {} resource types", resources.len());
+static NODE_URL: LazyLock<Url> = LazyLock::new(|| {
+    Url::from_str(
+        std::env::var("CEDRA_NODE_URL")
+            .as_ref()
+            .map(|s| s.as_str())
+            .unwrap_or("https://testnet.cedra.dev"),
+    )
+    .unwrap()
+});
 
-// Check for specific resource (e.g., CoinStore)
-let has_ced = resources.iter().any(|r|
-    r.type_ == "0x1::coin::CoinStore<0x1::cedra_coin::CedraCoin>"
-);
+#[tokio::main]
+async fn main() -> Result<()> {
+    let rest_client = Client::new(NODE_URL.clone());
 
-// Check if account has deployed any smart contracts
-let modules = client.get_account_modules(address).await?;
-if !modules.is_empty() {
-    println!("Account has deployed {} modules", modules.len());
+    let bob = LocalAccount::generate(&mut rand::rngs::OsRng);
+
+    let account_info = rest_client.get_account(bob.address()).await?;
+    println!("Account_info: {:?}", account_info);
+
+    // // Get all resources owned by the account
+    let resources = rest_client.get_account_resources(bob.address()).await?;
+    println!("Account owns {:?} resource types", resources);
+
+    Ok(())
 }
 ```
 

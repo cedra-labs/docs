@@ -26,12 +26,10 @@ Add the Cedra SDK to your Rust project by updating your `Cargo.toml`:
 
 ```toml title="Cargo.toml"
 [dependencies]
-cedra-sdk = { git = "https://github.com/cedra-labs/cedra-network", branch = "main" }
+cedra-sdk = { git = "https://github.com/cedra-labs/cedra-network", branch = "testnet" }
 
 [patch.crates-io]
-# Required cryptographic dependencies
 merlin = { git = "https://github.com/cedra-labs/merlin" }
-x25519-dalek = { git = "https://github.com/cedra-labs/x25519-dalek", branch = "zeroize_v1" }
 ```
 
 Create a `.cargo/config.toml` file in your project root:
@@ -50,33 +48,144 @@ cedra-sdk = { git = "https://github.com/cedra-labs/cedra-network", rev = "abc123
 
 ## 🎯 Your First Transaction
 
-Here's the complete flow of sending tokens on Cedra. This example demonstrates the core SDK capabilities:
+This complete example walks you through a typical token transfer workflow on Cedra:
+
+- **Account Generation** - Create two new accounts with cryptographic keypairs
+- **Faucet Integration** - Fund Alice's account with testnet tokens
+- **Balance Queries** - Check account balances at each step
+- **Token Transfers** - Send tokens between accounts with automatic gas handling
+- **Transaction Confirmation** - Wait for transactions to finalize on-chain
 
 ```rust title="src/main.rs"
+use anyhow::{Context, Result};
 use cedra_sdk::{
     coin_client::CoinClient,
-    rest_client::Client,
+    rest_client::{Client, FaucetClient},
     types::LocalAccount,
 };
+use std::{str::FromStr, sync::LazyLock};
+use url::Url;
+
+static NODE_URL: LazyLock<Url> = LazyLock::new(|| {
+    Url::from_str(
+        std::env::var("CEDRA_NODE_URL")
+            .as_ref()
+            .map(|s| s.as_str())
+            .unwrap_or("https://testnet.cedra.dev"),
+    )
+    .unwrap()
+});
+
+static FAUCET_URL: LazyLock<Url> = LazyLock::new(|| {
+    Url::from_str(
+        std::env::var("CEDRA_FAUCET_URL")
+            .as_ref()
+            .map(|s| s.as_str())
+            .unwrap_or("https://faucet-api.cedra.dev"),
+    )
+    .unwrap()
+});
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    // Connect to Cedra testnet
-    let client = Client::new("https://testnet.cedra.dev");
-    let coin_client = CoinClient::new(&client);
+    let rest_client = Client::new(NODE_URL.clone());
+    let faucet_client = FaucetClient::new(FAUCET_URL.clone(), NODE_URL.clone());
 
-    // Generate two accounts locally
+    let coin_client = CoinClient::new(&rest_client);
+
     let mut alice = LocalAccount::generate(&mut rand::rngs::OsRng);
     let bob = LocalAccount::generate(&mut rand::rngs::OsRng);
 
-    // Transfer 0.01 CED (1,000,000 Octas)
-    let txn_hash = coin_client
-        .transfer(&mut alice, bob.address(), 1_000_000, None)
-        .await?;
+    // Print account addresses.
+    println!("\n=== Addresses ===");
+    println!("Alice: {}", alice.address().to_hex_literal());
+    println!("Bob: {}", bob.address().to_hex_literal());
 
-    println!("Transfer complete: 0x{}", txn_hash);
+    // Create the accounts on chain, but only fund Alice.
+    faucet_client
+        .fund(alice.address(), 100_000_000)
+        .await
+        .context("Failed to fund Alice's account")?;
+    faucet_client
+        .create_account(bob.address())
+        .await
+        .context("Failed to create Bob's account")?;
+
+    // Print initial balances.
+    println!("\n=== Initial Balances ===");
+    println!(
+        "Alice: {:?}",
+        coin_client
+            .get_account_balance(&alice.address())
+            .await
+            .context("Failed to get Alice's account balance")?
+    );
+    println!(
+        "Bob: {:?}",
+        coin_client
+            .get_account_balance(&bob.address())
+            .await
+            .context("Failed to get Bob's account balance")?
+    );
+
+    // Have Alice send Bob some coins.
+    let txn_hash = coin_client
+        .transfer(&mut alice, bob.address(), 1_000, None)
+        .await
+        .context("Failed to submit transaction to transfer coins")?;
+    rest_client
+        .wait_for_transaction(&txn_hash)
+        .await
+        .context("Failed when waiting for the transfer transaction")?;
+
+    // Print intermediate balances.
+    println!("\n=== Intermediate Balances ===");
+    println!(
+        "Alice: {:?}",
+        coin_client
+            .get_account_balance(&alice.address())
+            .await
+            .context("Failed to get Alice's account balance the second time")?
+    );
+    println!(
+        "Bob: {:?}",
+        coin_client
+            .get_account_balance(&bob.address())
+            .await
+            .context("Failed to get Bob's account balance the second time")?
+    );
+
+    // Have Alice send Bob some more coins.
+    let txn_hash = coin_client
+        .transfer(&mut alice, bob.address(), 1_000, None)
+        .await
+        .context("Failed to submit transaction to transfer coins")?; 
+                                                                   
+    rest_client
+        .wait_for_transaction(&txn_hash)
+        .await
+        .context("Failed when waiting for the transfer transaction")?; 
+
+    // Print final balances.
+    println!("\n=== Final Balances ===");
+    println!(
+        "Alice: {:?}",
+        coin_client
+            .get_account_balance(&alice.address())
+            .await
+            .context("Failed to get Alice's account balance the third time")?
+    );
+    println!(
+        "Bob: {:?}",
+        coin_client
+            .get_account_balance(&bob.address())
+            .await
+            .context("Failed to get Bob's account balance the third time")?
+    );
+
     Ok(())
 }
+
 ```
 
 That's it! The SDK handles all the complexity - sequence numbers, gas estimation, signing, and confirmation. Notice how Rust's type system ensures you can't make mistakes like sending to an invalid address or using the wrong amount format.
