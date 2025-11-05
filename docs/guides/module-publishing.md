@@ -50,15 +50,16 @@ Project Setup → Write Code → Local Testing → Compile → Publish → Verif
 Create a new Move project using the Cedra CLI:
 
 ```bash
-# Create project directory
+# Create and enter project directory
 mkdir my_first_module
 cd my_first_module
 
-# Initialize Move project (creates files in current directory)
+# Initialize Move project in current directory
+# IMPORTANT: cedra move init creates files HERE, not in a subdirectory
 cedra move init --name my_first_module
 ```
 
-This creates the following structure in your current directory:
+This creates the following structure **in your current directory**:
 
 ```
 my_first_module/
@@ -91,6 +92,18 @@ CedraFramework = { git = "https://github.com/cedra-labs/cedra-framework.git", su
 
 [dev-dependencies]
 ```
+
+:::tip Framework Branch Selection
+While the Cedra CLI generates `rev = "mainnet"` by default, **in practice `rev = "main"` is most commonly used** and works reliably across all networks (testnet, mainnet, devnet).
+
+Available branches:
+- `rev = "main"` - **Recommended** - Works across all networks, actively maintained
+- `rev = "mainnet"` - Mainnet-specific (may have compatibility issues)
+- `rev = "testnet"` - Testnet-specific framework
+- `rev = "devnet"` - Development network (currently same as main)
+
+**All Builders Forge projects use `rev = "main"`** and deploy successfully to testnet.
+:::
 
 **Key Configuration Options:**
 
@@ -239,7 +252,6 @@ BUILDING MyFirstModule
 Do you want to publish this package at address 0xabc123...? [yes/no]
 > yes
 
-Transaction submitted: https://explorer.cedra.dev/txn/0xdef456...
 {
   "Result": {
     "transaction_hash": "0xdef456...",
@@ -247,6 +259,8 @@ Transaction submitted: https://explorer.cedra.dev/txn/0xdef456...
     "vm_status": "Executed successfully"
   }
 }
+
+View on Cedrascan: https://cedrascan.com/txn/0xdef456...?network=testnet
 ```
 
 ### Step 7: Verify Publication
@@ -322,11 +336,11 @@ cedra move compile
 
 | Practice | Reason |
 |----------|--------|
-| ✅ Pin to specific `rev` or tag | Ensures reproducible builds |
-| ✅ Use official Cedra Framework | Tested and maintained |
+| ✅ Use `main` branch | Standard across all Cedra projects and official examples |
+| ✅ Use official Cedra Framework | Tested and maintained by Cedra Labs |
+| ✅ Pin to specific commit for critical apps | Ensures reproducible builds (`rev = "abc123..."`) |
 | ✅ Minimize dependencies | Reduces compilation time and attack surface |
 | ✅ Document dependency versions | Helps teammates understand requirements |
-| ❌ Don't use `main` branch in production | Unstable, can break builds |
 
 ### Resolving Dependency Conflicts
 
@@ -335,14 +349,13 @@ cedra move compile
 **Solution:**
 
 ```toml
-# Explicitly override dependency version
+# Explicitly specify dependency versions in [dependencies]
 [dependencies]
-CedraFramework = { git = "...", rev = "v1.5.0" }
-ThirdPartyLib = { git = "...", rev = "latest" }
+CedraFramework = { git = "https://github.com/cedra-labs/cedra-framework.git", subdir = "cedra-framework", rev = "main" }
+ThirdPartyLib = { git = "https://github.com/example/lib.git", rev = "v1.2.0" }
 
-# Force specific dependency resolution
-[patch.crates-io]
-problematic-dep = { git = "...", rev = "fixed-version" }
+# Note: Move.toml does not support [patch] sections like Rust's Cargo.toml
+# Always specify the exact version you want in [dependencies]
 ```
 
 ---
@@ -691,17 +704,17 @@ After publishing your first module:
 
 1. **Interact with your module**: Use the Cedra CLI to call functions
 2. **Build a client**: Create a TypeScript/Python SDK client
-3. **Monitor transactions**: Use Cedra Explorer to track activity
+3. **Monitor transactions**: Use Cedrascan to track activity
 4. **Upgrade your module**: Practice safe upgrade patterns
 5. **Publish more modules**: Build complex multi-module projects
 
 ### Additional Resources
 
-- [Cedra CLI Documentation](https://docs.cedra.dev/cli)
+- [Cedra Documentation](https://docs.cedra.dev)
 - [Move Language Book](https://move-language.github.io/move/)
 - [Cedra Framework Reference](https://github.com/cedra-labs/cedra-framework)
 - [Example Contracts](https://github.com/cedra-labs/move-contract-examples)
-- [Cedra Builders Community](https://t.me/cedra_builders)
+- [Cedra Builders Community](https://t.me/+Ba3QXd0VG9U0Mzky)
 
 ---
 
