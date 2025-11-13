@@ -21,6 +21,9 @@ export default {
     }
   ],
   themeConfig: {
+    prism: {
+      additionalLanguages: ['solidity'],
+    },
     colorMode: {
       defaultMode: 'light',
       disableSwitch: false,
