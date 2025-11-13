@@ -71,6 +71,21 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
           id: 'getting-started/counter',
           label: 'Build a Counter Contract',
           className: 'sidebar-badge-tutorial'
+        },
+        {
+          type: 'category',
+          label: 'For Solidity Developers',
+          link: {
+            type: 'doc',
+            id: 'for-solidity-developers/index',
+          },
+          items: [
+            {
+              type: 'doc',
+              id: 'for-solidity-developers/concepts',
+              label: 'Fundamental concepts'
+            }
+          ]
         }
       ]
     },
