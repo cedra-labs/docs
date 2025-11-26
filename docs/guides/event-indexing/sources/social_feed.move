@@ -1,9 +1,9 @@
 module cedra_guide::social_feed {
     use std::string::String;
     use std::signer;
-    use aptos_framework::event;
-    use aptos_framework::account;
-    use aptos_framework::timestamp;
+    use cedra_framework::event;
+    use cedra_framework::account;
+    use cedra_framework::timestamp;
 
     /// Struct representing the event emitted when a post is created.
     struct PostEvent has drop, store {
