@@ -58,7 +58,7 @@ sources/    # Modules you're building
 scripts/    # Custom scripts to test or run actions
 ```
 
-We will dive deeper into project structure and the Move language in future courses, but for now you can use the [Move Book](https://move-book.com/reference/) to understand it better.
+For a comprehensive guide on project structure and deployment, see [Move Package Management](/move-package-management). You can also use the [Move Book](https://move-book.com/reference/) to understand Move better.
 
 ## Wallets, Addresses, and Key Management
 

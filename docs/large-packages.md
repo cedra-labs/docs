@@ -2,6 +2,13 @@
 
 This guide explains how to deploy Move packages that exceed the standard transaction size limits (>64KB) using Cedra's chunked publishing feature. This is essential for complex contracts with extensive code or large embedded data.
 
+:::tip Prerequisites
+Before deploying large packages, ensure you have:
+- ✅ [Cedra CLI installed](/getting-started/cli)
+- ✅ [Account configured](/cli/usage#1-initial-configuration)
+- ✅ [Understanding of Move package management](/move-package-management)
+:::
+
 Use chunked publishing when:
 - Your package size exceeds **64KB**
 - You get `MAXIMUM_TRANSACTION_SIZE_EXCEEDED` errors during deployment
@@ -69,3 +76,9 @@ When deploying packages larger than 64KB, Cedra uses chunking mechanism to bypas
 4. **Final Assembly & Publication**: The last chunk triggers the complete deployment. The `stage_code_chunk_and_publish_to_account` function combines all staged chunks, verifies the package integrity, publishes it to your account, and automatically cleans up the temporary storage.
 
 The LargePackages module provides these specialized functions to handle different deployment scenarios.
+
+## Next Steps
+
+- Learn the basics in [Package Management](/move-package-management)
+- Upgrade your packages with [Move Package Upgrades](/move-package-upgrades)
+- Explore [CLI commands](/cli/usage)

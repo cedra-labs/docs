@@ -26,9 +26,11 @@ counter-project/
 └── sources/
 ```
 
+For more details on Move package structure, see [Move Package Management](/move-package-management).
+
 ### Update Move.toml
 
-Before writing our contract, we need to setup counter address in the `Move.toml`:
+Before writing our contract, we need to setup counter address in the `Move.toml`. Learn more about [Move.toml configuration](/move-package-management#configuring-movetoml).
 
 ```toml
 ...
@@ -178,7 +180,7 @@ You should see output indicating that all tests passed! ✅
 
 ## 🚀 Step 5: Deploy to Testnet
 
-Time to deploy our counter to Cedra testnet:
+Time to deploy our counter to Cedra testnet. For detailed deployment options, see [Deploy to Blockchain](/move-package-management#deploy-to-blockchain).
 
 ```bash
 cedra move publish

@@ -236,6 +236,8 @@ This will set up a new profile using the given key. Once imported, you can use t
 
 One of the Cedra CLI's most powerful features is helping you develop and deploy **Move** smart contracts. The CLI can **create** a new Move project, **compile** it, run Move **unit tests**, and **publish** your modules to the blockchain. This section walks through a typical Move development cycle using Cedra CLI.
 
+For a comprehensive guide on package management, see [Move Package Management](/move-package-management).
+
 ### 🎬 Initializing a New Move Project
 
 ```bash
@@ -269,6 +271,8 @@ cedra move test
 This will compile the package (in test mode) and run all tests in your code. Output will show which tests passed or failed, along with any debug prints or assertions from the tests. Use this to verify your module's logic off-chain before deploying.
 
 ### 🚀 Publishing Move Modules to the Blockchain
+
+For packages exceeding 64KB, see [Deploying Large Packages](/large-packages).
 
 3. **📤 Publish the Package:** Run the `cedra move publish` command (with `--named-addresses` as needed). The CLI will first **simulate** the publish transaction (see next section on simulation) and then ask for confirmation to actually submit it. For example:
 

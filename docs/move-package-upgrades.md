@@ -175,3 +175,4 @@ With these rules in mind, you're ready to safely upgrade your packages. If you'r
 - Learn the basics in [Package Management](/move-package-management)
 - Handle large contracts with [Deploying Large Packages](/large-packages)
 - Dive into [Move Programming](/move/basics)
+- Understand [Move Modules](/move/modules) and [Functions](/move/functions)

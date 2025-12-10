@@ -189,6 +189,7 @@ cedra move publish --profile devnet --named-addresses my_project=default
 
 ## Next Steps
 
+- Upgrade your packages with [Move Package Upgrades](/move-package-upgrades)
 - If your package exceeds 64KB, see [Deploying Large Packages](/large-packages)
 - Learn Move syntax in [Move Programming](/move/basics)
 - Try the [Counter Tutorial](/getting-started/counter)

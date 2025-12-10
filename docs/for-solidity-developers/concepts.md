@@ -435,6 +435,8 @@ module cedra::token {
 - Compatibility checking
 - Simpler governance
 
+Learn more about [Move Package Upgrades](/move-package-upgrades).
+
 </div>
 </div>
 

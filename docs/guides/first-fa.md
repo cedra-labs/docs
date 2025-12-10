@@ -130,6 +130,8 @@ No special capabilities needed - any holder may transfer.
 2. If output looks correct, **publish**.
 3. **Save** the printed Metadata object address (admin + capability store).
 
+For detailed deployment options, see [Move Package Management](/move-package-management). For large contracts (>64KB), see [Deploying Large Packages](/large-packages).
+
 ```bash
 cedra move compile --named-addresses CedraFungible=default
 cedra move publish --named-addresses CedraFungible=default
