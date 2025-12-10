@@ -343,3 +343,74 @@ article {
   background-color: rgba(129, 140, 248, 0.1);
   border-color: rgba(129, 140, 248, 0.3);
 }
+
+
+/* Numbered steps styling */
+.flow-steps {
+  position: relative;
+  margin: 2rem 0;
+}
+
+.flow-steps > hr {
+  display: none; /* Hide the horizontal rules */
+}
+
+.flow-steps > div {
+  position: relative;
+  padding-left: 3.5rem;
+  padding-bottom: 2rem;
+  margin-bottom: 0;
+  min-height: 3rem;
+}
+
+/* Style the number badge */
+.flow-steps > div > p:first-child > strong:first-child {
+  position: absolute;
+  left: .5rem;
+  top: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  background: var(--ifm-color-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* Adjust spacing for the title after the number */
+.flow-steps > div > p:first-child > strong:nth-child(2) {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  color: var(--ifm-heading-color);
+}
+
+/* Ensure all content is properly aligned */
+.flow-steps div p,
+.flow-steps div pre,
+.flow-steps div ul,
+.flow-steps div ol {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Ensure code blocks are properly styled */
+.flow-steps pre {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Bullet points should have proper indentation */
+.flow-steps ul {
+  padding-left: 1.5rem;
+}
+
+/* Dark theme adjustments */
+[data-theme='dark'] .flow-steps > div > p:first-child > strong:first-child {
+  background: var(--ifm-color-primary-dark);
+}
+
+

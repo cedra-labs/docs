@@ -181,86 +181,82 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
     },
     {
       type: 'category',
-      label: '📚 Move Programming',
+      label: '📚 Move',
       className: 'sidebar-reference',
       collapsed: true,
-      link: {
-        type: 'doc',
-        id: 'move/index',
-      },
       items: [
         {
-          type: 'doc',
-          id: 'move/introduction',
-          label: 'Resource First Programming'
+          type: 'category',
+          label: 'Package',
+          items: [
+            {
+              type: 'doc',
+              id: 'move-package-management',
+              label: '📦 Package Management',
+              className: 'sidebar-badge-important'
+            },
+            {
+              type: 'doc',
+              id: 'move-package-upgrades',
+              label: '🔄 Package Upgrades'
+            },
+            {
+              type: 'doc',
+              id: 'large-packages',
+              label: '🚀 Deploying Large Packages'
+            }
+          ]
         },
         {
-          type: 'doc',
-          id: 'move/basics',
-          label: 'Basic Syntax and Data Types'
-        },
-        {
-          type: 'doc',
-          id: 'move/modules',
-          label: 'Dive Deep into Move Modules'
-        },
-        {
-          type: 'doc',
-          id: 'move/functions',
-          label: 'Functions in Move'
-        },
-        {
-          type: 'doc',
-          id: 'move/resource',
-          label: 'Resource Types',
-          className: 'sidebar-badge-important'
-        },
-        {
-          type: 'doc',
-          id: 'move/ownership',
-          label: 'Ownership & Borrowing'
-        },
-        {
-          type: 'doc',
-          id: 'move/flow',
-          label: 'Conditionals, Loops, and Control Flow'
-        },
-        {
-          type: 'doc',
-          id: 'move/errors',
-          label: 'Error Handling and Assertions'
-        }
-      ]
-    },
-    {
-      type: 'category',
-      label: '🔍 Indexer',
-      className: 'sidebar-indexer',
-      collapsed: true,
-      link: {
-        type: 'doc',
-        id: 'indexer/index',
-      },
-      items: [
-        {
-          type: 'doc',
-          id: 'indexer/how-it-works',
-          label: 'How It Works'
-        },
-        {
-          type: 'doc',
-          id: 'indexer/common-queries',
-          label: 'Common Queries'
-        },
-        {
-          type: 'doc',
-          id: 'indexer/sdk',
-          label: 'SDK Guide'
-        },
-        {
-          type: 'doc',
-          id: 'indexer/processors',
-          label: 'Processors'
+          type: 'category',
+          label: 'Programming',
+          link: {
+            type: 'doc',
+            id: 'move/index',
+          },
+          items: [
+            {
+              type: 'doc',
+              id: 'move/introduction',
+              label: 'Resource First Programming'
+            },
+            {
+              type: 'doc',
+              id: 'move/basics',
+              label: 'Basic Syntax and Data Types'
+            },
+            {
+              type: 'doc',
+              id: 'move/modules',
+              label: 'Dive Deep into Move Modules'
+            },
+            {
+              type: 'doc',
+              id: 'move/functions',
+              label: 'Functions in Move'
+            },
+            {
+              type: 'doc',
+              id: 'move/resource',
+              label: 'Resource Types',
+              className: 'sidebar-badge-important'
+            },
+            {
+              type: 'doc',
+              id: 'move/ownership',
+              label: 'Ownership & Borrowing'
+            },
+            {
+              type: 'doc',
+              id: 'move/flow',
+              label: 'Conditionals, Loops, and Control Flow'
+            },
+            {
+              type: 'doc',
+              id: 'move/errors',
+              label: 'Error Handling and Assertions'
+            }
+          ]
         }
       ]
     },
@@ -373,6 +369,38 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
                   label: 'Examples & Patterns'
                 }
               ]
+            }
+          ]
+        },
+        {
+          type: 'category',
+          label: '🔍 Indexer',
+          className: 'sidebar-indexer',
+          collapsed: true,
+          link: {
+            type: 'doc',
+            id: 'indexer/index',
+          },
+          items: [
+            {
+              type: 'doc',
+              id: 'indexer/how-it-works',
+              label: 'How It Works'
+            },
+            {
+              type: 'doc',
+              id: 'indexer/common-queries',
+              label: 'Common Queries'
+            },
+            {
+              type: 'doc',
+              id: 'indexer/sdk',
+              label: 'SDK Guide'
+            },
+            {
+              type: 'doc',
+              id: 'indexer/processors',
+              label: 'Processors'
             }
           ]
         },
