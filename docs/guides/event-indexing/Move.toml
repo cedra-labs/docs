@@ -1,0 +1,10 @@
+[package]
+name = "CedraEventGuide"
+version = "1.0.0"
+
+[addresses]
+cedra_guide = "0xde73455e6ef9361692494cb9e638cfe8c34bad8a971a2b5339a5424a27f9f7d6"
+
+[dependencies]
+# Lock AptosFramework to aptos-release-v1.9.0 (matches cached checkout in ~/.move)
+AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "aptos-release-v1.9.0" }
