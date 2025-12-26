@@ -168,7 +168,7 @@ struct Token has store, copy { value: u64 }
 struct Token { value: u64 }  // Removed 'store' - not allowed!
 ```
 
-With these rules in mind, you're ready to safely upgrade your packages. If you're unsure whether your changes are compatible, compile with `cedra move compile` first—the compiler will catch compatibility violations before you attempt to publish.
+With these rules in mind, you're ready to safely upgrade your packages. If you're unsure whether your changes are compatible, compile with `cedra move compile` first - the compiler will catch compatibility violations before you attempt to publish.
 
 ## Next Steps
 

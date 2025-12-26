@@ -104,7 +104,9 @@ module counter::simple_counter {
 
 ## 🧪 Step 3: Add Tests
 
-Let's add comprehensive tests to our contract. Add the following test functions to your `tests/counter.move` file:
+Let's add comprehensive tests to our contract. For a complete guide on Move testing including annotations and best practices, see [Move Unit Testing](/move/testing).
+
+Add the following test functions to your `tests/counter.move` file:
 
 ```rust
 #[test_only]

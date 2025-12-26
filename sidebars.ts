@@ -204,6 +204,11 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
               type: 'doc',
               id: 'large-packages',
               label: '🚀 Deploying Large Packages'
+            },
+            {
+              type: 'doc',
+              id: 'move/testing',
+              label: '🧪 Unit Testing'
             }
           ]
         },
@@ -422,6 +427,32 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
       type: 'doc',
       id: 'concepts/blockchain',
       label: 'Blockchain'
+    },
+    {
+      type: 'doc',
+      id: 'concepts/block-stm',
+      label: 'Block-STM Parallel Execution'
+    },
+    {
+      type: 'category',
+      label: 'Accounts',
+      items: [
+        {
+          type: 'doc',
+          id: 'concepts/accounts/understanding-accounts',
+          label: 'Understanding Accounts'
+        },
+        {
+          type: 'doc',
+          id: 'concepts/accounts/authentication',
+          label: 'Authentication'
+        },
+        {
+          type: 'doc',
+          id: 'concepts/accounts/resources',
+          label: 'Resources'
+        }
+      ]
     },
     {
       type: 'category',
