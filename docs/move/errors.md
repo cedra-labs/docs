@@ -509,7 +509,7 @@ Remember: on blockchain, failed transactions still cost gas. Check the cheap con
 
 ## Testing Your Error Handling
 
-Robust code tests both success and failure paths. Move provides excellent tools for testing that your functions fail correctly:
+Robust code tests both success and failure paths. Move provides excellent tools for testing that your functions fail correctly. For comprehensive testing documentation, see [Move Unit Testing](/move/testing).
 
 ```rust
 #[test_only]

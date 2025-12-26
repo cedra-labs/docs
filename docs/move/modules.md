@@ -372,22 +372,22 @@ public fun complete_process(receipt: Receipt) {
 
 ## Testing Your Modules
 
-Testing is crucial for confidence in your code:
+Testing is crucial for confidence in your code. For comprehensive testing documentation, see [Move Unit Testing](/move/testing).
 
 ```rust
 #[test_only]
 module 0x42::auction_tests {
     use 0x42::auction;
-    
+
     #[test]
     fun test_auction_lifecycle() {
         // Setup
         let seller = @0x123;
         let seller_signer = create_signer_for_test(seller);
-        
+
         // Create auction
         auction::create(seller_signer, item_id, starting_price);
-        
+
         // Verify state
         let (current_bid, leader) = auction::get_status(seller, item_id);
         assert!(current_bid == starting_price, 0);

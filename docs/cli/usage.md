@@ -270,6 +270,8 @@ cedra move test
 
 This will compile the package (in test mode) and run all tests in your code. Output will show which tests passed or failed, along with any debug prints or assertions from the tests. Use this to verify your module's logic off-chain before deploying.
 
+For comprehensive testing documentation including test annotations, expected failures, and best practices, see [Move Unit Testing](/move/testing).
+
 ### 🚀 Publishing Move Modules to the Blockchain
 
 For packages exceeding 64KB, see [Deploying Large Packages](/large-packages).

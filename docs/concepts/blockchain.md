@@ -7,6 +7,7 @@ Cedra is a high-performance blockchain built on Move language technology, design
 
 Before diving deeper, let's establish the fundamental concepts:
 
+- **[Accounts](/concepts/accounts/understanding-accounts)**: Entities that hold assets and can submit transactions
 - **[Transactions](/concepts/transactions/understanding-transactions)**: Atomic operations that change the blockchain state
 - **Blocks**: Containers that group multiple transactions for processing
 - **Validators**: Network participants that execute transactions and reach consensus
@@ -50,7 +51,7 @@ Valid transactions spread across the network through a gossip protocol. Each val
 Validators take turns acting as block proposers. The current leader selects transactions from the mempool, prioritizing by gas price and other factors, and forms them into a proposed block.
 
 #### Execution Stage
-Cedra employs parallel execution through Block-STM technology. Multiple transactions execute simultaneously with optimistic concurrency control. The system tracks read and write operations, detecting and resolving conflicts automatically.
+Cedra employs parallel execution through [Block-STM](/concepts/block-stm) technology. Multiple transactions execute simultaneously with optimistic concurrency control. The system tracks read and write operations, detecting and resolving conflicts automatically.
 
 #### Commitment Stage
 After execution, validators must agree on the results. Once consensus is reached with a quorum of validators, the block and its effects become permanent. The state changes are applied, and the transactions are irreversibly committed to the blockchain.
@@ -253,7 +254,7 @@ Only after passing all validation does a block become part of the permanent bloc
 
 Key architectural decisions enable Cedra's performance:
 - Layered network architecture separates concerns and protects validators
-- Parallel execution through Block-STM maximizes throughput
+- Parallel execution through [Block-STM](/concepts/block-stm) maximizes throughput
 - BFT consensus ensures agreement without lengthy confirmation periods
 - Sophisticated state management enables efficient verification
 
@@ -269,3 +270,11 @@ For detailed technical understanding of specific components:
 - **[Understanding Transactions](/concepts/transactions/understanding-transactions)** - Complete guide to transaction anatomy, types, and lifecycle
 - **[States and State Transitions](/concepts/transactions/states)** - How the blockchain state evolves through transactions
 - **[Proofs and Verification](/concepts/transactions/proofs-and-verification)** - Cryptographic proofs enabling trustless verification
+
+### Accounts
+- **[Understanding Accounts](/concepts/accounts/understanding-accounts)** - Account addresses, types, and access control
+- **[Authentication](/concepts/accounts/authentication)** - Auth schemes, multisig, and key rotation
+- **[Resources](/concepts/accounts/resources)** - How Move resources enable per-account storage
+
+### Execution
+- **[Block-STM Parallel Execution](/concepts/block-stm)** - How Cedra achieves 160k+ TPS through optimistic concurrency
