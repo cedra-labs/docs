@@ -121,6 +121,11 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
           label: 'Building Secure Token Vesting & Marketplace via Escrow'
         },
         {
+          type: 'doc',
+          id: 'guides/counter-frontend',
+          label: 'Build a React App for Your Counter Contract'
+        },
+        {
           type: 'category',
           label: 'Build a DEX on Cedra',
           link: {
