@@ -121,6 +121,12 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
           label: 'Building Secure Token Vesting & Marketplace via Escrow'
         },
         {
+          type: 'doc',
+          id: 'guides/module-publishing',
+          label: 'How to Publish Modules on Cedra',
+          className: 'sidebar-badge-guide'
+        },
+        {
           type: 'category',
           label: 'Build a DEX on Cedra',
           link: {
