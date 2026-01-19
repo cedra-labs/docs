@@ -74,6 +74,26 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
         },
         {
           type: 'category',
+          label: 'Connect a Wallet',
+          link: {
+            type: 'doc',
+            id: 'getting-started/wallets/index',
+          },
+          items: [
+            {
+              type: 'doc',
+              id: 'getting-started/wallets/nightly',
+              label: 'Nightly Wallet'
+            },
+            {
+              type: 'doc',
+              id: 'getting-started/wallets/zedra',
+              label: 'Zedra Wallet'
+            }
+          ]
+        },
+        {
+          type: 'category',
           label: 'For Solidity Developers',
           link: {
             type: 'doc',
