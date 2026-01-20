@@ -141,6 +141,11 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
           label: 'Building Secure Token Vesting & Marketplace via Escrow'
         },
         {
+          type: 'doc',
+          id: 'guides/randomness',
+          label: 'On-Chain Randomness - Random Selector'
+        },
+        {
           type: 'category',
           label: 'Build a DEX on Cedra',
           link: {
