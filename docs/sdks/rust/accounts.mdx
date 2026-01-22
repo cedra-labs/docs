@@ -165,6 +165,53 @@ async fn main() -> Result<()> {
 ```
 
 The sequence number is crucial for transaction ordering - it must match exactly when submitting transactions. The authentication key can change if the account rotates its keys, but the address remains constant.
+
+### 🔐 Signing and Verifying Messages
+
+Sign arbitrary messages for off-chain verification - useful for login flows, proving account ownership, or authenticating API requests.
+
+```rust
+use cedra_sdk::crypto::{
+    ed25519::Ed25519Signature,
+    Signature, ValidCryptoMaterialStringExt,
+};
+use cedra_sdk::types::LocalAccount;
+use ed25519_dalek::{Keypair, Signer};
+
+fn main() {
+    let message = b"Hello Cedra!";
+
+    // Generate or import your account
+    let account = LocalAccount::generate(&mut rand::rngs::OsRng);
+    let private_key = account.private_key();
+    let public_key = account.public_key();
+
+    let secret_bytes = private_key.to_bytes();
+    let public_bytes = public_key.to_bytes();
+
+    // Build ed25519_dalek keypair from account keys
+    let dalek_keypair = Keypair {
+        secret: ed25519_dalek::SecretKey::from_bytes(&secret_bytes).unwrap(),
+        public: ed25519_dalek::PublicKey::from_bytes(&public_bytes).unwrap(),
+    };
+
+    // Sign the message
+    let signature = dalek_keypair.sign(message);
+    let signature_hex = signature.to_string();
+    println!("Signature: {}", signature_hex);
+
+    // Verify: reconstruct signature from hex and validate
+    let restored = Ed25519Signature::from_encoded_string(&signature_hex)
+        .expect("invalid signature encoding");
+    
+    restored.verify_arbitrary_msg(message, &public_key)
+        .expect("signature verification failed");
+    println!("Valid signature ✓");
+}
+```
+
+The flow: extract keys from `LocalAccount`, build an `ed25519_dalek::Keypair` for signing, then verify using `Ed25519Signature::verify_arbitrary_msg`. The signature serializes to a hex string for transport.
+
 ## 🚀 Next Steps
 
 Now that you understand account management, expand your Cedra development skills:
