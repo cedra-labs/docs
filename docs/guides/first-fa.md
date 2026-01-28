@@ -52,93 +52,234 @@ This guide applies several Move fundamentals:
 
 ## 2. Repo Layout & Move Smart Contract
 
-```
-fa-example/
- ├─ contract/               # Move module that defines the token
- │   ├─ Move.toml           # package manifest / config
- │   └─ sources/
- │       └─ cedra_asset.move
- └─ client/                 # TypeScript demo that mints & transfers
-     ├─ package.json
-     └─ src/
-         └─ index.ts
-```
-
 ### 2.0 Directory roles
 
 * **`contract/`** – The **Move smart‑contract package**. `Move.toml` lists dependencies, named addresses, compiler flags, etc. Business logic lives in `sources/cedra_asset.move`.
 * **`client/`** – A **TypeScript client** built with the Cedra SDK (`@cedra-labs/ts-sdk` fork) for signing transactions and calling on‑chain entries.
 
-### 2.1 `cedra_asset.move` – key entry functions
+### 2.1 `cedra_asset.move` – entry functions
 
-Below are the three essential entries with line‑by‑line explanations.
+The contract has four entry functions: `mint`, `burn`, and `transfer`.
 
 #### 2.1.1 `init_module` - bootstrap
 
-```rust
-public entry fun init_module(admin: &signer) {
+```move
+fun init_module(admin: &signer) {
     let constructor_ref = &object::create_named_object(admin, ASSET_SYMBOL);
-    let (metadata, mint, transfer) =
-        primary_fungible_store::create_primary_store_enabled_fungible_asset(
-            constructor_ref,
-            option::none(),                       // unlimited supply
-            utf8(ASSET_NAME),
-            utf8(ASSET_SYMBOL),
-            8,                                     // decimals
-            utf8(b"https://metadata.cedra.dev/icon.png"),
-        );
-    move_to(metadata, ManagedFungibleAsset { mint_ref: mint, transfer_ref: transfer });
+    primary_fungible_store::create_primary_store_enabled_fungible_asset(
+        constructor_ref,
+        option::none(),                       // unlimited supply
+        utf8(ASSET_NAME),
+        utf8(ASSET_SYMBOL),
+        8,                                    // decimals
+        utf8(b"https://metadata.cedra.dev/cedraasset.json"),
+        utf8(b"http://example.com"),
+    );
+
+    let mint_ref = fungible_asset::generate_mint_ref(constructor_ref);
+    let burn_ref = fungible_asset::generate_burn_ref(constructor_ref);
+    let transfer_ref = fungible_asset::generate_transfer_ref(constructor_ref);
+    let metadata_object_signer = object::generate_signer(constructor_ref);
+
+    move_to(
+        &metadata_object_signer,
+        ManagedFungibleAsset {
+            mint_ref,
+            burn_ref,
+            transfer_ref,
+            admin: signer::address_of(admin),
+        }
+    );
 }
 ```
 
 **How it works**
 
-1. `create_named_object` creates an empty object ID based on `ASSET_SYMBOL` → future metadata address.
-2. `create_primary_store_enabled_fungible_asset` registers metadata and returns `MintRef` + `TransferRef`.
-3. `move_to` stores a `ManagedFungibleAsset` with both capabilities.
-
-> 📝 No supply is minted here - just scaffolding + permissions.
+1. `create_named_object` creates an object ID based on `ASSET_SYMBOL`.
+2. `create_primary_store_enabled_fungible_asset` registers metadata.
+3. Generate `MintRef`, `BurnRef`, and `TransferRef` capabilities.
+4. Store capabilities in `ManagedFungibleAsset` under the metadata object.
 
 #### 2.1.2 `mint` - controlled inflation
 
-```rust
-public entry fun mint(admin: &signer, to: address, amount: u64)
-acquires ManagedFungibleAsset {
-    let refs = borrow_global<ManagedFungibleAsset>(signer::address_of(admin));
-    fungible_asset::mint(&refs.mint_ref, to, amount);
+```move
+public entry fun mint(admin: &signer, to: address, amount: u64) acquires ManagedFungibleAsset {
+    let asset = get_metadata();
+    let managed_fungible_asset = authorized_borrow_refs(admin, asset);
+    let to_wallet = primary_fungible_store::ensure_primary_store_exists(to, asset);
+    let fa = fungible_asset::mint(&managed_fungible_asset.mint_ref, amount);
+    fungible_asset::deposit_with_ref(&managed_fungible_asset.transfer_ref, to_wallet, fa);
 }
 ```
 
-**Permissions gate** – Caller must own `ManagedFungibleAsset` → holds `MintRef`; else abort `ENOT_AUTHORIZED`.
+Only the admin can mint. The `authorized_borrow_refs` function checks if the caller is the admin.
 
-#### 2.1.3 `transfer` - peer‑to‑peer move
+#### 2.1.3 `burn` - token destruction
 
-```rust
+```move
+public entry fun burn(owner: &signer, amount: u64) acquires ManagedFungibleAsset {
+    let asset = get_metadata();
+    let managed_fungible_asset = borrow_global<ManagedFungibleAsset>(object::object_address(&asset));
+    let fa = primary_fungible_store::withdraw(owner, asset, amount);
+    fungible_asset::burn(&managed_fungible_asset.burn_ref, fa);
+}
+```
+
+Any user can burn their own tokens. The function withdraws tokens from the caller's store, then burns them using the `BurnRef`.
+
+#### 2.1.4 `transfer` - peer-to-peer move
+
+```move
 public entry fun transfer(sender: &signer, to: address, amount: u64) {
-    let asset = fungible_asset::metadata<Object<Metadata>>(signer::address_of(sender));
+    let asset = get_metadata();
     let fa = primary_fungible_store::withdraw(sender, asset, amount);
     primary_fungible_store::deposit(to, fa);
 }
 ```
 
-No special capabilities needed - any holder may transfer.
+No special capabilities needed - any holder can transfer their tokens.
 
 
 ## 3. Deploying
 
-1. **Compile** to type‑check.
+1. **Compile** to type-check.
 2. If output looks correct, **publish**.
-3. **Save** the printed Metadata object address (admin + capability store).
-
-For detailed deployment options, see [Move Package Management](/move-package-management). For large contracts (>64KB), see [Deploying Large Packages](/large-packages).
+3. **Save** the printed Metadata object address.
 
 ```bash
 cedra move compile --named-addresses CedraFungible=default
 cedra move publish --named-addresses CedraFungible=default
 ```
 
+For detailed deployment options, see [Move Package Management](/move-package-management). For large contracts (>64KB), see [Deploying Large Packages](/large-packages).
 
-## 4. TypeScript Client & Testing Flow
+
+## 4. Testing
+
+The contract includes a test file at `tests/cedra_asset_test.move` with 17 tests covering mint, burn, transfer, and error cases.
+
+### 4.1 Run tests
+
+```bash
+cd contract
+cedra move test
+```
+
+### 4.2 Test structure
+
+Tests use a shared setup function:
+
+```move
+#[test_only]
+fun setup_for_test(
+    admin: &signer,
+    alice: &signer,
+    bob: &signer
+): (address, address, address, Object<Metadata>) {
+    let admin_addr = signer::address_of(admin);
+    let alice_addr = signer::address_of(alice);
+    let bob_addr = signer::address_of(bob);
+
+    CedraAsset::init_for_test(admin);
+    let metadata = CedraAsset::get_metadata();
+
+    (admin_addr, alice_addr, bob_addr, metadata)
+}
+```
+
+The `init_for_test` function is a `#[test_only]` wrapper around the internal initialization logic.
+
+### 4.3 Test examples
+
+**Basic mint and balance check:**
+
+```move
+#[test(admin = @CedraFungible, alice = @0xA11CE, bob = @0xB0B)]
+fun test_mint(admin: &signer, alice: &signer, bob: &signer) {
+    let (_admin_addr, alice_addr, _bob_addr, metadata) = setup_for_test(admin, alice, bob);
+
+    CedraAsset::mint(admin, alice_addr, 1000);
+
+    let balance = primary_fungible_store::balance(alice_addr, metadata);
+    assert!(balance == 1000, 0);
+}
+```
+
+**Burn tokens:**
+
+```move
+#[test(admin = @CedraFungible, alice = @0xA11CE, bob = @0xB0B)]
+fun test_burn(admin: &signer, alice: &signer, bob: &signer) {
+    let (_admin_addr, alice_addr, _bob_addr, metadata) = setup_for_test(admin, alice, bob);
+
+    CedraAsset::mint(admin, alice_addr, 1000);
+    CedraAsset::burn(alice, 50);
+
+    let balance = primary_fungible_store::balance(alice_addr, metadata);
+    assert!(balance == 950, 0);
+}
+```
+
+**Test expected failures:**
+
+```move
+#[test(admin = @CedraFungible, alice = @0xA11CE, bob = @0xB0B)]
+#[expected_failure(abort_code = 327681, location = CedraFungible::CedraAsset)]
+fun test_mint_not_admin(admin: &signer, alice: &signer, bob: &signer) {
+    let (_admin_addr, _alice_addr, bob_addr, _metadata) = setup_for_test(admin, alice, bob);
+
+    // Alice tries to mint (should fail - not admin)
+    CedraAsset::mint(alice, bob_addr, 1000);
+}
+```
+
+**Full flow test:**
+
+```move
+#[test(admin = @CedraFungible, alice = @0xA11CE, bob = @0xB0B)]
+fun test_mint_transfer_burn_flow(admin: &signer, alice: &signer, bob: &signer) {
+    let (_admin_addr, alice_addr, bob_addr, metadata) = setup_for_test(admin, alice, bob);
+
+    // Mint to Alice
+    CedraAsset::mint(admin, alice_addr, 1000);
+
+    // Transfer to Bob
+    CedraAsset::transfer(alice, bob_addr, 100);
+
+    // Alice burns some
+    CedraAsset::burn(alice, 50);
+
+    // Bob burns all
+    CedraAsset::burn(bob, 100);
+
+    assert!(primary_fungible_store::balance(alice_addr, metadata) == 850, 0);
+    assert!(primary_fungible_store::balance(bob_addr, metadata) == 0, 1);
+}
+```
+
+### 4.4 Test coverage
+
+| Test | What it checks |
+|------|----------------|
+| `test_init_module` | Metadata creation |
+| `test_mint` | Admin can mint |
+| `test_mint_multiple_times` | Cumulative minting |
+| `test_transfer` | Token transfer between accounts |
+| `test_burn` | User burns own tokens |
+| `test_burn_all_tokens` | Burn entire balance |
+| `test_mint_transfer_burn_flow` | Full lifecycle |
+| `test_mint_not_admin` | Non-admin mint fails |
+| `test_transfer_insufficient_balance` | Transfer > balance fails |
+| `test_burn_insufficient_balance` | Burn > balance fails |
+| `test_zero_amounts` | Zero transfers/burns work |
+| `test_multiple_users` | Multi-user operations |
+| `test_self_transfer` | Self-transfer is no-op |
+| `test_burn_zero_balance` | Burn without tokens fails |
+| `test_large_mint` | u64 max mint works |
+| `test_transfer_zero_balance` | Transfer without tokens fails |
+
+
+## 5. TypeScript Client
 
 We’ll validate the module end‑to‑end:
 
@@ -152,45 +293,55 @@ We’ll validate the module end‑to‑end:
 import { Account, Cedra, CedraConfig, Network } from "@cedra-labs/ts-sdk";
 
 const config = new CedraConfig({ network: Network.TESTNET });
-const cedra  = new Cedra(config);
+const cedra = new Cedra(config);
 
 const MODULE_ADDRESS = "0x..."; // from publish output
-const MODULE_NAME    = "CedraAsset";
-const FA_TYPE        = `${MODULE_ADDRESS}::${MODULE_NAME}::CedraAsset`;
-const ONE_CEDRA        = 100_000_000n; // Octas
+const MODULE_NAME = "CedraAsset";
 
 async function example() {
   const admin = Account.generate();
-  const user  = Account.generate();
+  const user = Account.generate();
 
-  await cedra.faucet.fundAccount({ accountAddress: admin.accountAddress, amount: ONE_CEDRA });
-  await cedra.faucet.fundAccount({ accountAddress: user.accountAddress,  amount: ONE_CEDRA });
+  // Fund accounts
+  await cedra.faucet.fundAccount({ accountAddress: admin.accountAddress, amount: 100_000_000n });
+  await cedra.faucet.fundAccount({ accountAddress: user.accountAddress, amount: 100_000_000n });
 
-  // Mint
+  // Mint 500 tokens to user
   const mintTxn = await cedra.transaction.build.simple({
-    function: `${MODULE_ADDRESS}::${MODULE_NAME}::mint`,
-    arguments: [user.accountAddress, 1_000],
+    sender: admin.accountAddress,
+    data: {
+      function: `${MODULE_ADDRESS}::${MODULE_NAME}::mint`,
+      functionArguments: [user.accountAddress, 500],
+    },
   });
-  const { hash: mintHash } = await cedra.signAndSubmitTransaction({ signer: admin, transaction: mintTxn });
-  await cedra.waitForTransaction({ transactionHash: mintHash });
+  await cedra.signAndSubmitTransaction({ signer: admin, transaction: mintTxn });
 
-  // Transfer back
+  // Transfer 250 to admin
   const transferTxn = await cedra.transaction.build.simple({
-    function: `${MODULE_ADDRESS}::${MODULE_NAME}::transfer`,
-    arguments: [admin.accountAddress, 250],
+    sender: user.accountAddress,
+    data: {
+      function: `${MODULE_ADDRESS}::${MODULE_NAME}::transfer`,
+      functionArguments: [admin.accountAddress, 250],
+    },
   });
-  const { hash: transferHash } = await cedra.signAndSubmitTransaction({ signer: user, transaction: transferTxn });
-  await cedra.waitForTransaction({ transactionHash: transferHash });
+  await cedra.signAndSubmitTransaction({ signer: user, transaction: transferTxn });
 
-  // Balances
-  const balAdmin = await cedra.getFungibleAssetBalance({ accountAddress: admin.accountAddress, assetType: FA_TYPE });
-  const balUser  = await cedra.getFungibleAssetBalance({ accountAddress: user.accountAddress,  assetType: FA_TYPE });
-  console.log({ balAdmin, balUser });
+  // Burn 50 tokens
+  const burnTxn = await cedra.transaction.build.simple({
+    sender: user.accountAddress,
+    data: {
+      function: `${MODULE_ADDRESS}::${MODULE_NAME}::burn`,
+      functionArguments: [50],
+    },
+  });
+  await cedra.signAndSubmitTransaction({ signer: user, transaction: burnTxn });
+
+  // Final balances: admin=250, user=200
 }
 ```
 
 
-## 5. Debug Cheat‑Sheet
+## 6. Debug Cheat-Sheet
 
 | Abort code                                   | Reason                               | Typical fix                                     |
 | -------------------------------------------- | ------------------------------------ | ----------------------------------------------- |
@@ -213,7 +364,7 @@ try { await example(); } catch (e: any) {
 * Reproduce edge cases with `cedra move test` and step through aborts locally.
 
 
-## 6. Next Steps
+## 7. Next Steps
 
 * Fork [repo](https://github.com/cedra-labs/move-contract-examples/tree/main/fa-example) and tweak `ASSET_NAME`, `ASSET_SYMBOL`, `decimals`.
 * Protect `MintRef` with a multisig.
