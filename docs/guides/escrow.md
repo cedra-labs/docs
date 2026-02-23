@@ -7,10 +7,14 @@ sidebar_position: 3
 
 In this guide, we'll walk through how escrow works by explaining its flow. We'll cover how funds are locked, released, or returned in a secure and predictable way.
 
-The escrow system supports two types of locking:
+The escrow system supports:
 
 * Simple escrow (manual release)
 * Time-locked escrow (claimable after a specific time)
+* Partial withdrawals (withdraw portions of escrowed funds)
+* Batch operations (gas-efficient multi-user transactions)
+* Emergency pause controls (halt operations during security incidents)
+* Lockup cleanup (delete empty contracts to reclaim storage)
 
 :::tip Prerequisites
 Before starting this guide, make sure you have:
@@ -66,13 +70,17 @@ enum Lockup has key {
         extend_ref: ExtendRef,
         /// Used to cleanup the Lockup object
         delete_ref: DeleteRef,
-        escrows: SmartTable<EscrowKey, address>
+        /// Maps (asset, user) pairs to their escrow data
+        escrows: BigOrderedMap<EscrowKey, Escrow>,
+        /// Emergency pause flag
+        paused: bool
     }
 }
 ```
 
-* It has a field called `escrows`, which is a dynamic map of all ongoing escrows the user has opened.
-* It also holds `extend_ref` and `delete_ref` to manage storage properly.
+* The `escrows` field uses `BigOrderedMap` to store escrow data inline (asset+user key → escrow details).
+* It holds `extend_ref` and `delete_ref` to manage storage and enable cleanup.
+* The `paused` flag allows the creator to halt new escrows during emergencies.
 * **Why it's important**: This is your actual escrow registry. Every deposit, claim, or refund is routed through it.
 
 ### `Escrow`
@@ -80,17 +88,17 @@ enum Lockup has key {
 This is the structure that holds the funds and defines when they can be withdrawn.
 
 ```rust
-/// An escrow object for a single user and a single FA
-enum Escrow has key {
+/// An escrow entry stored inline in the Lockup's BigOrderedMap
+enum Escrow has store {
     Simple {
         original_owner: address,
-        delete_ref: DeleteRef,
+        amount: u64,
     },
     TimeUnlock {
         original_owner: address,
         /// Time that the funds can be unlocked
         unlock_secs: u64,
-        delete_ref: DeleteRef,
+        amount: u64,
     }
 }
 ```
@@ -99,10 +107,10 @@ enum Escrow has key {
 
   * `Simple`: can be claimed or refunded anytime.
   * `TimeUnlock`: can only be touched after a specific unlock time.
-* Each escrow also knows who originally sent the funds and has a `delete_ref` for cleanup.
+* Each escrow stores the `amount` inline and knows who originally sent the funds.
 
 :::info **Storage Management**
-Notice how each structure has a `delete_ref`? This enables automatic storage cleanup and refunds when escrows are completed, keeping the blockchain efficient.
+The `Lockup` object has a `delete_ref` that enables cleanup when all escrows are cleared, allowing creators to reclaim storage deposits.
 :::
 
 ## Step 1: Creating a Lockup
@@ -408,7 +416,175 @@ After confirming that you're allowed to withdraw, the function double-checks tha
 
 Finally, the funds are moved from the escrow's storage back into your account, and the escrow object is deleted to clean up the on-chain state.
 
-## Step 4: Checking Status
+### Partial Withdrawal
+
+The `partial_withdraw` function lets you withdraw a specific amount while keeping the rest locked.
+
+```move
+public entry fun partial_withdraw(
+    caller: &signer,
+    lockup_obj: Object<Lockup>,
+    fa_metadata: Object<Metadata>,
+    amount: u64,
+) acquires Lockup
+```
+
+The function:
+1. Checks time lock has expired (if applicable)
+2. Verifies you have enough balance
+3. Transfers the requested amount to your account
+4. Updates or removes the escrow record
+
+Useful for vesting schedules where team members withdraw tokens gradually instead of all at once.
+
+## Step 4: Batch Operations
+
+When dealing with multiple users - like setting up team vesting or distributing rewards - individual transactions become expensive. Batch operations solve this by processing multiple escrows in a single transaction.
+
+### Batch Escrow
+
+The `batch_escrow_with_time` function allows the lockup creator to deposit funds for multiple users at once:
+
+```rust
+/// Batch escrow funds for multiple users with time lock
+public entry fun batch_escrow_with_time(
+    caller: &signer,
+    lockup_obj: Object<Lockup>,
+    fa_metadata: Object<Metadata>,
+    users: vector<address>,
+    amounts: vector<u64>,
+    lockup_time_secs: u64,
+) acquires Lockup {
+    let caller_address = signer::address_of(caller);
+    let lockup = get_lockup_mut(&lockup_obj);
+    assert!(caller_address == lockup.creator, E_NOT_ORIGINAL_OR_LOCKUP_OWNER);
+    assert!(!lockup.paused, E_CONTRACT_PAUSED);
+
+    let len = vector::length(&users);
+    assert!(len > 0, E_EMPTY_BATCH);
+    assert!(len == vector::length(&amounts), E_LENGTH_MISMATCH);
+
+    let unlock_secs = timestamp::now_seconds() + lockup_time_secs;
+
+    for (i in 0..len) {
+        let user = *vector::borrow(&users, i);
+        let amount = *vector::borrow(&amounts, i);
+        // Create or update escrow for each user
+        // ...
+    }
+}
+```
+
+### Batch Return
+
+Similarly, `batch_return_user_funds` returns funds to multiple users in one transaction:
+
+```rust
+/// Batch return funds to multiple users
+public entry fun batch_return_user_funds(
+    caller: &signer,
+    lockup_obj: Object<Lockup>,
+    fa_metadata: Object<Metadata>,
+    users: vector<address>,
+) acquires Lockup {
+    let caller_address = signer::address_of(caller);
+    let lockup = get_lockup_mut(&lockup_obj);
+    assert!(caller_address == lockup.creator, E_NOT_ORIGINAL_OR_LOCKUP_OWNER);
+
+    let len = vector::length(&users);
+    assert!(len > 0, E_EMPTY_BATCH);
+
+    for (i in 0..len) {
+        let user = *vector::borrow(&users, i);
+        // Return funds to each user
+        // ...
+    }
+}
+```
+
+:::tip **Gas Savings**
+Batch operations can save up to 90% on gas compared to individual transactions when processing 10+ users.
+:::
+
+## Step 5: Emergency Controls
+
+The escrow contract includes pause functionality for emergency situations. Only the lockup creator can pause and unpause the contract.
+
+### Pausing the Contract
+
+```rust
+/// Pause the lockup contract (creator only)
+public entry fun pause_lockup(
+    caller: &signer,
+    lockup_obj: Object<Lockup>,
+) acquires Lockup {
+    let caller_address = signer::address_of(caller);
+    let lockup = get_lockup_mut(&lockup_obj);
+    assert!(caller_address == lockup.creator, E_NOT_ORIGINAL_OR_LOCKUP_OWNER);
+    lockup.paused = true;
+}
+```
+
+### Unpausing the Contract
+
+```rust
+/// Unpause the lockup contract (creator only)
+public entry fun unpause_lockup(
+    caller: &signer,
+    lockup_obj: Object<Lockup>,
+) acquires Lockup {
+    let caller_address = signer::address_of(caller);
+    let lockup = get_lockup_mut(&lockup_obj);
+    assert!(caller_address == lockup.creator, E_NOT_ORIGINAL_OR_LOCKUP_OWNER);
+    lockup.paused = false;
+}
+```
+
+:::warning **Pause Behavior**
+When paused, new escrows are blocked. However, users can still withdraw their existing funds - this prevents lock-in during emergencies.
+:::
+
+## Step 6: Lockup Cleanup
+
+When all escrows have been cleared, the creator can delete the lockup contract to reclaim storage deposits.
+
+```rust
+/// Delete an empty lockup contract
+public entry fun delete_lockup(
+    caller: &signer,
+) acquires LockupRef, Lockup {
+    let caller_address = signer::address_of(caller);
+
+    assert!(exists<LockupRef>(caller_address), E_LOCKUP_NOT_FOUND);
+    let LockupRef { lockup_address } = move_from<LockupRef>(caller_address);
+
+    let Lockup::ST {
+        creator,
+        extend_ref: _,
+        delete_ref,
+        escrows,
+        paused: _
+    } = move_from<Lockup>(lockup_address);
+
+    assert!(creator == caller_address, E_NOT_ORIGINAL_OR_LOCKUP_OWNER);
+    assert!(big_ordered_map::is_empty(&escrows), E_LOCKUP_HAS_ESCROWS);
+
+    big_ordered_map::destroy_empty(escrows);
+    object::delete(delete_ref);
+}
+```
+
+You can check if a lockup exists before attempting operations:
+
+```rust
+#[view]
+/// Check if a creator has an active lockup contract
+public fun has_lockup(creator: address): bool {
+    exists<LockupRef>(creator)
+}
+```
+
+## Step 7: Checking Status
 
 As you interact with escrow contracts - whether you're locking, claiming, or returning tokens - it’s important to have visibility into the state of your escrows. The module provides several view-only functions that help you do exactly that.
 
@@ -492,21 +668,102 @@ public fun remaining_escrow_time(
 
 If the escrow is of type `Simple`, the function will return 0. If it's a `TimeUnlock` escrow, it subtracts the current blockchain timestamp from the unlock timestamp.
 
+Use `is_paused` to check if a lockup contract is currently paused:
+
+```rust
+#[view]
+/// Check if lockup contract is paused
+public fun is_paused(lockup_obj: Object<Lockup>): bool acquires Lockup {
+    let lockup = get_lockup(&lockup_obj);
+    lockup.paused
+}
+```
+
+Use `get_creator` to get the creator/owner address of a lockup:
+
+```rust
+#[view]
+/// Get the creator address of a lockup
+public fun get_creator(lockup_obj: Object<Lockup>): address acquires Lockup {
+    let lockup = get_lockup(&lockup_obj);
+    lockup.creator
+}
+```
+
+Use `escrow_exists` to check if an escrow exists for a specific user-asset pair:
+
+```rust
+#[view]
+/// Check if an escrow exists for a user-asset pair
+public fun escrow_exists(
+    lockup_obj: Object<Lockup>,
+    fa_metadata: Object<Metadata>,
+    user: address
+): bool acquires Lockup {
+    let lockup = get_lockup(&lockup_obj);
+    let escrow_key = EscrowKey::FAPerUser {
+        fa_metadata,
+        user
+    };
+    lockup.escrows.contains(&escrow_key)
+}
+```
+
 :::info **Frontend Integration**
 These view functions are perfect for building dashboards and user interfaces. They don't consume gas and provide real-time escrow status without any side effects.
 :::
 
-You now understand escrow as a user flow - not just code.
+## Step 8: Events
+
+All escrow operations emit events for monitoring and indexing. These events can be used to build real-time dashboards or track contract activity.
+
+| Event | Description |
+|-------|-------------|
+| `EscrowCreatedEvent` | Emitted when a new escrow is created |
+| `FundsAddedEvent` | Emitted when funds are added to an existing escrow |
+| `FundsReturnedEvent` | Emitted when funds are returned to the original owner |
+| `FundsClaimedEvent` | Emitted when the creator claims escrowed funds |
+| `PartialWithdrawalEvent` | Emitted when a partial withdrawal occurs |
+| `LockupPausedEvent` | Emitted when the contract is paused |
+| `LockupUnpausedEvent` | Emitted when the contract is unpaused |
+
+## Error Codes
+
+The contract defines the following error codes:
+
+| Code | Name | Description |
+|------|------|-------------|
+| 1 | `E_LOCKUP_ALREADY_EXISTS` | Lockup already initialized for this account |
+| 2 | `E_LOCKUP_NOT_FOUND` | No lockup exists for this account |
+| 3 | `E_NO_USER_LOCKUP` | No escrow found for this user-asset pair |
+| 4 | `E_UNLOCK_TIME_NOT_YET` | Time lock hasn't expired yet |
+| 5 | `E_NOT_ORIGINAL_OR_LOCKUP_OWNER` | Caller is not authorized for this operation |
+| 6 | `E_NOT_TIME_LOCKUP` | Expected a time-locked escrow |
+| 7 | `E_NOT_SIMPLE_LOCKUP` | Expected a simple escrow |
+| 8 | `E_CANNOT_SHORTEN_LOCKUP_TIME` | Cannot reduce existing lock time |
+| 9 | `E_INVALID_AMOUNT` | Amount must be greater than 0 |
+| 10 | `E_CONTRACT_PAUSED` | Contract is currently paused |
+| 11 | `E_INSUFFICIENT_BALANCE` | Not enough funds for withdrawal |
+| 12 | `E_LENGTH_MISMATCH` | Batch vectors have different lengths |
+| 13 | `E_EMPTY_BATCH` | Batch operation cannot be empty |
+| 14 | `E_LOCKUP_HAS_ESCROWS` | Cannot delete lockup with active escrows |
 
 ## Conclusion
 
-At the heart of the system are three key components: `LockupRef`, which links a user account to their lockup manager; `Lockup`, an on-chain object that holds and manages escrow entries; and `Escrow`, which stores actual tokens and controls how they can be claimed or returned. These abstractions separate ownership, logic, and control - giving developers and users a clean, auditable lifecycle for escrowed funds.
+At the heart of the system are three key components: `LockupRef`, which links a user account to their lockup manager; `Lockup`, an on-chain object that holds and manages escrow entries; and `Escrow`, which stores tokens and controls how they can be claimed or returned.
 
-Escrow flows begin with a one-time lockup initialization, which sets up a new `Lockup` object and stores a reference to it in the user's account. From there, funds can be deposited into escrow via two entry points: a simple version with no time restrictions and a time-locked version that prevents access until a specified timestamp. Each deposit creates or reuses an `Escrow` object tied to a unique (token, user) pair.
+The escrow contract provides:
+
+* **Two escrow types**: Simple (manual release) and time-locked (automatic after timestamp)
+* **Flexible withdrawals**: Full or partial withdrawal support
+* **Batch operations**: Gas-efficient multi-user transactions
+* **Emergency controls**: Pause mechanism for security incidents
+* **Storage management**: Cleanup functions to reclaim deposits
+* **Full observability**: Events for all operations
 
 ### What's Next?
 
 Now that you understand how escrow works, you can:
-* **Build your own tokens**: Create fungible assets using our [First FA Guide](/guides/first-fa) 
+* **Build your own tokens**: Create fungible assets using our [First FA Guide](/guides/first-fa)
 * **Explore more contracts**: Check out other [Move examples](https://github.com/cedra-labs/move-contract-examples) for inspiration
 

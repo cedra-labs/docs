@@ -1,0 +1,164 @@
+---
+title: REST API Examples
+sidebar_label: Examples
+sidebar_position: 2
+---
+
+# REST API Examples
+
+Practical curl examples for common operations. Replace `0x1` with your address.
+
+---
+
+## General
+
+**Get ledger info**: Returns current chain state including block height, epoch, and timestamp. Use this to check if the node is synced and get the current ledger version.
+
+```bash
+curl https://testnet.cedra.dev/v1/
+```
+
+**Health check**: Simple endpoint for load balancers and monitoring.
+
+```bash
+curl https://testnet.cedra.dev/v1/-/healthy
+```
+
+Returns `cedra-node:ok` when the node is healthy.
+
+**Get gas price estimate**: Returns recommended gas prices for different priority levels. Use `gas_estimate` for normal transactions, `prioritized_gas_estimate` when you need faster inclusion.
+
+```bash
+curl https://testnet.cedra.dev/v1/estimate_gas_price
+```
+
+```json
+{
+  "gas_estimate": 100,
+  "deprioritized_gas_estimate": 100,
+  "prioritized_gas_estimate": 150
+}
+```
+
+**Get block by height**: Fetch block metadata and transactions for a specific block height.
+
+```bash
+curl https://testnet.cedra.dev/v1/blocks/by_height/1000
+```
+
+**Get recent transactions**: List the latest transactions on the chain. Add `?limit=10` to control the number of results.
+
+```bash
+curl https://testnet.cedra.dev/v1/transactions?limit=10
+```
+
+---
+
+## Accounts
+
+**Get account info**: Returns sequence number (transaction counter) and authentication key.
+
+```bash
+curl https://testnet.cedra.dev/v1/accounts/0x1
+```
+
+```json
+{
+  "sequence_number": "0",
+  "authentication_key": "0x..."
+}
+```
+
+**Get account balance**: Query balance for a specific fungible asset. The asset type follows the format `{address}::{module}::{struct}`.
+
+```bash
+curl https://testnet.cedra.dev/v1/accounts/0x1/balance/0x1::cedra_coin::CedraCoin
+```
+
+```json
+{
+  "balance": "1000000000"
+}
+```
+
+**Get all resources**: Returns all Move resources stored under an account. Useful for exploring what an account holds.
+
+```bash
+curl https://testnet.cedra.dev/v1/accounts/0x1/resources
+```
+
+**Get specific resource**: Fetch a single resource by type. URL-encode the type (replace `<` with `%3C`, `>` with `%3E`).
+
+```bash
+curl https://testnet.cedra.dev/v1/accounts/0x1/resource/0x1::coin::CoinStore%3C0x1::cedra_coin::CedraCoin%3E
+```
+
+**Get account modules**: List all Move modules published by an account.
+
+```bash
+curl https://testnet.cedra.dev/v1/accounts/0x1/modules
+```
+
+---
+
+## View Functions
+
+Call read-only Move functions without submitting a transaction. Useful for reading contract state, checking balances, or previewing calculations.
+
+```bash
+curl -X POST https://testnet.cedra.dev/v1/view \
+  -H "Content-Type: application/json" \
+  -d '{
+    "function": "0x1::coin::balance",
+    "type_arguments": ["0x1::cedra_coin::CedraCoin"],
+    "arguments": ["0x1"]
+  }'
+```
+
+```json
+["1000000000"]
+```
+
+The response is an array of return values from the function.
+
+---
+
+## Transactions
+
+**Get transaction by hash**: Look up a transaction after submission.
+
+```bash
+curl https://testnet.cedra.dev/v1/transactions/by_hash/0x...
+```
+
+**Wait for transaction**: Blocks until the transaction is committed or fails. Useful in scripts to wait for confirmation before proceeding.
+
+```bash
+curl https://testnet.cedra.dev/v1/transactions/wait_by_hash/0x...
+```
+
+**Simulate transaction**: Test a transaction without submitting it. Returns gas usage and any errors. The transaction does not need to be signed.
+
+```bash
+curl -X POST https://testnet.cedra.dev/v1/transactions/simulate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "sender": "0x1",
+    "sequence_number": "0",
+    "max_gas_amount": "100000",
+    "gas_unit_price": "100",
+    "expiration_timestamp_secs": "1735689600",
+    "payload": {
+      "type": "entry_function_payload",
+      "function": "0x1::cedra_account::transfer",
+      "type_arguments": [],
+      "arguments": ["0x2", "1000"]
+    }
+  }'
+```
+
+**Get account transactions**: List all transactions sent by a specific account.
+
+```bash
+curl https://testnet.cedra.dev/v1/accounts/0x1/transactions
+```

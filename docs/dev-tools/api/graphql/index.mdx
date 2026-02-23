@@ -1,0 +1,43 @@
+---
+title: GraphQL API
+sidebar_label: GraphQL API
+sidebar_position: 2
+---
+
+import { CardList } from '@site/src/components/CardList';
+
+# GraphQL API
+
+The GraphQL API is stored full data history. Use it for historical data, complex filtering, and aggregations. For current state and submitting transactions, use the REST API instead.
+
+<CardList>
+  <CardList.Card
+    title="Testnet Playground"
+    description="Interactive GraphQL explorer for testnet"
+    to="https://cloud.hasura.io/public/graphiql?endpoint=https://graphql.cedra.dev/v1/graphql"
+  />
+  <CardList.Card
+    title="Devnet Playground"
+    description="Interactive GraphQL explorer for devnet"
+    to="https://cloud.hasura.io/public/graphiql?endpoint=https://graphql-devnet.cedra.dev/v1/graphql"
+  />
+  <CardList.Card
+    title="Query Examples"
+    description="Common queries for accounts, tokens, NFTs, staking"
+    to="/dev-tools/api/graphql/queries"
+  />
+</CardList>
+
+---
+
+## Available Data
+
+**Core**: `account_transactions`, `user_transactions`, `events`, `block_metadata_transactions`. Query transaction history, filter by account, look up events emitted by smart contracts.
+
+**Tokens**: `current_fungible_asset_balances`, `fungible_asset_activities`, `fungible_asset_metadata`. Get token balances, track transfers, look up token metadata.
+
+**NFTs**: `current_token_ownerships_v2`, `token_activities_v2`, `current_token_datas_v2`, `collections_v2`. Query NFT ownership, collection info, transfer history.
+
+**Staking**: `delegator_balances`, `delegated_staking_activities`, `current_delegated_staking_pool_balances`. Look up staking positions and delegation history.
+
+**Names**: `current_cedra_names`. Resolve Cedra name service lookups.

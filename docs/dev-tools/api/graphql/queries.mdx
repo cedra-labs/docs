@@ -1,0 +1,263 @@
+---
+title: Query Examples
+sidebar_label: Query Examples
+sidebar_position: 1
+---
+
+# Query Examples
+
+Practical GraphQL queries for common operations. Test these in the [GraphQL Playground](https://cloud.hasura.io/public/graphiql?endpoint=https://graphql.cedra.dev/v1/graphql).
+
+---
+
+## Account History
+
+**Get account transactions**: Returns paginated transaction history for an address. Use `limit` and `offset` for pagination. Results are ordered by version descending (newest first).
+
+```graphql
+query GetAccountTransactions($address: String!, $limit: Int, $offset: Int) {
+  account_transactions(
+    where: { account_address: { _eq: $address } }
+    order_by: { transaction_version: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    transaction_version
+    account_address
+  }
+}
+```
+
+Variables:
+
+```json
+{
+  "address": "0x1",
+  "limit": 10,
+  "offset": 0
+}
+```
+
+**Get transaction by version**: Look up a specific transaction by its version number. Useful when you have a version from another query or event.
+
+```graphql
+query GetTransaction($version: bigint!) {
+  user_transactions(where: { version: { _eq: $version } }) {
+    version
+    sender
+    sequence_number
+    entry_function_id_str
+    timestamp
+  }
+}
+```
+
+**Count account transactions**: Get total transaction count for an account. Useful for pagination or analytics.
+
+```graphql
+query CountTransactions($address: String!) {
+  account_transactions_aggregate(
+    where: { account_address: { _eq: $address } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+```
+
+---
+
+## Token Balances
+
+**Get all fungible asset balances**: Returns all token balances for an account including the native token. The `amount` field is in the smallest unit (octas for CDRA).
+
+```graphql
+query GetBalances($address: String!) {
+  current_fungible_asset_balances(
+    where: { owner_address: { _eq: $address } }
+  ) {
+    asset_type
+    amount
+    storage_id
+  }
+}
+```
+
+**Get token metadata**: Look up token name, symbol, and decimals for a fungible asset.
+
+```graphql
+query GetTokenMetadata($assetType: String!) {
+  fungible_asset_metadata(
+    where: { asset_type: { _eq: $assetType } }
+  ) {
+    name
+    symbol
+    decimals
+    asset_type
+  }
+}
+```
+
+**Get transfer history**: Track incoming and outgoing transfers for an account. Filter by `is_gas_fee` to exclude gas payments.
+
+```graphql
+query GetTransfers($address: String!, $limit: Int) {
+  fungible_asset_activities(
+    where: {
+      _or: [
+        { owner_address: { _eq: $address } }
+      ]
+      is_gas_fee: { _eq: false }
+    }
+    order_by: { transaction_version: desc }
+    limit: $limit
+  ) {
+    transaction_version
+    amount
+    asset_type
+    type
+    owner_address
+  }
+}
+```
+
+---
+
+## NFTs
+
+**Get NFTs owned by account**: Returns all NFTs currently owned by an address with collection and token data.
+
+```graphql
+query GetNFTs($address: String!) {
+  current_token_ownerships_v2(
+    where: { owner_address: { _eq: $address }, amount: { _gt: "0" } }
+  ) {
+    token_data_id
+    amount
+    current_token_data {
+      token_name
+      token_uri
+      description
+      collection_id
+    }
+  }
+}
+```
+
+**Get collection info**: Fetch collection metadata by collection ID.
+
+```graphql
+query GetCollection($collectionId: String!) {
+  current_collections_v2(
+    where: { collection_id: { _eq: $collectionId } }
+  ) {
+    collection_id
+    collection_name
+    creator_address
+    description
+    uri
+    current_supply
+    max_supply
+  }
+}
+```
+
+**Get NFT transfer history**: Track ownership changes for NFTs. Useful for provenance tracking.
+
+```graphql
+query GetNFTTransfers($tokenDataId: String!, $limit: Int) {
+  token_activities_v2(
+    where: { token_data_id: { _eq: $tokenDataId } }
+    order_by: { transaction_version: desc }
+    limit: $limit
+  ) {
+    transaction_version
+    type
+    from_address
+    to_address
+    token_amount
+  }
+}
+```
+
+---
+
+## Staking
+
+**Get delegator positions**: Returns staking positions for a delegator address including pool info and balances.
+
+```graphql
+query GetDelegatorPositions($address: String!) {
+  delegator_balances(
+    where: { delegator_address: { _eq: $address } }
+  ) {
+    pool_address
+    delegator_address
+    shares
+    table_handle
+  }
+}
+```
+
+**Get staking pool info**: Look up pool configuration and current balances.
+
+```graphql
+query GetPoolInfo($poolAddress: String!) {
+  current_delegated_staking_pool_balances(
+    where: { staking_pool_address: { _eq: $poolAddress } }
+  ) {
+    staking_pool_address
+    active_table_handle
+    inactive_table_handle
+    operator_commission_percentage
+  }
+}
+```
+
+---
+
+## Events
+
+**Get events by account**: Query events emitted in transactions involving an account.
+
+```graphql
+query GetEvents($address: String!, $limit: Int) {
+  events(
+    where: { account_address: { _eq: $address } }
+    order_by: { transaction_version: desc }
+    limit: $limit
+  ) {
+    transaction_version
+    event_index
+    type
+    data
+  }
+}
+```
+
+**Filter events by type**: Look up specific event types across all accounts. Useful for tracking specific contract events.
+
+```graphql
+query GetEventsByType($eventType: String!, $limit: Int) {
+  events(
+    where: { type: { _like: $eventType } }
+    order_by: { transaction_version: desc }
+    limit: $limit
+  ) {
+    transaction_version
+    account_address
+    type
+    data
+  }
+}
+```
+
+Variables:
+
+```json
+{
+  "eventType": "%::coin::WithdrawEvent",
+  "limit": 10
+}
+```
