@@ -1,0 +1,92 @@
+---
+title: Error Handling
+sidebar_label: Errors
+sidebar_position: 3
+---
+
+# Error Handling
+
+When an API request fails, the response includes an error object with details about what went wrong.
+
+```json
+{
+  "message": "Account not found by Address(0x123...)",
+  "error_code": "account_not_found",
+  "vm_error_code": null
+}
+```
+
+The `vm_error_code` field is populated when the error originates from Move VM execution (e.g., abort codes from smart contracts).
+
+---
+
+## Common Errors
+
+**`account_not_found`**: Account has no on-chain state. This happens when querying an address that has never received tokens or published modules.
+
+```bash
+# Fix: Fund the account first
+curl -X POST https://faucet.testnet.cedra.dev/mint?address=0x...
+```
+
+**`resource_not_found`**: The requested resource type doesn't exist on the account. Double-check the full resource path including generics.
+
+```bash
+# Wrong
+/accounts/0x1/resource/0x1::coin::CoinStore
+
+# Correct (with URL-encoded generics)
+/accounts/0x1/resource/0x1::coin::CoinStore%3C0x1::cedra_coin::CedraCoin%3E
+```
+
+**`module_not_found`**: No module with that name exists at the address. Verify the module is published.
+
+**`transaction_not_found`**: Transaction hash not found. Either the transaction hasn't been indexed yet, or the hash is incorrect. Try waiting a few seconds and retry.
+
+**`sequence_number_too_old`**: The sequence number in your transaction has already been used. Query the current sequence number and use a fresh value.
+
+```bash
+curl https://testnet.cedra.dev/v1/accounts/0x.../
+# Use the returned sequence_number for your next transaction
+```
+
+**`insufficient_balance_for_transaction_fee`**: Account doesn't have enough tokens to pay gas fees. Fund the account before submitting transactions.
+
+---
+
+## Pruned Data (410)
+
+Cedra nodes prune historical state to save storage. When you request a `ledger_version` that's been pruned, you get a 410 Gone response.
+
+Check the available range in response headers:
+- `X-CEDRA-LEDGER-VERSION`: current (latest) version
+- `X-CEDRA-LEDGER-OLDEST-VERSION`: oldest available version
+
+To fix:
+1. Query without `ledger_version` parameter to get current state
+2. Use the GraphQL API for historical data (indexes full history)
+
+---
+
+## Rate Limiting (403)
+
+Public endpoints have rate limits. If you hit them:
+
+1. Add delays between requests
+2. Use `limit` and pagination parameters to fetch less data per request
+3. Cache responses when possible
+4. Run your own node for unlimited access
+
+---
+
+## HTTP Status Codes
+
+| Code | Meaning | When it happens |
+|------|---------|-----------------|
+| 200 | Success | Request completed |
+| 400 | Bad Request | Invalid parameters, malformed JSON |
+| 403 | Forbidden | Rate limited |
+| 404 | Not Found | Account, resource, or transaction doesn't exist |
+| 410 | Gone | Requested ledger version has been pruned |
+| 500 | Internal Error | Node error |
+| 503 | Unavailable | Node is syncing or overloaded |

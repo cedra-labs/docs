@@ -353,6 +353,51 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
         },
         {
           type: 'category',
+          label: 'API Reference',
+          link: {
+            type: 'doc',
+            id: 'dev-tools/api/index',
+          },
+          items: [
+            {
+              type: 'category',
+              label: 'REST API',
+              link: {
+                type: 'doc',
+                id: 'dev-tools/api/rest/index',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'dev-tools/api/rest/examples',
+                  label: 'Examples'
+                },
+                {
+                  type: 'doc',
+                  id: 'dev-tools/api/rest/errors',
+                  label: 'Errors'
+                }
+              ]
+            },
+            {
+              type: 'category',
+              label: 'GraphQL API',
+              link: {
+                type: 'doc',
+                id: 'dev-tools/api/graphql/index',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'dev-tools/api/graphql/queries',
+                  label: 'Query Examples'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          type: 'category',
           label: 'SDKs',
           items: [
             {

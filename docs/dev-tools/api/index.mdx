@@ -1,0 +1,43 @@
+---
+title: API Reference
+sidebar_label: API Reference
+sidebar_position: 1
+---
+
+import { CardList } from '@site/src/components/CardList';
+
+# API Reference
+
+Cedra exposes a REST API on every node for querying blockchain state and submitting transactions. The API follows OpenAPI 3.0 specification and returns JSON responses.
+
+| Network | URL |
+|---------|-----|
+| Testnet | `https://testnet.cedra.dev/v1` |
+| Devnet | `https://devnet.cedra.dev/v1` |
+
+- **Building a wallet**: Query account balances, submit transfers, track transaction status
+- **dApp backends**: Read on-chain state, call view functions, submit signed transactions
+- **Block explorers**: Fetch blocks, transactions, events, account resources
+
+<CardList>
+  <CardList.Card
+    title="REST API"
+    description="Endpoints, response headers, and interactive explorer"
+    to="/dev-tools/api/rest"
+  />
+  <CardList.Card
+    title="Examples"
+    description="curl commands for common operations"
+    to="/dev-tools/api/rest/examples"
+  />
+  <CardList.Card
+    title="Error Handling"
+    description="Status codes and troubleshooting"
+    to="/dev-tools/api/rest/errors"
+  />
+  <CardList.Card
+    title="GraphQL API"
+    description="Indexed data for historical queries and aggregations"
+    to="/dev-tools/api/graphql"
+  />
+</CardList>

@@ -1,0 +1,96 @@
+---
+title: REST API
+sidebar_label: REST API
+sidebar_position: 1
+---
+
+import { CardList } from '@site/src/components/CardList';
+
+# REST API
+
+The Cedra REST API provides direct access to blockchain state and transaction submission. Every response includes headers with current chain state (`X-CEDRA-LEDGER-VERSION`, `X-CEDRA-BLOCK-HEIGHT`, etc.).
+
+Browse all endpoints in the interactive explorer: [testnet.cedra.dev/v1/spec](https://testnet.cedra.dev/v1/spec)
+
+<CardList>
+  <CardList.Card
+    title="Examples"
+    description="curl commands for accounts, transactions, view functions"
+    to="/dev-tools/api/rest/examples"
+  />
+  <CardList.Card
+    title="Error Handling"
+    description="HTTP status codes and common errors"
+    to="/dev-tools/api/rest/errors"
+  />
+</CardList>
+
+---
+
+**Accounts**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/accounts/{address}` | Get account info |
+| GET | `/accounts/{address}/resources` | Get all resources |
+| GET | `/accounts/{address}/resource/{type}` | Get specific resource |
+| GET | `/accounts/{address}/modules` | Get all modules |
+| GET | `/accounts/{address}/module/{name}` | Get specific module |
+| GET | `/accounts/{address}/balance/{asset_type}` | Get balance |
+| GET | `/accounts/{address}/transactions` | Get account transactions |
+| GET | `/accounts/{address}/events/{creation_number}` | Get events |
+
+**Transactions**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/transactions` | List transactions |
+| POST | `/transactions` | Submit transaction |
+| GET | `/transactions/by_hash/{hash}` | Get by hash |
+| GET | `/transactions/by_version/{version}` | Get by version |
+| GET | `/transactions/wait_by_hash/{hash}` | Wait for transaction |
+| POST | `/transactions/simulate` | Simulate transaction |
+| POST | `/transactions/encode_submission` | Encode for signing |
+| POST | `/transactions/batch` | Submit batch |
+
+**Blocks**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/blocks/by_height/{height}` | Get block by height |
+| GET | `/blocks/by_version/{version}` | Get block by version |
+
+**View Functions**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/view` | Execute read-only Move function |
+
+**General**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/` | Ledger info |
+| GET | `/info` | Node info |
+| GET | `/-/healthy` | Health check |
+| GET | `/estimate_gas_price` | Gas price estimate |
+
+## Response Headers
+
+All responses include blockchain state:
+
+| Header | Description |
+|--------|-------------|
+| `X-CEDRA-CHAIN-ID` | Chain ID |
+| `X-CEDRA-LEDGER-VERSION` | Current ledger version |
+| `X-CEDRA-BLOCK-HEIGHT` | Current block height |
+| `X-CEDRA-EPOCH` | Current epoch |
+| `X-CEDRA-LEDGER-TIMESTAMPUSEC` | Timestamp (microseconds) |
+| `X-CEDRA-CURSOR` | Pagination cursor |
+
+## Content Types
+
+| Accept Header | Description |
+|---------------|-------------|
+| `application/json` | JSON (default) |
+| `application/x-bcs` | Binary Canonical Serialization |
