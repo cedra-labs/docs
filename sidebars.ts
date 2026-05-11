@@ -89,6 +89,21 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
               type: 'doc',
               id: 'getting-started/wallets/zedra',
               label: 'Zedra Wallet'
+            },
+            {
+              type: 'doc',
+              id: 'getting-started/wallets/nova-wallet',
+              label: 'Nova Wallet'
+            },
+            {
+              type: 'doc',
+              id: 'getting-started/wallets/nova-desk',
+              label: 'Nova Desk'
+            },
+            {
+              type: 'doc',
+              id: 'getting-started/wallets/nova-connect',
+              label: 'Nova Connect'
             }
           ]
         },

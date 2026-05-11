@@ -10,6 +10,7 @@
 
 # Misc
 .DS_Store
+screenshots/
 .env
 .env.local
 .env.development.local
