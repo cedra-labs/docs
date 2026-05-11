@@ -340,7 +340,7 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
             {
               type: 'doc',
               id: 'nodes/requirements',
-              label: 'System Requirements'
+              label: 'Requirements'
             },
             {
               type: 'doc',
