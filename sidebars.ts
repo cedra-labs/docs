@@ -307,15 +307,15 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
           className: 'sidebar-badge-important'
         },
         {
-          type: 'doc',
-          id: 'nodes/requirements',
-          label: 'System Requirements'
-        },
-        {
           type: 'category',
-          label: 'Run a Validator',
+          label: 'Validator Nodes',
           className: 'sidebar-badge-important',
           items: [
+            {
+              type: 'doc',
+              id: 'nodes/vfn-requirements',
+              label: 'Requirements'
+            },
             {
               type: 'doc',
               id: 'nodes/validator-setup',
@@ -329,14 +329,25 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
             {
               type: 'doc',
               id: 'nodes/delegation-pool-setup',
-              label: 'Delegation Pool Management'
+              label: 'Delegation Pool Setup'
             }
           ]
         },
         {
-          type: 'doc',
-          id: 'nodes/full-node',
-          label: 'Run a Full Node'
+          type: 'category',
+          label: 'Full Nodes',
+          items: [
+            {
+              type: 'doc',
+              id: 'nodes/requirements',
+              label: 'System Requirements'
+            },
+            {
+              type: 'doc',
+              id: 'nodes/full-node',
+              label: 'Run a Full Node'
+            }
+          ]
         }
       ]
     },
