@@ -1,0 +1,15 @@
+[package]
+name = "CedraEventGuide"
+version = "1.0.0"
+authors = []
+
+[addresses]
+cedra_guide = "_"
+
+[dev-addresses]
+cedra_guide = "0xc2"
+
+[dependencies]
+CedraFramework = { git = "https://github.com/cedra-labs/cedra-framework.git", subdir = "cedra-framework", rev = "main" }
+
+[dev-dependencies]
