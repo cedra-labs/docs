@@ -92,18 +92,18 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
             },
             {
               type: 'doc',
-              id: 'getting-started/wallets/nova-wallet',
-              label: 'Nova Wallet'
+              id: 'getting-started/wallets/infer-wallet',
+              label: 'Infer Wallet'
             },
             {
               type: 'doc',
-              id: 'getting-started/wallets/nova-desk',
-              label: 'Nova Desk'
+              id: 'getting-started/wallets/infer-desk',
+              label: 'Infer Desk'
             },
             {
               type: 'doc',
-              id: 'getting-started/wallets/nova-connect',
-              label: 'Nova Connect'
+              id: 'getting-started/wallets/infer-connect',
+              label: 'Infer Connect'
             }
           ]
         },
